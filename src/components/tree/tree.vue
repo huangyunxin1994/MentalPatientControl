@@ -2,34 +2,56 @@
       <div class="tree">
         <el-input  v-model="filterText" placeholder="请输入内容" suffix-icon="el-icon-search"></el-input>
         
-        <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree"></el-tree>
+        <!-- <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree"></el-tree> -->
+        <el-tree
+          :data="data"
+          :props="defaultProps"
+          node-key="id"
+          ref="tree"
+          highlight-current
+          :render-content="renderContent" 
+          @node-click="handleNodeClick"
+          :filter-node-method="filterNode"
+           style="background: #F5F7FA;">
+        </el-tree>
       </div>
 </template>
 
 <script>
+import { getOrganData,insertUserData,updateUserData,removeUserData,bRemoveUserData } from '@/api/table'
+function filterArray(data) {
+    data.forEach(function (item) {
+        delete item.children;
+    });
+    var map = {};
+    data.forEach(function (item) {
+        map[item.id] = item;
+    });
+    var val = [];
+    data.forEach(function (item) {
+        if(item.organizationId)
+          item.className="person"
+        else
+          item.className="organ"
+        var parent = map[item.parentId]||map[item.organizationId];
+        if (parent) {
+            (parent.children || ( parent.children = [] )).push(item);
+        } else {
+            val.push(item);
+        }
+    });
+    return val;
+}
 export default {
   name: 'tree',
   data(){
     return{
       filterText:"",
-      data: [{
-          label: '南宁公安局',
-          children: [
-              {
-                label: '仙湖派出所',
-              },
-              {
-                label: '南湖派出所',
-              },
-              {
-                label: '凤岭派出所',
-              }
-           ]
-        }],
-        defaultProps: {
-          children: 'children',
-          label: 'label'
-        }
+      data: [],
+      defaultProps: {
+        children: 'children',
+        label: 'name'
+      }
     }
   },
     methods: {
@@ -38,8 +60,45 @@ export default {
       },
        filterNode(value, data) {
         if (!value) return true;
-        return data.label.indexOf(value) !== -1;
-      }
+        return data.name.indexOf(value) !== -1;
+      },
+      getOrganData(){
+        getOrganData().then(res=>{
+          console.log(res)
+          this.data=res.data.data
+          let organ = res.data.data;
+          let person = res.data.user;
+          console.log(person)
+          let arr = organ.concat(person)
+          let filterarr = filterArray(arr)
+          console.log(filterarr)
+          this.data=filterarr
+        }).catch(err=>{
+
+        })
+      },
+      renderContent(h, { node, data, store }) {
+        if(data.className=="person"){
+          return (
+              <span style="display:block;width:100%;">
+                <i class="el-icon-user-solid" style="color:rgb(179, 216, 255);float:right"></i> 
+                <span  style="display:block;width:3.2vw;color:#409EFF">{node.label}</span>
+                
+              </span>
+              );
+        }else{
+          return (
+              <span>
+                <i class="el-icon-s-operation" style="color:rgb(179, 216, 255);margin-right:0.5em"></i> 
+                <span style="font-weight:bold">{node.label}</span>
+              </span>
+              );
+        }
+            
+        },
+    },
+    mounted(){
+      this.getOrganData()
     },
     watch: {
       filterText(val) {
@@ -64,7 +123,8 @@ export default {
       height: 90%;
       padding: 5% 2%;
       border-radius: 5px;
-      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
+      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+      font-size:0.8vw;
     }
 }
 </style>

@@ -108,6 +108,8 @@
              return value == 1 ? '<span style="color:#409EFF;font-weight:bold">启用</span>' : value == 2 ? '<span style="color:#E6A23C;font-weight:bold">停用</span>' : '';
             else if(name=='state')
              return value == 1 ? '<span style="color:#409EFF;font-weight:bold">启用</span>' : value == 0 ? '<span style="color:#E6A23C;font-weight:bold">停用</span>' : '';
+            else if(name=='type')
+             return value == 1 ? '活动监测器' : (value == 2 ? '睡眠检测器' : value == 3?'智能手表':"");
             else if(name == 'ifRelease')
              return value == 1 ? '已发布' : value == 0 ? '发布' : '';
             else

@@ -120,11 +120,13 @@ export default {
   &-button{
     margin: 0 auto;
     margin-top: 20px;
-    width: 35%;
     display: flex;
     justify-content: space-between;
     height: 68px;
     z-index: 1;
+    .el-button{
+       font-size: 0.8vw;
+    }
   }
   &-tree{
     position: absolute;
@@ -149,7 +151,7 @@ export default {
       box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2)
     }
     &-title{
-      font-size: 1.2em;
+      font-size: 1.2vw;
       font-weight: bold;
       margin-bottom: 1em;
       color: #F56C6C;
@@ -167,10 +169,13 @@ export default {
       display: flex;
       flex-direction:column;
       justify-content: space-between;
-      font-size: 15px;
+      font-size: 0.7vw;
       font-weight: bold;
       &-handle{
         text-align: center;
+        .el-button{
+          font-size: 0.7vw;
+        }
       }
 
     }

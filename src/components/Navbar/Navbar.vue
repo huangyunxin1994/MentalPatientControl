@@ -99,10 +99,10 @@ export default {
 <style lang="scss" scoped>
 .app-main {
   /*50 = navbar  */
-  height: calc(100vh - 100px);
+  height: calc(100vh - 10vh);
   width: 100%;
   position: relative;
-  top: 100px;
+  top: 10vh;
   overflow: hidden;
 }
 .fixed-header+.app-main {
@@ -118,7 +118,7 @@ export default {
   }
 }
 .navbar {
-  height: 100px;
+  height: 10vh;
   width: 100%;
   overflow: hidden;
   position: fixed;
@@ -151,17 +151,17 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-left: 20px;
+    padding-left: 2vw;
     .navbar-titles{
-      padding-left: 20px;
+      padding-left: 2vw;
       display: flex;
       align-items: center;
       .navbar-icon{
-      font-size: 35px;
+      font-size: 2vw;
       color: white;
       }
       .navbar-title{
-      font-size: 1.5em;
+      font-size: 1.8vw;
       font-weight: bold;
       color: #fff;
       }
@@ -173,7 +173,7 @@ export default {
     justify-content: space-between;
     align-items: center;
     .navbar-tab{
-      font-size: 18px;
+      font-size: 1.2vw;
       font-weight: bold;
       color: #ccc;
       cursor: pointer;
@@ -186,17 +186,17 @@ export default {
   }
   
   .right-menu {
-    width: 200px;
+    width: 15%;
     height: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-left: 20px;
+    padding-left: 2vw;
     &:focus {
       outline: none;
     }
     .navbar-message{
-      font-size: 35px;
+      font-size: 2vw;
       color: white;
       cursor: pointer;
     }
@@ -204,7 +204,7 @@ export default {
       display: inline-block;
       padding: 0 8px;
       height: 100%;
-      font-size: 18px;
+      font-size: 1vw;
       color: #5a5e66;
       vertical-align: text-bottom;
 
@@ -219,17 +219,17 @@ export default {
     }
 
     .avatar-container {
-      margin-right: 10px;
+      margin-right: 1vw;
 
       .avatar-wrapper {
-        margin-top: 5px;
+        margin-top: 0.5vh;
         position: relative;
 
         .user-avatar {
           cursor: pointer;
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
+          width: 2vw;
+          height: 2vw;
+          border-radius: 0.5vw;
         }
 
         .el-icon-caret-bottom {

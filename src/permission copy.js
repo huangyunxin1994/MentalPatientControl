@@ -15,11 +15,10 @@ router.beforeEach(async(to, from, next) => {
   NProgress.start()
 
   // set page title
-  document.title = getPageTitle(to.meta.title)
+  //document.title = getPageTitle(to.meta.title)
 
   // determine whether the user has logged in
   const hasToken = getToken()
-  console.log(hasToken)
   if (hasToken) {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
@@ -33,7 +32,8 @@ router.beforeEach(async(to, from, next) => {
       } else {
         try {
           // get user info
-          next()
+          await store.dispatch('user/resetToken')
+          next(`/login?redirect=${to.path}`)
         } catch (error) {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
