@@ -2,7 +2,7 @@
     <el-container class="usermanage-container">
       <my-tree></my-tree>
       <div class="usermanage-table">
-          <el-button type="primary" @click.native="newData">新增用户</el-button>
+          <el-button size="small" type="primary" @click.native="newData">新增用户</el-button>
           <my-table :tableTitle="tableTitle" :tableData="tableData" ref="table" @changeData="changeData" @removeData="removeData" @bRemoveData="bRemoveData"></my-table>
           <my-dialog :tableTitle="handleTitle" :formRule="formRule" ref="dialog" @insertData="insertData" @updateData="updateData"></my-dialog>
       </div>
