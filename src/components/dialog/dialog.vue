@@ -2,7 +2,7 @@
 <!-- 新增 -->
     <el-dialog :title="title" :visible.sync="formVisible" :before-close="handleClose" :close-on-click-modal="false" top="5vh">
                         
-                    <el-form :model="form" label-width="150px" :rules="formRule" ref="form"  style="max-height:700px;overflow-y:scroll">
+                    <el-form :model="form" label-width="150px" :rules="formRule" ref="form"  style="max-height:70vh;overflow-y:scroll">
                         <div v-for="(item,index) in tableTitle" :key="index">
                         <el-form-item :label="item.title" :prop="item.name" v-if="item.type=='name'" >
                             <!-- <el-input v-model="editForm.name" auto-complete="off"></el-input> -->
@@ -195,6 +195,7 @@ export default {
                 this.options=[]
                 this.form={};
                 this.formVisible=false
+                this.loading=false
             },
             submitUpload() {
                 this.$refs.upload.submit();

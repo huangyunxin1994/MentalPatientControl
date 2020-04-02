@@ -3,6 +3,7 @@
         <el-input  v-model="filterText" placeholder="请输入内容" suffix-icon="el-icon-search"></el-input>
         
         <!-- <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree"></el-tree> -->
+       
         <el-tree
           :data="data"
           :props="defaultProps"
@@ -12,8 +13,9 @@
           :render-content="renderContent" 
           @node-click="handleNodeClick"
           :filter-node-method="filterNode"
-           style="background: #F5F7FA;">
+          >
         </el-tree>
+       
       </div>
 </template>
 
@@ -44,6 +46,13 @@ function filterArray(data) {
 }
 export default {
   name: 'tree',
+  props:{
+    showPerson:{
+      type:String,
+      default:'false'
+    }
+    
+  },
   data(){
     return{
       filterText:"",
@@ -56,7 +65,7 @@ export default {
   },
     methods: {
       handleNodeClick(data) {
-        console.log(data);
+        this.$emit('getThisOrgan',data)
       },
        filterNode(value, data) {
         if (!value) return true;
@@ -68,13 +77,17 @@ export default {
           this.data=res.data.data
           let organ = res.data.data;
           let person = res.data.user;
-          console.log(person)
-          let arr = organ.concat(person)
+          console.log(this.showPerson)
+          let arr=[]
+          if(this.showPerson=="true")
+            arr = organ.concat(person)
+          else
+            arr = organ
           let filterarr = filterArray(arr)
           console.log(filterarr)
           this.data=filterarr
         }).catch(err=>{
-
+          console.log(err)
         })
       },
       renderContent(h, { node, data, store }) {
@@ -97,20 +110,19 @@ export default {
             
         },
     },
-    mounted(){
-      this.getOrganData()
-    },
     watch: {
       filterText(val) {
         this.$refs.tree.filter(val);
       }
+    },
+    mounted(){
+      this.getOrganData()
     },
 }
 </script>
 
 <style lang="scss" scoped>
 .tree{
-    width: 15%;
     height: 100%;
     padding: 1%;
     display: flex;

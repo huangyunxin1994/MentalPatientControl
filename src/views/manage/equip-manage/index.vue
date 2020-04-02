@@ -1,9 +1,9 @@
 <template>
     <el-container class="equipmanage-container">
         <div class="equipmanage-button">
-          <el-button type="primary">模板下载</el-button>
-          <el-button type="primary">新增设备</el-button>
-          <el-button type="primary">批量导入</el-button>
+          <!-- <el-button type="primary">模板下载</el-button> -->
+          <el-button size="small" type="primary" @click="newData">新增设备</el-button>
+          <!-- <el-button type="primary">批量导入</el-button> -->
           </div>
           <my-table :tableTitle="tableTitle" :tableData="tableData" ref="table" @changeData="changeData" @removeData="removeData"></my-table>
           <my-dialog :tableTitle="handleTitle" :formRule="formRule" ref="dialog" @insertData="insertData" @updateData="updateData"></my-dialog>
@@ -28,12 +28,17 @@ export default {
         },
         tableTitle:[
             { title : "设备编号", name : "code", minwidth : "120", type : "name" },
-            { title : "设备名称", name : "name", minwidth : "150", type : "date" },
-            { title : "设备类型", name : "type", minwidth : "150", type : "date" },
+            { title : "设备名称", name : "name", minwidth : "150", type : "input" },
+            { title : "设备类型", name : "type", minwidth : "150", type : "input" },
             { title : "关联人员", name : "userName", width : "120", type : "input" },
             { title : "操作",width : "150", type : "handle",button:[{name:"编辑",type:"edit"},{name:"删除",type:"remove"}] }
         ],
-        handleTitle:[],
+        handleTitle:[
+            { title : "设备编号", name : "code", type : "input" },
+            { title : "设备名称", name : "name", type : "input" },
+            { title : "设备类型", name : "type", type : "input" },
+            { title : "关联人员", name : "userName", type : "input" },
+        ],
         tableData:[]
     }
   },
@@ -104,8 +109,13 @@ export default {
     },
     /* 批量删除数据 */
     removeData(para){
-      var ids = para.map(item => item.id).toString();
-      let param = {id : ids}
+      console.log(para)
+      var ids;
+      if(Array.isArray(para))
+        ids = para.map(item => item.id).toString();
+      else
+        ids = para.id
+      let param = {equipmentId : ids}
       removeEquipData(param).then(res=>{
         this.$refs.table.listLoading=false
         if(res.code==0){
@@ -136,9 +146,10 @@ export default {
     position: relative;
     .equipmanage-button{
         position: absolute;
-        top:20px;
-        right: 100px;
-        z-index: 111;
+        top:2vh;
+        right: 10vh;
+        z-index: 1;
+        font-size: 0.7vw;
     }
   }
 }

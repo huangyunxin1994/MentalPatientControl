@@ -104,11 +104,27 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            console.log(this.redirect)
-            this.$router.push({ path: this.redirect||'/bulletinboard' })
-            this.loading = false
+          this.$store.dispatch('user/login', this.loginForm).then((res) => {
+            console.log(res)
+            if(res.code=="0"){
+              this.$message({
+                message: '登录成功',
+                type: 'success'
+              });
+              this.$router.push({ path: this.redirect||'/bulletinboard' })
+              this.loading = false
+            }else{
+               this.$message({
+                message: '登录失败',
+                type: 'error',
+              });
+            }
+            
           }).catch(() => {
+            this.$message({
+                message: '登录失败',
+                type: 'error',
+            });
             this.loading = false
           })
         } else {

@@ -1,36 +1,14 @@
 <template>
-<section style="width: 100%;height:100%;padding:20px;box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)">
-    <el-row :gutter="22" style="margin-bottom:20px;">
-        <el-col :span="6">
-            <el-input v-model="inputValue" placeholder="请输入内容"></el-input>
-        </el-col>
-        <el-col :span="2">
-            <el-select v-model="value" filterable placeholder="请选择">
-                <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-                </el-option>
-            </el-select>
-        </el-col>
-        <el-col :span="2">
-            <el-select v-model="value" filterable placeholder="请选择">
-                <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-                </el-option>
-            </el-select>
-        </el-col>
-    </el-row>
+<section style="width: 100%;height:100%;padding:2vh;box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)">
+    <div style="margin-bottom:2vh;width:20vw">
+       <el-input v-model="inputValue" placeholder="请输入内容"></el-input>
+    </div>
     <el-table :data="tables" border stripe highlight-current-row v-loading="listLoading" @selection-change="selsChange" height="calc(100% - 100px)">
         <el-table-column type="selection" width="55">
         </el-table-column>
         <el-table-column type="index" width="60">
         </el-table-column>
-        <el-table-column v-for="(item,index) in tableTitle" :key="index" :prop="item.name" :label="item.title" :width="item.width" :min-width="item.minwidth" sortable>
+        <el-table-column v-for="(item,index) in tableTitle" :key="index" :prop="item.name" :label="item.title" :width="item.width" :min-width="item.minwidth" :sortable="item.type!='button'&&item.type!='handle'?true:false">
             <template slot-scope="scope">
                 <el-link type="primary" v-if="item.type=='link'" @click="userDetails(scope.$index, scope.row)" v-html="arrFormatter(scope.row[item.name],item.name)"></el-link>
                 <!-- <el-link :type="scope.row[item.name] == 1 ? 'success' : value == 0 ? 'primary' : ''" v-else-if="item.type=='button'" @click="changeNoticeSates(scope.$index, scope.row)" v-html="arrFormatter(scope.row[item.name],item.name)"></el-link> -->
@@ -40,7 +18,7 @@
                        <el-button v-else-if="item.type=='remove'" type="danger" icon="el-icon-delete" size="small" circle @click="handleRemove(scope.$index, scope.row)"></el-button>
                     </el-tooltip>
                 </div>
-                <el-button v-else-if="item.type=='button'" type="primary"  @click="handleEdit(scope.$index, scope.row)">选择人员</el-button>
+                <el-button v-else-if="item.type=='button'"  icon="el-icon-setting" type="info" size="small" circle @click="handleSetting(scope.$index, scope.row)"></el-button>
                 <p v-else :formatter="formatSex" v-html="arrFormatter(scope.row[item.name],item.name)"></p>
             </template>
         </el-table-column>
@@ -120,6 +98,10 @@
         },
         userDetails(index,row){
           this.$router.push({ path: '/persondetails' })
+        },
+        //配置
+        handleSetting(index,row){
+          this.$emit('settingData',row)
         },
         //编辑
         handleEdit(index,row){

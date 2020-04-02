@@ -1,10 +1,17 @@
 <template>
     <el-container class="organmanage-container">
-      <my-tree></my-tree>
+      <my-tree @getThisOrgan="getThisOrgan"></my-tree>
       
       <div class="organmanage-table">
-          <el-button type="primary">添加组织</el-button>
-          <my-table :tableTitle="tableTitle"></my-table>
+        <div  v-show="organData.id" class="organmanage-parent">
+          <span style="color:#606266">{{organData.name}}</span>
+          <el-button size="small" round  @click="handleEdit()">编辑</el-button>
+        </div>
+          
+          <el-button class="organmanage-table-button" type="primary" size="small" @click="newData">添加组织</el-button>
+          <my-table :tableTitle="tableTitle" :tableData="tableData" ref="table" @changeData="changeData" @removeData="removeData" @bRemoveData="bRemoveData" @settingData="settingData"></my-table>
+          <my-dialog :tableTitle="handleTitle" :formRule="formRule" ref="dialog" @insertData="insertData" @updateData="updateData"></my-dialog>
+          <my-transfer ref="transfer"></my-transfer>
       </div>
         
     </el-container>
@@ -13,24 +20,88 @@
 <script>
 import  myTable from '@/components/table/table'
 import  myTree from '@/components/tree/tree'
+import  myDialog from '@/components/dialog/dialog'
+import  myTransfer from '@/components/transfer/transfer'
+import { getChildOrganData,insertOrganData,updateOrganData,removeOrganData,bRemoveOrganData } from '@/api/table'
 export default {
     name: 'Organmanage',
     components:{
         myTable,
-        myTree
+        myTree,
+        myDialog,
+        myTransfer
     },
     data(){
         return{
+            organData:{},
+            formRule:{
+              name: [{ required: true, message: '请输入角色', trigger: 'blur' }]
+            },
             tableTitle:[
             { title : "组织名称", name : "name", minwidth : "120", type : "name" },
-            { title : "描述", name : "duration", minwidth : "120", type : "input" },
-            { title : "关联管理员", name : "startTime", width : "150", type : "button" },
-            { title : "关联用户", name : "endTime", width : "150", type : "button" },
-            { title : "操作",width : "150", type : "handle",button:[{name:"编辑",type:"edit"},{name:"删除",type:"remove"}] }
+            { title : "描述", name : "organization", minwidth : "120", type : "input" },
+            { title : "关联管理", width : "100", type : "button" },
+            { title : "关联用户", width : "100", type : "button" },
+            { title : "操作",width : "100", type : "handle",button:[{name:"编辑",type:"edit"},{name:"删除",type:"remove"}] }
             ],
+            handleTitle:[
+              { title : "组织名称", name : "name", type : "input" },
+              { title : "上级组织", name : "parentId", type : "select" },
+              { title : "描述", name : "organization", type : "input" },
+            ],
+            tableData:[]
         }
     },
     methods: {
+      handleEdit(){
+        let row = this.organData
+        row.submitType="update"
+        this.$refs.dialog.form=Object.assign({}, row)
+        this.$refs.dialog.handleShow();
+      },
+      getThisOrgan(data){
+        if(data.children)
+        delete data.children
+        this.organData=data
+        this.$refs.table.listLoading=true
+        getChildOrganData({id:data.id}).then(res=>{
+          if(res.code==0){
+            this.tableData=res.data.data
+            this.$refs.table.listLoading=false
+          }
+
+        }).catch(error => {
+          console.log(error)
+        })
+
+      },
+      newData(){
+        let para = {'submitType':"insert"}
+        this.$refs.dialog.form=para
+        this.$refs.dialog.handleShow();
+      },
+      changeData(row){
+        console.log(row)
+        row.submitType="update"
+        this.$refs.dialog.form=Object.assign({}, row)
+        this.$refs.dialog.handleShow();
+      },
+      removeData(row){
+
+      },
+      bRemoveData(row){
+
+      },
+      settingData(para){
+        console.log(para)
+         this.$refs.transfer.handleShow(para);
+      },
+      insertData(){
+
+      },
+      updateData(para){
+
+      }
     }
 }
 </script>
@@ -45,11 +116,27 @@ export default {
     width: 85%;
     height: 100%;
     padding: 1%;
-   .el-button{
+   .organmanage-parent{
+      position: absolute;
+      top:4vh;
+      right: 30vh;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1vw;
+      z-index: 1;
+      font-weight: bold;
+      .el-button{
+        margin-left: 1vw;
+        font-size: 0.7vw;
+      }
+   }
+   &-button{
         position: absolute;
-        top:40px;
-        right: 100px;
-        z-index: 111;
+        top:4vh;
+        right: 10vh;
+        z-index: 1;
+        font-size: 0.7vw;
     }
   }
 }

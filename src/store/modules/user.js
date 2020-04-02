@@ -39,7 +39,7 @@ const actions = {
         commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
         commit('SET_TOKEN', data.data.user.account)
         setToken(data.data.user.account)
-        resolve()
+        resolve(data)
       }).catch(error => {
         reject(error)
       })

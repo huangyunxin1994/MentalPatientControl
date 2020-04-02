@@ -1,6 +1,6 @@
 <template>
     <el-container class="rolemanage-container">
-          <el-button type="primary" @click.native="newData">新增角色</el-button>
+          <el-button size="small" type="primary" @click.native="newData">新增角色</el-button>
           <my-table :tableTitle="tableTitle" :tableData="tableData" ref="table" @changeData="changeData" @removeData="removeData" @bRemoveData="bRemoveData"></my-table>
           <my-dialog :tableTitle="handleTitle" :formRule="formRule" ref="dialog" @insertData="insertData" @updateData="updateData"></my-dialog>
         
@@ -153,9 +153,10 @@ export default {
     position: relative;
     .el-button{
         position: absolute;
-        top:20px;
-        right: 100px;
-        z-index: 111;
+        top:2vh;
+        right: 10vh;
+        z-index: 1;
+        font-size: 0.7vw;
     }
   }
 }

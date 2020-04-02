@@ -1,6 +1,15 @@
 import {get,post} from '@/utils/request'
 let base = '';
 /*
+ * 组织增删查改 
+ */
+export const getOrganData = params => { return get(`${base}/organization/findOutAllPeople`, params); };
+export const getChildOrganData = params => { return get(`${base}/organization/selectByParentId`, params); };
+export const insertOrganData = params => { return post(`${base}/user/addRoleUser`, params, {emulateJSON: true}); };
+export const updateOrganData = params => { return post(`${base}/organization/updateByPrimaryKeySelective`, params, {emulateJSON: true}); };
+export const removeOrganData = params => { return post(`${base}/organization/deleteByPrimaryKey`, params, {emulateJSON: true}); };
+export const bRemoveOrganData = params => { return post(`${base}/user/deleteBatchUser`, params, {emulateJSON: true}); };
+/*
  * 用户增删查改 
  */
 export const getUserData = params => { return get(`${base}/user/selectUserQueryByPage`, params); };
@@ -17,17 +26,17 @@ export const updateRoleData = params => { return post(`${base}/role/updateRole`,
 export const removeRoleData = params => { return post(`${base}/role/deleteRole`, params, {emulateJSON: true}); };
 export const bRemoveRoleData = params => { return post(`${base}/role/deleteRoleBatch`, params, {emulateJSON: true}); };
 /*
- * 组织增删查改 
- */
-export const getOrganData = params => { return get(`${base}/organization/findOutAllPeople`, params); };
-export const insertOrganData = params => { return post(`${base}/role/addRole`, params, {emulateJSON: true}); };
-export const updateOrganData = params => { return post(`${base}/role/updateRole`, params, {emulateJSON: true}); };
-export const removeOrganData = params => { return post(`${base}/role/deleteRole`, params, {emulateJSON: true}); };
-export const bRemoveOrganData = params => { return post(`${base}/role/deleteRoleBatch`, params, {emulateJSON: true}); };
-/*
  * 设备增删查改 
  */
 export const getEquipData = params => { return get(`${base}/equipment/selectByPage`, params); };
 export const insertEquipData = params => { return post(`${base}/equipment/insert`, params, {emulateJSON: true}); };
 export const updateEquipData = params => { return post(`${base}/role/updateRole`, params, {emulateJSON: true}); };
 export const removeEquipData = params => { return post(`${base}/equipment/deleteEquipment`, params, {emulateJSON: true}); };
+/*
+ * 重点人员增删查改 
+ */
+export const getKeyPnlData = params => { return get(`${base}/keypersonnel/selectByPage`, params); };
+export const insertKeyPnlData = params => { return post(`${base}/keypersonnel/insert`, params, {emulateJSON: true}); };
+export const updateKeyPnlData = params => { return post(`${base}/keypersonnel/updateKeyPersonnel`, params, {emulateJSON: true}); };
+export const removeKeyPnlData = params => { return post(`${base}/keypersonnel/deleteByPrimaryKey`, params, {emulateJSON: true}); };
+//export const bRemoveKeyPnlData = params => { return post(`${base}/role/deleteRoleBatch`, params, {emulateJSON: true}); };

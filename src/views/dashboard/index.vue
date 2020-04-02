@@ -1,7 +1,7 @@
 <template>
     <el-container class="dashboard-container">
       <mymap class="dashboard-map" ref="map" :pointsArr="pointsArr" :electricFenceArr="electricFenceArr"></mymap>
-      <my-tree class="dashboard-tree"></my-tree>
+      <my-tree showPerson='true' class="dashboard-tree"></my-tree>
       <div class="dashboard-button">
         <el-button type="primary" @click="showThisMark('0')">在家人员数<br/><br/>{{inHomeNum}}</el-button>
         <el-button type="primary" @click="showThisMark('1')">离家人员数<br/><br/>{{outHomeNum}}</el-button>

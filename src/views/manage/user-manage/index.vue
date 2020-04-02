@@ -96,7 +96,7 @@ export default {
         }else{
           this.$message({
             message: '新增失败',
-            type: 'danger'
+            type: 'error'
           });
         }
       })
@@ -178,9 +178,10 @@ export default {
     padding: 1%;
     .el-button{
         position: absolute;
-        top:40px;
-        right: 100px;
-        z-index: 111;
+        top:4vh;
+        right: 10vh;
+        z-index: 1;
+        font-size: 0.7vw;
     }
     
   }

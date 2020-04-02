@@ -391,13 +391,13 @@ $light_gray:rgba(51, 51, 51, 1);
       .warnMess-content{
         white-space: nowrap;
         margin: 5px;
-        font-size: 14px;
+        font-size: 0.8vw;
         display: flex;
         justify-content: left;
         align-items: center;
         &-icon{
           color:#FFBE00;
-          font-size: 24px;
+          font-size: 1.5vw;
         }
       }
       }
