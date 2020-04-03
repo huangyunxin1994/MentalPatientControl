@@ -40,3 +40,6 @@ export const insertKeyPnlData = params => { return post(`${base}/keypersonnel/in
 export const updateKeyPnlData = params => { return post(`${base}/keypersonnel/updateKeyPersonnel`, params, {emulateJSON: true}); };
 export const removeKeyPnlData = params => { return post(`${base}/keypersonnel/deleteByPrimaryKey`, params, {emulateJSON: true}); };
 //export const bRemoveKeyPnlData = params => { return post(`${base}/role/deleteRoleBatch`, params, {emulateJSON: true}); };
+
+/* 人员预警信息查询 */
+export const getPerWarnlData = params => { return get(`${base}/personnel/selectByPage`, params); };

@@ -45,7 +45,8 @@ export default {
     methods: {
       getEquipList(){
         this.$refs.table.listLoading=true
-        getEquipData().then(res=>{
+        let para ={currentPage:1,pageSize:100}
+        getEquipData(para).then(res=>{
           console.log(res)
           if(res.code==0){
             this.tableData=res.data.data
