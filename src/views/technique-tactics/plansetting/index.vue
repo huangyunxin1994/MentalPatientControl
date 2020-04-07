@@ -8,7 +8,7 @@
                   <el-input ></el-input>
             </div>
             <div style="width:20%;padding-top:1vh;padding-left:20px">
-                  <el-button type="primary">添加预案</el-button>
+                  <el-button type="primary" @click="handleInsert">添加预案</el-button>
             </div>
             <el-main>
           <el-scrollbar style="height:100%;">
@@ -31,34 +31,34 @@
               <div class="planset-content" v-else-if="ite.optName=='睡眠质量'">
                 <span class="planset-span"><span class="planset-label">预警类型:</span>{{ite.optName}}</span>
                 <span class="planset-date"><span class="planset-label">时间段:</span>{{ite.startTime}}至{{ite.endTime}}</span>
-                <span class="planset-span"><span class="planset-label">活动次数:</span>{{ite.times}} 次</span>
+                <span class="planset-span"><span class="planset-label">活动次数:</span>{{ite.stimes}} 次</span>
               </div>
                 
               <div class="planset-content" v-else-if="ite.optName=='活动频率'">
                 <span class="planset-span"><span class="planset-label">预警类型:</span>{{ite.optName}}</span>
                 <span class="planset-date"><span class="planset-label">时间段:</span>{{ite.startTime}}至{{ite.endTime}}</span>
-                <span class="planset-span"><span class="planset-label">频率大于:</span>{{ite.times}} 次</span>
+                <span class="planset-span"><span class="planset-label">频率大于:</span>{{ite.astimes}} 次</span>
               </div>
               <div class="planset-content" v-else-if="ite.optName=='活动时长'">
                 <span class="planset-span"><span class="planset-label">预警类型:</span>{{ite.optName}}</span>
                 <span class="planset-date"><span class="planset-label">时间段:</span>{{ite.startTime}}至{{ite.endTime}}</span>
-                <span class="planset-span"><span class="planset-label">时长大于:</span>{{ite.times}} 分</span>
+                <span class="planset-span"><span class="planset-label">时长大于:</span>{{ite.atimes}} 分</span>
               </div>
               <div class="planset-content" v-else-if="ite.optName=='心率'">
                 <span class="planset-span"><span class="planset-label">预警类型:</span>{{ite.optName}}</span>
                 <span class="planset-date"><span class="planset-label">时间段:</span>{{ite.startTime}}至{{ite.endTime}}</span>
-                <span class="planset-span"><span class="planset-label">值:</span>{{ite.val}}</span>
-                <span class="planset-span">{{ite.times}}<span class="planset-label">次/每分</span></span>
+                <span class="planset-span"><span class="planset-label">值:</span>{{ite.hval}}</span>
+                <span class="planset-span">{{ite.htimes}}<span class="planset-label">次/每分</span></span>
               </div>
               <div class="planset-content" v-else-if="ite.optName=='血压'">
                 <span class="planset-span"><span class="planset-label">预警类型:</span>{{ite.optName}}</span>
                 <span class="planset-date"><span class="planset-label">时间段:</span>{{ite.startTime}}至{{ite.endTime}}</span>
-                <span class="planset-span"><span class="planset-label">值:</span>{{ite.val}}</span>
+                <span class="planset-span"><span class="planset-label">值:</span>{{ite.bval}}</span>
               </div>
               
             </div>
             <div class="planset-icon">
-                <el-button type="warning" icon="el-icon-edit" size="mini"  @click="handleRemove(index)">删除</el-button>
+                <el-button type="danger" icon="el-icon-edit" size="mini"  @click="handleRemove(index)">删除</el-button>
                 <el-button type="primary" icon="el-icon-delete" size="mini" @click="handleEdit(index)">编辑</el-button>
                 
               </div>
@@ -77,6 +77,7 @@
 <script>
 import breadcrumb from "@/components/Breadcrumb/index"
 import myDialog from '@/components/dialog-planset/dialog' 
+import { getPlanQueryData } from '@/api/table'
   export default {
     name: 'Plansetting',
     components:{
@@ -86,40 +87,49 @@ import myDialog from '@/components/dialog-planset/dialog'
     data() {
       return {
         arr:[
-              {name:"重度患者",
+              {
+                id:"1",
+                name:"重度患者",
                 opt:[
                     {optName:"是否睡眠",startTime:"23:00:00",endTime:"07:00:00",type:"离床",time:"0.5"},
-                    {optName:"睡眠质量",startTime:"01:00:00",endTime:"05:00:00",times:"50"},
-                    {optName:"活动频率",startTime:"01:00:00",endTime:"05:00:00",times:"50"},
-                    {optName:"活动时长",startTime:"01:00:00",endTime:"05:00:00",times:"50"},
-                    {optName:"心率",startTime:"07:00:00",endTime:"21:00:00",val:"大于",times:"120"},
-                    {optName:"心率",startTime:"07:00:00",endTime:"21:00:00",val:"小于",times:"60"},
-                    {optName:"血压",startTime:"07:00:00",endTime:"21:00:00",val:"高血压"},
-                    {optName:"血压",startTime:"07:00:00",endTime:"21:00:00",val:"低血压"},
-                ]
+                    {optName:"睡眠质量",startTime:"01:00:00",endTime:"05:00:00",stimes:"50"},
+                    {optName:"活动频率",startTime:"01:00:00",endTime:"05:00:00",astimes:"50"},
+                    {optName:"活动时长",startTime:"01:00:00",endTime:"05:00:00",atimes:"50"},
+                    {optName:"心率",startTime:"07:00:00",endTime:"21:00:00",hval:"大于",htimes:"120"},
+                    {optName:"心率",startTime:"07:00:00",endTime:"21:00:00",hval:"小于",htimes:"60"},
+                    {optName:"血压",startTime:"07:00:00",endTime:"21:00:00",bval:"高血压"},
+                    {optName:"血压",startTime:"07:00:00",endTime:"21:00:00",bval:"低血压"},
+                ],
+                conditionValue:"4"
               },
               
-              {name:"轻度患者",
+              {
+                id:"2",
+                name:"轻度患者",
                 opt:[
                     {optName:"是否睡眠",startTime:"23:00:00",endTime:"07:00:00",type:"离床",time:"0.5"},
-                    {optName:"睡眠质量",startTime:"01:00:00",endTime:"05:00:00",times:"50"},
-                    {optName:"活动频率",startTime:"01:00:00",endTime:"05:00:00",times:"50"},
-                    {optName:"活动时长",startTime:"01:00:00",endTime:"05:00:00",times:"50"},
-                    {optName:"心率",startTime:"07:00:00",endTime:"21:00:00",val:"大于",times:"120"},
-                    {optName:"心率",startTime:"07:00:00",endTime:"21:00:00",val:"小于",times:"60"},
-                    {optName:"血压",startTime:"07:00:00",endTime:"21:00:00",val:"高血压"},
-                    {optName:"血压",startTime:"07:00:00",endTime:"21:00:00",val:"低血压"},
-                ]
+                    {optName:"睡眠质量",startTime:"01:00:00",endTime:"05:00:00",stimes:"50"},
+                    {optName:"活动频率",startTime:"01:00:00",endTime:"05:00:00",astimes:"50"},
+                    {optName:"活动时长",startTime:"01:00:00",endTime:"05:00:00",atimes:"50"},
+                    {optName:"心率",startTime:"07:00:00",endTime:"21:00:00",hval:"大于",htimes:"120"},
+                    {optName:"心率",startTime:"07:00:00",endTime:"21:00:00",hval:"小于",htimes:"60"},
+                    {optName:"血压",startTime:"07:00:00",endTime:"21:00:00",bval:"高血压"},
+                    {optName:"血压",startTime:"07:00:00",endTime:"21:00:00",bval:"低血压"},
+                ],
+                conditionValue:"4"
               },
               
-              {name:"预案1",
+              {
+                id:"3",
+                name:"预案1",
                 opt:[
                     {optName:"是否睡眠",startTime:"23:00:00",endTime:"07:00:00",type:"离床",time:"0.5"},
-                    {optName:"心率",startTime:"07:00:00",endTime:"21:00:00",val:"大于",times:"120"},
-                    {optName:"心率",startTime:"07:00:00",endTime:"21:00:00",val:"小于",times:"60"},
-                    {optName:"血压",startTime:"07:00:00",endTime:"21:00:00",val:"高血压"},
-                    {optName:"血压",startTime:"07:00:00",endTime:"21:00:00",val:"低血压"},
-                ]
+                    {optName:"心率",startTime:"07:00:00",endTime:"21:00:00",hval:"大于",htimes:"120"},
+                    {optName:"心率",startTime:"07:00:00",endTime:"21:00:00",hval:"小于",htimes:"60"},
+                    {optName:"血压",startTime:"07:00:00",endTime:"21:00:00",bval:"高血压"},
+                    {optName:"血压",startTime:"07:00:00",endTime:"21:00:00",bval:"低血压"},
+                ],
+                conditionValue:"4"
               }
             ]
 
@@ -139,15 +149,29 @@ import myDialog from '@/components/dialog-planset/dialog'
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
+      handleInsert(){
+        this.$refs.dialog.handleShow();
+      },
       handleEdit(i){
-        let para = this.arr[i]
-        this.$refs.dialog.form=Object.assign({}, para)
+        let para = Object.assign({}, this.arr[i])
+        this.$refs.dialog.form=JSON.parse(JSON.stringify(para))
         this.$refs.dialog.handleShow();
       },
       handleRemove(i){
 
+      },
+      getPlanQueryData(){
+        getPlanQueryData().then((res)=>{
+          console.log(res)
+        }).catch((err)=>{
+
+        })
       }
+    },
+    mounted(){
+      this.getPlanQueryData()
     }
+    
   }
 </script>
 

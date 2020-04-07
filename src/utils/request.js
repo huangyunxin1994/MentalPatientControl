@@ -6,7 +6,7 @@ import Qs from 'qs'
 
 // create an axios instance
 const service = axios.create({
-  baseURL: "http://192.168.1.3:8080", // url = base url + request url
+  baseURL: "http://192.168.1.111:8080", // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000 // request timeout
 })
@@ -22,7 +22,7 @@ service.interceptors.request.use(
       // please modify it according to the actual situation
       
       config.headers={'Content-Type':'application/x-www-form-urlencoded'}
-      config.headers['X-Token'] = getToken()
+      config.headers['Authorization'] = getToken()
     }
     return config
   },
@@ -49,6 +49,11 @@ service.interceptors.response.use(
     switch (response.data.error) {
       case 401:
         response.data.msg = '未授权，请登录'
+        store.dispatch('user/resetToken').then(() => {
+          location.reload()
+        })
+          //           
+          //         })
         break
       default:
         break
@@ -106,9 +111,15 @@ export default service
  * @param data
  * @returns {Promise}
  */
-export function post (url, data = {}) {
+export function post (url, data) {
+    let para;
+    if(Array.isArray(data))
+      para=data
+    else
+    para=Qs.stringify(data)
     return new Promise((resolve, reject) => {
-      service.post(url, Qs.stringify(data))
+      
+      service.post(url, para)
         .then(response => {
           resolve(response.data)
         }, err => {

@@ -82,7 +82,7 @@ export default {
                    title: {
                         text: '重点人员统计',
                         textStyle: {
-                            fontSize: 16,
+                            fontSize: '16',
                             fontWeight:'bold'
                         }
                     },

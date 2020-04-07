@@ -2,20 +2,45 @@
     <el-container class="rolemanage-container">
           <el-button size="small" type="primary" @click.native="newData">新增角色</el-button>
           <my-table :tableTitle="tableTitle" :tableData="tableData" ref="table" @changeData="changeData" @removeData="removeData" @bRemoveData="bRemoveData"></my-table>
-          <my-dialog :tableTitle="handleTitle" :formRule="formRule" ref="dialog" @insertData="insertData" @updateData="updateData"></my-dialog>
-        
+          <my-dialog1 :tableTitle="handleTitle" :formRule="formRule" ref="dialog1" @insertData="insertData" @updateData="updateData"></my-dialog1>
+          <my-dialog2 :powerData="powerData" ref="dialog2" @insertData="insertData" @updateData="updateData"></my-dialog2>
+          <my-dialog3 ref="dialog3" @insertData="insertData" @updateData="updateData"></my-dialog3>
     </el-container>
 </template>
 
 <script>
 import  myTable from '@/components/table/table'
-import  myDialog from '@/components/dialog/dialog' 
-import { getRoleData,insertRoleData,updateRoleData,removeRoleData,bRemoveRoleData } from '@/api/table'
+import  myDialog1 from '@/components/dialog-role/dialog' 
+import  myDialog2 from '@/components/dialog-setpower/dialog' 
+import  myDialog3 from '@/components/dialog-setuser/dialog' 
+import { getRoleData,insertRoleData,updateRoleData,removeRoleData,bRemoveRoleData,getAllMenu } from '@/api/table'
+import { getRole } from '@/utils/auth'
+function filterArray(data) {
+    data.forEach(function (item) {
+    delete item.children;
+    });
+    var map = {};
+    data.forEach(function (item) {
+    map[item.menuId] = item;
+    });
+    var val = [];
+    data.forEach(function (item) {
+        var parent = map[item.parentId];
+        if (parent) {
+            (parent.children || ( parent.children = [] )).push(item);
+        } else {
+            val.push(item);
+        }
+    });
+    return val;
+}
 export default {
   name: 'Rolemanage',
   components:{
     myTable,
-    myDialog
+    myDialog1,
+    myDialog2,
+    myDialog3
   },
   data(){
     return{
@@ -33,7 +58,10 @@ export default {
             { title : "状态", name : "state", type : "radio" },
             { title : "描述", name : "remakes", type : "input" },
          ],
-         tableData:[]
+         tableData:[],
+         roleData:[],
+         userData:[],
+         powerData:[]
     }
   },
   methods: {
@@ -53,40 +81,57 @@ export default {
     },
     newData(){
       let para = {'submitType':"insert"}
-      this.$refs.dialog.form=para
-      this.$refs.dialog.handleShow();
+      this.$refs.dialog1.form=para
+      this.$refs.dialog1.handleShow();
     },
     changeData(row){
       row.submitType="update"
-      this.$refs.dialog.form=Object.assign({}, row)
-      this.$refs.dialog.handleShow();
+      this.$refs.dialog1.form=Object.assign({}, row)
+      this.$refs.dialog1.handleShow();
     },
     /* 新增数据 */
     insertData(para){
-      insertRoleData(para).then(res=>{
-        this.$refs.dialog.loading = false;
-        this.$refs.dialog.form={};
-        this.$refs.dialog.formVisible = false;
-        if(res.code==0){
-          this.$message({
-            message: '新增成功',
-            type: 'success'
-          });
-          this.getRoleList();
-        }else{
-          this.$message({
-            message: '新增失败',
-            type: 'danger'
-          });
-        }
-      })
+      if(para.step==0){
+        this.roleData.push(para)
+        let roleid = getRole();
+        console.log(roleid)
+        getAllMenu({roleId:roleid}).then(res=>{
+          if(res.code==0){
+            let arr = res.data.data;
+            console.log(arr)
+            for(let i in arr){
+              arr[i].query=0
+              arr[i].operation=0
+              arr[i].all=0
+            }
+            this.powerData=filterArray(arr)
+            console.log(111)
+            console.log( this.powerData)
+            let para = {'submitType':"insert"}
+            this.$refs.dialog2.form=para
+            this.$refs.dialog1.formVisible = false;
+            this.$refs.dialog2.handleShow();
+          }else{
+            this.$message({
+              message: '查询失败',
+              type: 'danger'
+            });
+          }
+        })
+      }else if(para.step==1){
+        let para = {'submitType':"insert"}
+        this.$refs.dialog3.form=para
+        this.$refs.dialog2.formVisible = false;
+        this.$refs.dialog3.handleShow();
+      }
+      
     },
     /* 修改数据 */
     updateData(para){
       updateRoleData(para).then(res=>{
-        this.$refs.dialog.loading = false;
-        this.$refs.dialog.form={};
-        this.$refs.dialog.formVisible = false;
+        this.$refs.dialog1.loading = false;
+        this.$refs.dialog1.form={};
+        this.$refs.dialog1.formVisible = false;
         if(res.code==0){
           this.$message({
             message: '修改成功',

@@ -25,6 +25,7 @@ export const insertRoleData = params => { return post(`${base}/role/addRole`, pa
 export const updateRoleData = params => { return post(`${base}/role/updateRole`, params, {emulateJSON: true}); };
 export const removeRoleData = params => { return post(`${base}/role/deleteRole`, params, {emulateJSON: true}); };
 export const bRemoveRoleData = params => { return post(`${base}/role/deleteRoleBatch`, params, {emulateJSON: true}); };
+export const getAllMenu = params => { return get(`${base}/role/selectAllMenu`, params); };
 /*
  * 设备增删查改 
  */
@@ -41,5 +42,23 @@ export const updateKeyPnlData = params => { return post(`${base}/keypersonnel/up
 export const removeKeyPnlData = params => { return post(`${base}/keypersonnel/deleteByPrimaryKey`, params, {emulateJSON: true}); };
 //export const bRemoveKeyPnlData = params => { return post(`${base}/role/deleteRoleBatch`, params, {emulateJSON: true}); };
 
-/* 人员预警信息查询 */
+/*
+ *人员预警信息查询
+ */
 export const getPerWarnlData = params => { return get(`${base}/personnel/selectByPage`, params); };
+
+/* 
+ *预案管理增删查改
+ */
+
+export const getPlanQueryData = params => { return get(`${base}/ReservePlan/selectReservePlanQueryByPage`, params); };
+
+/* 
+ *人员状态模块接口 
+ */
+export const getPerSe = params => { return get(`${base}/PersonnelStatus/se`, params); }; //活动状态统计
+export const getPersonAlert = params => { return get(`${base}/PersonnelStatus/selectPersonnelAlert`, params); }; //电子围栏预警记录
+export const getPersonCoordinate = params => { return get(`${base}/PersonnelStatus/selectPersonnelCoordinate`, params); };  //轨迹查询
+export const getPersonStatusQuery = params => { return get(`${base}/PersonnelStatus/selectPersonnelStatusQueryByPage`, params); }; //分页查询
+
+

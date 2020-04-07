@@ -1,7 +1,8 @@
 import { requestLogin, requestLogout, login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken,getUser,setUser,removeUser,setRole,removeRole } from '@/utils/auth'
 import { resetRouter } from '@/router'
-
+import jwt from 'jwt-decode';// jwt-decode 解析token
+import { get } from '@/utils/request';
 const getDefaultState = () => {
   return {
     token: getToken(),
@@ -34,11 +35,15 @@ const actions = {
     return new Promise((resolve, reject) => {
       requestLogin({ username: username.trim(), password: password }).then(response => {
         const data = response
-        console.log(data.data.user.name)
-        commit('SET_NAME', data.data.user.name)
+        console.log(data.data)
+        setToken(data.data.token)
+        setUser(data.data.user)
+        console.log(data.data.roleId)
+        setRole(data.data.roleId)
+        commit('SET_NAME', data.data.data.name)
         commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
-        commit('SET_TOKEN', data.data.user.account)
-        setToken(data.data.user.account)
+        commit('SET_TOKEN', data.data.token)
+       
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -49,29 +54,24 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
-
+        const data = getUser()
+        console.log(JSON.parse(data))
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-
         const { name, avatar } = data
-
-        commit('SET_NAME', name)
+        commit('SET_NAME', data.name)
         commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
         resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
     })
   },
-
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
       requestLogout().then(() => {
         removeToken() // must remove  token  first
+        removeUser() 
+        removeRole()
         resetRouter()
         commit('RESET_STATE')
         resolve()
@@ -85,10 +85,12 @@ const actions = {
   resetToken({ commit }) {
     return new Promise(resolve => {
       removeToken() // must remove  token  first
+      removeUser() 
+      removeRole()
       commit('RESET_STATE')
       resolve()
     })
-  }
+  },
 }
 
 export default {
