@@ -36,6 +36,7 @@ export default {
           ]
         }))
         this.mainMap.setCurrentCity('北京') // 设置地图显示的城市 此项是必须设置的
+        
         this.mainMap.enableScrollWheelZoom(true)// 开启鼠标滚轮缩放
         if(this.pointsArr){
           // 向地图添加标注

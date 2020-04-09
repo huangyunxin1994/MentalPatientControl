@@ -2,18 +2,18 @@
     <el-container class="rolemanage-container">
           <el-button size="small" type="primary" @click.native="newData">新增角色</el-button>
           <my-table :tableTitle="tableTitle" :tableData="tableData" ref="table" @changeData="changeData" @removeData="removeData" @bRemoveData="bRemoveData"></my-table>
-          <my-dialog1 :tableTitle="handleTitle" :formRule="formRule" ref="dialog1" @insertData="insertData" @updateData="updateData"></my-dialog1>
-          <my-dialog2 :powerData="powerData" ref="dialog2" @insertData="insertData" @updateData="updateData"></my-dialog2>
-          <my-dialog3 ref="dialog3" @insertData="insertData" @updateData="updateData"></my-dialog3>
+          <my-dialog1 :tableTitle="handleTitle" :formRule="formRule" ref="dialog1" @insertData="insertData" @updateData="updateData" @handleClosed="handleClosed"></my-dialog1>
+          <my-dialog2 :powerData="powerData" ref="dialog2" @insertData="insertData" @updateData="updateData" @returnPre="returnPre"></my-dialog2>
+          <my-dialog3 :userValue="userValue" :userData="userData" ref="dialog3" @insertData="insertData" @updateData="updateData" @returnPre2="returnPre2" @initData="initData" @submitData="submitData"></my-dialog3>
     </el-container>
 </template>
-
+ 
 <script>
 import  myTable from '@/components/table/table'
 import  myDialog1 from '@/components/dialog-role/dialog' 
 import  myDialog2 from '@/components/dialog-setpower/dialog' 
 import  myDialog3 from '@/components/dialog-setuser/dialog' 
-import { getRoleData,insertRoleData,updateRoleData,removeRoleData,bRemoveRoleData,getAllMenu } from '@/api/table'
+import { getRoleData,insertRoleData,updateRoleData,removeRoleData,bRemoveRoleData,getAllMenu,addUserRole,deleteUserRole,addRoleRelationMenu} from '@/api/table'
 import { getRole } from '@/utils/auth'
 function filterArray(data) {
     data.forEach(function (item) {
@@ -34,6 +34,20 @@ function filterArray(data) {
     });
     return val;
 }
+function jsonToArray(nodes) {
+      var r=[];
+      if (Array.isArray(nodes)) {
+        for (var i=0, l=nodes.length; i<l; i++) {
+
+          r.push(nodes[i]); // 取每项数据放入一个新数组
+          if (nodes[i]["children"]&&nodes[i]["children"].length>0)
+            // 若存在children则递归调用，把数据拼接到新数组中，并且删除该children
+            r = r.concat(jsonToArray(nodes[i]["children"]));
+            delete nodes[i]["children"]
+        }
+      } 
+      return r;
+    }
 export default {
   name: 'Rolemanage',
   components:{
@@ -59,24 +73,27 @@ export default {
             { title : "描述", name : "remakes", type : "input" },
          ],
          tableData:[],
-         roleData:[],
+         roleData:{},
          userData:[],
-         powerData:[]
+         userValue:[],
+         powerData:[],
+         sValue:[],
+         roleid:''
     }
   },
   methods: {
     getRoleList(){
       this.$refs.table.listLoading=true
       getRoleData().then(res=>{
-        console.log(res)
+        //console.log(res)
         if(res.code==0){
           this.tableData=res.data.data
-          console.log(this.tableData)
+          //console.log(this.tableData)
           this.$refs.table.listLoading=false
         }
 
       }).catch(error => {
-        console.log(error)
+        //console.log(error)
       })
     },
     newData(){
@@ -92,21 +109,22 @@ export default {
     /* 新增数据 */
     insertData(para){
       if(para.step==0){
-        this.roleData.push(para)
+        this.roleData=para
         let roleid = getRole();
-        console.log(roleid)
-        getAllMenu({roleId:roleid}).then(res=>{
+        //console.log(roleid)
+        if(this.powerData.length==0){
+          getAllMenu({roleId:roleid}).then(res=>{
           if(res.code==0){
             let arr = res.data.data;
-            console.log(arr)
+            //console.log(arr)
             for(let i in arr){
               arr[i].query=0
               arr[i].operation=0
               arr[i].all=0
             }
             this.powerData=filterArray(arr)
-            console.log(111)
-            console.log( this.powerData)
+            //console.log(111)
+            //console.log( this.powerData)
             let para = {'submitType':"insert"}
             this.$refs.dialog2.form=para
             this.$refs.dialog1.formVisible = false;
@@ -117,7 +135,14 @@ export default {
               type: 'danger'
             });
           }
-        })
+          })
+        }else{
+           let para = {'submitType':"insert"}
+            this.$refs.dialog2.form=para
+            this.$refs.dialog1.formVisible = false;
+            this.$refs.dialog2.handleShow();
+        }
+        
       }else if(para.step==1){
         let para = {'submitType':"insert"}
         this.$refs.dialog3.form=para
@@ -128,23 +153,49 @@ export default {
     },
     /* 修改数据 */
     updateData(para){
-      updateRoleData(para).then(res=>{
-        this.$refs.dialog1.loading = false;
-        this.$refs.dialog1.form={};
-        this.$refs.dialog1.formVisible = false;
-        if(res.code==0){
-          this.$message({
-            message: '修改成功',
-            type: 'success'
-          });
-          this.getRoleList();
+      if(para.step==0){
+        this.roleData=para
+        this.roleid = para.id;
+        //console.log(roleid)
+        if(this.powerData.length==0){
+          getAllMenu({roleId:this.roleid}).then(res=>{
+          if(res.code==0){
+            let arr = res.data.data;
+            //console.log(arr)
+            for(let i in arr){
+              if(arr[i].query==1||arr[i].operation==1)
+                arr[i].all=1
+              else
+                arr[i].all=0
+            }
+            this.powerData=filterArray(arr)
+            //console.log(111)
+            //console.log( this.powerData)
+            let para = {'submitType':"update"}
+            this.$refs.dialog2.form=para
+            this.$refs.dialog1.formVisible = false;
+            this.$refs.dialog2.handleShow();
+          }else{
+            this.$message({
+              message: '查询失败',
+              type: 'danger'
+            });
+          }
+          })
         }else{
-          this.$message({
-            message: '修改失败',
-            type: 'danger'
-          });
+           let para = {'submitType':"update"}
+            this.$refs.dialog2.form=para
+            this.$refs.dialog1.formVisible = false;
+            this.$refs.dialog2.handleShow();
         }
-      })
+        
+      }else if(para.step==1){
+        let para = {'submitType':"update",'roleId':this.roleid}
+        this.$refs.dialog3.form=para
+        this.$refs.dialog2.formVisible = false;
+        this.$refs.dialog3.handleShow();
+      }
+      
     },
     /* 删除数据 */
     removeData(para){
@@ -184,6 +235,200 @@ export default {
         }
       })
     },
+    handleClosed(){
+      this.roleData={};
+      this.userData=[];
+      this.userValue=[];
+      this.sValue=[];
+      this.powerData=[];
+      this.roleid=""
+    },
+    /* 上一步 */
+    returnPre(para){
+      //console.log(this.roleData)
+      this.$refs.dialog1.form=this.roleData
+      this.$refs.dialog1.handleShow();
+    },
+    returnPre2(data,value){
+      this.userData=data;
+      this.userValue=value;
+      let para = {'submitType':"insert"}
+      this.$refs.dialog2.form=para
+      this.$refs.dialog2.handleShow();
+    },
+    initData(data,value){
+      this.userData=data;
+      this.userValue=value;
+      this.sValue=value;
+    },
+    submitData(value){
+      //console.log(this.roleData)
+      if(this.roleData.submitType=="insert"){
+         this.insertRoleData(value)
+      }else{
+        this.updateRoleData(value)
+      }  
+    },
+    updateRoleData(value){
+      updateRoleData(this.roleData).then(res=>{
+        //console.log(res)
+        if(res.code==0){
+          //console.log(274)
+          let dataArr = JSON.parse(JSON.stringify(this.powerData))
+          let arr = jsonToArray(dataArr)
+           //console.log(arr)
+          let roleid = arr[0].roleId
+          let para = []
+          for(let i in arr){
+              let params = {}
+              params.roleId=arr[i].roleId
+              params.meunId=arr[i].menuId
+              params.query=arr[i].query;
+              params.operation=arr[i].operation
+              para.push(params)
+          }
+          this.addRoleRelationMenu(value,para,roleid)
+        }else{
+          this.$message({
+              message: '修改角色失败',
+              type: 'error'
+            });
+          this.handleClosed()
+        }
+      })
+    },
+    insertRoleData(value){
+      insertRoleData(this.roleData).then((res)=>{
+        if(res.code==0){
+          let roleid = res.data.id
+          //console.log(roleid)
+          let dataArr = JSON.parse(JSON.stringify(this.powerData))
+          //console.log(dataArr)
+          let arr = jsonToArray(dataArr)
+          //console.log("245")
+          //console.log(arr)
+          for(let i in arr)
+          arr[i].roleId = roleid
+          //console.log(arr)
+
+          let para = []
+          for(let i in arr){
+              let params = {}
+              params.roleId=arr[i].roleId
+              params.meunId=arr[i].menuId
+              params.query=arr[i].query;
+              params.operation=arr[i].operation
+              para.push(params)
+          }
+          this.addRoleRelationMenu(value,para,roleid)
+        }else{
+          this.$message({
+              message: '新增角色失败',
+              type: 'error'
+            });
+          this.handleClosed()
+        }
+      }).catch((err)=>{
+        this.$message({
+              message: '新增角色失败',
+              type: 'error'
+            });
+          this.handleClosed()
+      })
+    },
+    addRoleRelationMenu(value,arr,roleid){
+      addRoleRelationMenu(arr).then((res)=>{
+        if(res.code==0){
+          this.settingUser(value,roleid)
+        }else{
+          this.$message({
+              message: '配置角色权限失败',
+              type: 'error'
+            });
+          this.handleClosed()
+        }
+      }).catch((err)=>{
+        this.$message({
+              message: '配置角色权限失败',
+              type: 'error'
+        });
+        this.handleClosed()
+      })
+    },
+    settingUser(value,roleid){
+      if(this.sValue.length>value.length){
+        let arr = this.getArrDifference(this.sValue,value)
+        //console.log(arr)
+        let params={}
+        params.roleId=roleid;
+        params.type=1;
+        params.userId=arr.join()
+        deleteUserRole(params).then((res)=>{
+          if(res.code==0){
+            this.$message({
+              message: '保存成功',
+              type: 'success'
+            });
+            this.handleClosed()
+            this.getRoleList();
+          }else{
+            this.$message({
+              message: '配置角色用户失败',
+              type: 'error'
+            });
+             this.handleClosed()
+          }
+        }).catch((err)=>{
+          this.$message({
+              message: '配置角色用户失败',
+              type: 'error'
+            });
+             this.handleClosed()
+        })
+      }else if(this.sValue.length<value.length){
+        let arr = this.getArrDifference(this.sValue,value)
+        //console.log(arr)
+        let params={}
+        params.roleId=roleid;
+        params.type=1;
+        params.userId=arr.join()
+        addUserRole(params).then((res)=>{
+          if(res.code==0){
+            this.$message({
+              message: '保存成功',
+              type: 'success'
+            });
+            this.handleClosed()
+            this.getRoleList();
+          }else{
+            this.$message({
+              message: '配置角色用户失败',
+              type: 'error'
+            });
+             this.handleClosed()
+          }
+        }).catch((err)=>{
+          this.$message({
+              message: '配置角色用户失败',
+              type: 'error'
+            });
+             this.handleClosed()
+        })
+      }else{
+        this.$message({
+              message: '保存成功',
+              type: 'success'
+            });
+            this.handleClosed()
+            this.getRoleList();
+        }
+    },
+    getArrDifference(arr1, arr2) {
+        return arr1.concat(arr2).filter(function(v, i, arr) {
+            return arr.indexOf(v) === arr.lastIndexOf(v);
+        });
+    },
+    
   },
   mounted(){
     this.getRoleList()

@@ -19,6 +19,9 @@
                     </el-tooltip>
                 </div>
                 <el-button v-else-if="item.type=='button'"  icon="el-icon-setting" type="info" size="small" circle @click="handleSetting(scope.$index, scope.row)"></el-button>
+                <div v-else-if="item.type=='equip'">
+                  <span v-for="(ite,index) in scope.row[item.name]" :key="index" v-html="arrFormatter(ite.type,item.name)"></span>
+                </div>
                 <p v-else :formatter="formatSex" v-html="arrFormatter(scope.row[item.name],item.name)"></p>
             </template>
         </el-table-column>
@@ -86,8 +89,8 @@
              return value == 1 ? '<span style="color:#409EFF;font-weight:bold">启用</span>' : value == 2 ? '<span style="color:#E6A23C;font-weight:bold">停用</span>' : '';
             else if(name=='state')
              return value == 1 ? '<span style="color:#409EFF;font-weight:bold">启用</span>' : value == 0 ? '<span style="color:#E6A23C;font-weight:bold">停用</span>' : '';
-            else if(name=='type')
-             return value == 1 ? '活动监测器' : (value == 2 ? '睡眠检测器' : value == 3?'智能手表':"");
+            else if(name=='eqlist')
+             return value == 1 ? '<i class="el-icon-heavy-rain" />' : (value == 2 ? '<i class="el-icon-moon" />' : value == 3?'<i class="el-icon-watch" />':"");
             else if(name == 'ifRelease')
              return value == 1 ? '已发布' : value == 0 ? '发布' : '';
             else
@@ -97,7 +100,13 @@
             console.log(val)
         },
         userDetails(index,row){
-          this.$router.push({ path: '/persondetails' })
+          this.$router.push(
+            { 
+              path: '/persondetails' ,
+              query: {
+                row: row
+              }
+          })
         },
         //配置
         handleSetting(index,row){
@@ -141,7 +150,6 @@
     computed:{
       tables:function(){
         var search=this.inputValue;
-        console.log(search)
         if(search){
           return  this.tableData.filter(function(dataNews){
             return Object.keys(dataNews).some(function(key){
@@ -149,7 +157,6 @@
             })
           })
         }
-        console.log(this.tableData)
         return this.tableData
       }
     }

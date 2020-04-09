@@ -5,15 +5,15 @@
             <div class="gpstracking-header">
               <div class="gpstracking-title">人员详情</div>
               <el-row :gutter="20">
-                <el-col :span="8">姓名：张三</el-col>
-                <el-col :span="8">联系电话：150xxxxxxx</el-col>
+                <el-col :span="8">姓名：{{personData.name}}</el-col>
+                <el-col :span="8">联系电话：{{personData.phone}}</el-col>
                 <el-col :span="8">网格管理员：赵枫</el-col>
                 <el-col :span="8">人员级别：二级</el-col>
                 <el-col :span="8">住址：xxx省xxx市</el-col>
                 <el-col :span="8">责任医师：钱塘</el-col>
                 <el-col :span="8">病情描述：活动频率异常，情绪不稳定</el-col>
                 <el-col :span="8">监护人：李四</el-col>
-                <el-col :span="8">所属组织：南宁市青秀分局</el-col>
+                <el-col :span="8">所属组织：{{personData.phone}}</el-col>
             </el-row>
           </div>
           <div class="gpstracking-handle">
@@ -31,8 +31,11 @@
               <div  class="gpstracking-map">
                    <my-map></my-map>
               </div>
-           电子围栏预警记录:
-            <my-table></my-table>
+              <div class="gpstracking-map">
+                电子围栏预警记录:
+                <my-table :tableTitle="tableTitle" :tableData="tableData"></my-table>
+              </div>
+           
         </el-main> 
          </el-scrollbar>
       <el-row>
@@ -45,6 +48,7 @@
 import myMap from "@/components/map/map"
 import myTable from "@/components/table/table"
 import myDate from "@/components/date/date"
+import { getPersonAlert } from "@/api/table"
 export default {
   name: 'Gpstracking',
   components:{
@@ -56,14 +60,33 @@ export default {
     return{
       value4:"",
       echartsData:{},
-      dateTime:""
+      dateTime:"",
+      personData:{},
+      tableTitle:[
+            { title : "预警围栏", name : "fenceName", width : "120", type : "input" },
+            { title : "进入/离开", name : "type", width : "120", type : "input"},
+            { title : "预警时间", name : "alertTime", width : "150", type : "input" },
+            { title : "结束时间", name : "handleTime", width : "150", type : "input" },
+            { title : "处理结果", name : "processingResult", width : "120", type : "input" },
+            { title : "处理记录", name : "handleRecord", minwidth : "120", type : "input" },
+            { title : "操作",width : "150", type : "handle",button:[{name:"处理预警",type:"edit"}] }
+        ],
+      tableData:[]
     }
   },
     methods: {
-      
+      getPersonAlert(){
+        let id = this.personData.id
+        getPersonAlert({keyUserid:id}).then(res=>{
+          if(res.code==0){
+            this.tableData=res.data.data
+          }
+        })
+      }
     },
     mounted(){
-
+      this.personData=this.$route.query.row
+      this.getPersonAlert()
     }
 }
 </script>
@@ -104,7 +127,7 @@ export default {
       align-items: center;
   }
   &-map{
-      height: 500px;
+      height: 40vh;
       padding-bottom: 20px;
   }
   

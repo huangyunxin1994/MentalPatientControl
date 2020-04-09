@@ -26,6 +26,13 @@ export const updateRoleData = params => { return post(`${base}/role/updateRole`,
 export const removeRoleData = params => { return post(`${base}/role/deleteRole`, params, {emulateJSON: true}); };
 export const bRemoveRoleData = params => { return post(`${base}/role/deleteRoleBatch`, params, {emulateJSON: true}); };
 export const getAllMenu = params => { return get(`${base}/role/selectAllMenu`, params); };
+//查询用户拥有角色或角色拥有用户
+export const getQueryUserRole = params => { return post(`${base}/role/queryUserRole`, params,{emulateJSON: true}); };
+//用户添加角色或角色添加用户
+export const addUserRole = params => { return post(`${base}/role/addUserRole`, params,{emulateJSON: true}); };
+//用户删除角色或角色删除用户
+export const deleteUserRole = params => { return post(`${base}/role/deleteUserRole`, params,{emulateJSON: true}); };
+export const addRoleRelationMenu = params => { return post(`${base}/role/addRoleRelationMenu`, params, {emulateJSON: true}); };
 /*
  * 设备增删查改 
  */

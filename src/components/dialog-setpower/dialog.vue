@@ -46,7 +46,7 @@ export default {
 			addSubmit() {
                 //NProgress.start();
                 let para = Object.assign({}, this.form);
-                console.log(this.powerData)
+                //console.log(this.powerData)
                 para.step=1
                 if(para.submitType=="insert"){
                     this.$emit("insertData",para)
@@ -57,20 +57,12 @@ export default {
                 }
                
             },
-            handleCheckAllChange(val) {
-                this.checkedCities = val ? cityOptions : [];
-                this.isIndeterminate = false;
-            },
-            handleCheckedCitiesChange(value) {
-                let checkedCount = value.length;
-                this.checkAll = checkedCount === this.cities.length;
-                this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length;
-            },
             handleClose() {
-                this.options=[]
-                this.form={};
                 this.formVisible=false
-                this.loading=false
+                let para = Object.assign({}, this.form);
+                //console.log(this.powerData)
+                para.step=1
+                this.$emit("returnPre",para)
             },
             checkedList(row){
                 if(row.all==0){

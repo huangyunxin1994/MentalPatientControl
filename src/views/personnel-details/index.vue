@@ -9,12 +9,12 @@
                       @open="handleOpen"
                       @close="handleClose"
                       background-color="#e6e6e6">
-                        <router-link to="/persondetails/activestate">
+                        <router-link :to="{ path: '/persondetails/activestate', query: { row: personData}}">
                           <el-menu-item index="1"  class="warningcenter-level1">
                               活动状态
                               </el-menu-item>
                           </router-link>
-                        <router-link to="/persondetails/gpstracking">
+                        <router-link :to="{ path: '/persondetails/gpstracking', query: { row: personData}}">
                           <el-menu-item index="2"  class="warningcenter-level1">
                               定位跟踪
                           </el-menu-item>
@@ -37,6 +37,7 @@ export default {
   name: 'techniquetactics',
   data(){
     return{
+      personData:{}
     }
   },
     methods: {
@@ -46,6 +47,9 @@ export default {
       handleClose(key, keyPath) {
         console.log(key, keyPath);
       }
+    },
+    mounted(){
+     this.personData=this.$route.query.row
     }
 }
 </script>

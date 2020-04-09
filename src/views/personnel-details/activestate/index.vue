@@ -5,15 +5,15 @@
             <div class="activestate-header">
               <div class="activestate-title">人员详情</div>
               <el-row :gutter="20">
-                <el-col :span="8">姓名：张三</el-col>
-                <el-col :span="8">联系电话：150xxxxxxx</el-col>
+                <el-col :span="8">姓名：{{personData.name}}</el-col>
+                <el-col :span="8">联系电话：{{personData.phone}}</el-col>
                 <el-col :span="8">网格管理员：赵枫</el-col>
                 <el-col :span="8">人员级别：二级</el-col>
                 <el-col :span="8">住址：xxx省xxx市</el-col>
                 <el-col :span="8">责任医师：钱塘</el-col>
                 <el-col :span="8">病情描述：活动频率异常，情绪不稳定</el-col>
                 <el-col :span="8">监护人：李四</el-col>
-                <el-col :span="8">所属组织：南宁市青秀分局</el-col>
+                <el-col :span="8">所属组织：{{personData.organizationName}}</el-col>
             </el-row>
           </div>
           <div class="activestate-handle">
@@ -58,7 +58,8 @@ export default {
     return{
       value4:"",
       echartsData:{},
-      dateTime:""
+      dateTime:"",
+      personData:{}
     }
   },
     methods: {
@@ -80,6 +81,14 @@ export default {
           }
           return data
       },
+      formatterFun(e){
+        var d=new Date(e); 
+        var getHour = d.getHours()<10?"0"+d.getHours():d.getHours()
+        
+        var getMinute = d.getMinutes()<10?"0"+d.getMinutes():d.getMinutes()
+        return getHour+":"+getMinute
+                            
+      },
       drawChart() {
                 let activerate = echarts.init(document.getElementById('activerate'));
                 let activetime = echarts.init(document.getElementById('activetime'));
@@ -93,12 +102,7 @@ export default {
                     legend: {data:['今日','平均']},
                     xAxis: {type: 'time',boundaryGap: false,name:"单位:小时",interval:4*3600*1000,
                         axisLabel : {
-                            formatter: function(e){
-                                var d=new Date(e); 
-                                var getHour = d.getHours()
-                                var getMinute = d.getMinutes()
-                                return getHour+":"+getMinute
-                            }
+                            formatter: this.formatterFun
                         }
                     },
                     yAxis: {
@@ -131,12 +135,7 @@ export default {
                     legend: {data:['今日','平均']},
                     xAxis: {type: 'time',boundaryGap: false,name:"单位:小时",interval:4*3600*1000,
                         axisLabel : {
-                            formatter: function(e){
-                                var d=new Date(e); 
-                                var getHour = d.getHours()
-                                var getMinute = d.getMinutes()
-                                return getHour+":"+getMinute
-                            }
+                            formatter: this.formatterFun
                         }
                     },
                     yAxis: {
@@ -168,12 +167,7 @@ export default {
                     tooltip:{trigger: 'axis',},
                     xAxis: {type: 'time',boundaryGap: false,name:"单位:小时",interval:4*3600*1000,
                         axisLabel : {
-                            formatter: function(e){
-                                var d=new Date(e); 
-                                var getHour = d.getHours()
-                                var getMinute = d.getMinutes()
-                                return getHour+":"+getMinute
-                            }
+                            formatter: this.formatterFun
                         }
                     },
                     yAxis: {
@@ -196,12 +190,7 @@ export default {
                     legend: {data:['高压','低压']},
                     xAxis: {type: 'time',boundaryGap: false,name:"单位:小时",interval:4*3600*1000,
                         axisLabel : {
-                            formatter: function(e){
-                                var d=new Date(e); 
-                                var getHour = d.getHours()
-                                var getMinute = d.getMinutes()
-                                return getHour+":"+getMinute
-                            }
+                            formatter: this.formatterFun
                         }
                     },
                     yAxis: {
@@ -234,12 +223,7 @@ export default {
                     legend: {data:['今日','平均']},
                     xAxis: {type: 'time',boundaryGap: false,name:"单位:小时",interval:4*3600*1000,
                         axisLabel : {
-                            formatter: function(e){
-                                var d=new Date(e); 
-                                var getHour = d.getHours()
-                                var getMinute = d.getMinutes()
-                                return getHour+":"+getMinute
-                            }
+                            formatter: this.formatterFun
                         }
                     },
                     yAxis: {
@@ -272,12 +256,7 @@ export default {
                     legend: {data:['今日','平均']},
                     xAxis: {type: 'time',boundaryGap: false,name:"单位:小时",interval:4*3600*1000,
                         axisLabel : {
-                            formatter: function(e){
-                                var d=new Date(e); 
-                                var getHour = d.getHours()
-                                var getMinute = d.getMinutes()
-                                return getHour+":"+getMinute
-                            }
+                            formatter: this.formatterFun
                         }
                     },
                     yAxis: {
@@ -324,6 +303,7 @@ export default {
     mounted(){
         this.drawChart();
         this.getEchartData()
+        this.personData=this.$route.query.row
     }
 }
 </script>

@@ -71,8 +71,8 @@
                         </el-form-item>
                         <el-form-item :label="item.title" :prop="item.name" v-else-if="item.type==='radio'">
                             <el-radio-group v-model="form[item.name]">
-                                <el-radio class="radio" :label="1">是</el-radio>
-                                <el-radio class="radio" :label="0">否</el-radio>
+                                <el-radio class="radio" :label="1">启用</el-radio>
+                                <el-radio class="radio" :label="0">停用</el-radio>
                             </el-radio-group>
                         </el-form-item>
                         <el-form-item :label="item.title" :prop="item.name" v-else-if="item.name==='age'">
@@ -159,7 +159,7 @@ export default {
 							//NProgress.start();
                             let para = Object.assign({}, this.form);
                             para.step=0
-                            console.log(para)
+                            //console.log(para)
                             if(para.submitType=="insert"){
                                 this.$emit("insertData",para)
                             }else if(para.submitType=="update"){
@@ -176,8 +176,9 @@ export default {
                 this.form={};
                 this.formVisible=false
                 this.loading=false
+                this.$emit("handleClosed")
             }
-              
+               
     }
 }
 </script>
