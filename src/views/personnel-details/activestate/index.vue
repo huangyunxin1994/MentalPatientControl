@@ -26,16 +26,16 @@
          
           <el-main>
             <div class="activestate-chart">
-                <div id="activerate" style="width:50%; height:400px;background:#fff;padding:20px;"/>
-                <div id="activetime" style="width:50%; height:400px;background:#fff;padding:20px;"/>
+                <div id="activerate" style="width:50%; height:40vh;background:#fff;padding:20px;"/>
+                <div id="activetime" style="width:50%; height:40vh;background:#fff;padding:20px;"/>
             </div>
             <div class="activestate-chart">
-                <div id="heartrate" style="width:50%; height:400px;background:#fff;padding:20px;"/>
-                <div id="bloodpress" style="width:50%; height:400px;background:#fff;padding:20px;"/>
+                <div id="heartrate" style="width:50%; height:40vh;background:#fff;padding:20px;"/>
+                <div id="bloodpress" style="width:50%; height:40vh;background:#fff;padding:20px;"/>
             </div>
             <div class="activestate-chart">
-                <div id="sleepquality" style="width:50%; height:400px;background:#fff;padding:20px;"/>
-                <div id="inouthome" style="width:50%; height:400px;background:#fff;padding:20px;"/>
+                <div id="sleepquality" style="width:50%; height:40vh;background:#fff;padding:20px;"/>
+                <div id="inouthome" style="width:50%; height:40vh;background:#fff;padding:20px;"/>
             </div>
         </el-main> 
          </el-scrollbar>
@@ -49,6 +49,7 @@
 import echarts from 'echarts'
 import myDate from "@/components/date/date"
 import { parseTime } from '@/utils/index.js'
+import { getPerSe } from '@/api/table'
 export default {
   name: 'Activestate',
   components:{
@@ -72,6 +73,7 @@ export default {
           if(time==""){
               time=new Date(new Date().toLocaleDateString()).getTime()
           }
+          getPerSe
           let data=[];
           for(let i = 0; i < 25; i ++){
               let para=[]

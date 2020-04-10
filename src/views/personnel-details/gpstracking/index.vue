@@ -48,7 +48,7 @@
 import myMap from "@/components/map/map"
 import myTable from "@/components/table/table"
 import myDate from "@/components/date/date"
-import { getPersonAlert } from "@/api/table"
+import { getPersonAlert,getPersonCoordinate } from "@/api/table"
 export default {
   name: 'Gpstracking',
   components:{
@@ -66,7 +66,7 @@ export default {
             { title : "预警围栏", name : "fenceName", width : "120", type : "input" },
             { title : "进入/离开", name : "type", width : "120", type : "input"},
             { title : "预警时间", name : "alertTime", width : "150", type : "input" },
-            { title : "结束时间", name : "handleTime", width : "150", type : "input" },
+            { title : "处理时间", name : "handleTime", width : "150", type : "input" },
             { title : "处理结果", name : "processingResult", width : "120", type : "input" },
             { title : "处理记录", name : "handleRecord", minwidth : "120", type : "input" },
             { title : "操作",width : "150", type : "handle",button:[{name:"处理预警",type:"edit"}] }

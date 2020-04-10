@@ -2,34 +2,20 @@
     <el-container class="electricfence-container">
       <el-row>
          <el-col :span="6" class="electricfence-tree">
-            <el-input placeholder="请输入内容" suffix-icon="el-icon-search"></el-input>
+            <el-input placeholder="请输入内容" suffix-icon="el-icon-search" v-model="inputVal" @input="filterData"></el-input>
             <el-divider></el-divider>
-            <el-collapse :accordion="true" @change="collapseChange">
+            <el-collapse v-model="activeNames" :accordion="true" @change="collapseChange">
             <el-collapse-item name="1">
                 <template slot="title">
                     <div class="electricfence-collapse">
                         <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;进入预警围栏</span>
                     </div>
                 </template>
-                <div v-for="(item,index) in enterElecArr" :key="index" class="electricfence-collapse-item" :class="{'collapse-item-select':enterShowIndex == index}" @click="enterShowIndex = index">
+                <div v-for="(item,index) in filterArr" :key="index" class="electricfence-collapse-item" :class="{'collapse-item-select':enterShowIndex == index}" @click="enterShow(index)">
                     <el-link :underline="false">{{item.name}}</el-link>
-                    <div>
-                        <el-button type="primary" icon="el-icon-s-custom" circle size="mini"></el-button>
-                        <el-button type="danger" icon="el-icon-delete" circle size="mini"></el-button>
-                    </div>
-                </div>
-            </el-collapse-item>
-            <el-collapse-item name="2">
-                <template slot="title">
-                    <div class="electricfence-collapse">
-                        <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;外出预警围栏</span>
-                    </div>
-                </template>
-                <div v-for="(item,index) in leaveElecArr" :key="index" class="electricfence-collapse-item" :class="{'collapse-item-select':leaveShowIndex == index}" @click="leaveShowIndex = index">
-                    <el-link :underline="false">{{item.name}}</el-link>
-                    <div>
-                        <el-button type="primary" icon="el-icon-s-custom" circle size="mini"></el-button>
-                        <el-button type="danger" icon="el-icon-delete" circle size="mini"></el-button>
+                    <div class="electricfence-collapse-item-button">
+                        <el-button type="primary" icon="el-icon-s-custom" circle size="mini" @click.stop="setUserIn(index)"></el-button>
+                        <el-button type="danger" icon="el-icon-delete" circle size="mini" @click.stop="deleteElec(index)"></el-button>
                     </div>
                 </div>
             </el-collapse-item>
@@ -37,37 +23,41 @@
             </el-collapse>
         </el-col>
         <el-col :span="18" class="electricfence-map">
-            <mymap></mymap>
+            <mymap ref="map"></mymap>
             <div class="electricfence-map-button">
-                <el-button type="primary">添加进入预警围栏</el-button>
-                <el-button type="primary">添加外出预警围栏</el-button>
+                <el-button type="primary" @click="openElecAddMap()">添加进入预警围栏</el-button>
             </div>
         </el-col>
       </el-row>
+      <dialog-map ref="dialogmap" @selectElec="selectElec"></dialog-map>
+      <my-transfer ref="transfer" @selectElec="selectElec"></my-transfer>
     </el-container>
+    
 </template>
 
 <script>
-import  mymap  from '@/components/map/map'
+import  mymap  from '@/components/map-elec/map'
+import  dialogMap  from '@/components/dialog-elec/dialog-map'
+import  myTransfer from '@/components/dialog-elec/dialog-user'
+import { deleteElectronicFence,selectElectronicFenceQuery} from  "@/api/table"
 export default {
   name: 'Electricfence',
   components:{
-    mymap
+    mymap,
+    dialogMap,
+    myTransfer
   },
   data(){
     return{
-      enterElecArr:[
-        {name:"月弯路小学围栏",id:"1"},
-        {name:"凤翔路小学围栏",id:"2"},
-        {name:"邕武路小学围栏",id:"3"}
-      ],
-      leaveElecArr:[
-        {name:"月弯路小学围栏",id:"1"},
-        {name:"凤翔路小学围栏",id:"2"},
-        {name:"邕武路小学围栏",id:"3"}
-      ],
+      inputVal:"",
+      activeNames:"1",
+      enterElecArr:[],
+      leaveElecArr:[],
       enterShowIndex:-1,
       leaveShowIndex:-1,
+      type:"",
+      electricFenceArr:[],
+      filterArr:[]
     }
   },
     methods: {
@@ -84,7 +74,75 @@ export default {
           console.log(activeNames)
           this.enterShowIndex=-1
           this.leaveShowIndex=-1
+      },
+      openElecAddMap(){
+        this.$refs.dialogmap.handleShow()
+      },
+      enterShow(i){
+        this.enterShowIndex=i
+        this.$refs.map.movePosBypoint(this.enterElecArr[i].longitude,this.enterElecArr[i].latitude)   
+      },
+      setUserIn(i){
+        console.log(i)
+        let row = this.enterElecArr[i]
+        this.$refs.transfer.handleShow(row)
+      },
+      deleteElec(i){
+        let id = this.enterElecArr[i].id
+        this.$confirm('确认删除吗？', '提示', {}).then(() => {
+            deleteElectronicFence({id:id}).then((res)=>{
+                if(res.code==0){
+                    this.$message({
+                        message: '删除成功',
+                        type: 'success'
+                    });
+                    this.selectElec()
+                }else{
+                    this.$message({
+                        message: '删除成功',
+                        type: 'error'
+                    });
+                }
+            }).catch(err=>{
+                this.$message({
+                    message: '删除成功',
+                    type: 'error'
+                });
+            })
+        }); 
+      },
+      selectElec(){
+        selectElectronicFenceQuery().then(res=>{
+          if(res.code==0){
+            console.log(res)
+            let data = res.data.data
+            console.log(data)
+            let arr1=[]
+            for(let i in data){
+              let o = data[i].electronicFence;
+              o.userList = data[i].userList
+              arr1.push(o)
+            }
+            console.log(arr1)
+            this.enterElecArr=arr1;
+            this.filterArr=arr1
+            this.$refs.map.getmap(arr1);
+            
+          }
+        }).catch(res=>{
+
+        })
+      },
+      filterData(val){
+        let arr = this.enterElecArr.filter(item=>{
+          if (!val) return true;
+          return item.name.indexOf(val) !== -1;
+        })
+        this.filterArr=arr
       }
+    },
+    mounted(){
+      this.selectElec()
     }
 }
 </script>
@@ -118,7 +176,17 @@ export default {
             padding: 10px 10px 10px 45px ;
             .el-link{
                 color: #409eff;
+                
             }
+        }
+        .electricfence-collapse-item{
+          .el-link{
+                font-size: 0.7vw;
+                white-space : nowrap
+            }
+          &-button{
+            min-width: 73px;
+          }
         }
       }
       .electricfence-map{
@@ -134,7 +202,7 @@ export default {
   &-collapse{
       width: 100%;
       padding: 0 20px;
-      font-size: 15px;
+      font-size: 0.8vw;
       font-weight: bold;
       span{
           border-left: 5px solid #409EFF;

@@ -68,4 +68,12 @@ export const getPersonAlert = params => { return get(`${base}/PersonnelStatus/se
 export const getPersonCoordinate = params => { return get(`${base}/PersonnelStatus/selectPersonnelCoordinate`, params); };  //轨迹查询
 export const getPersonStatusQuery = params => { return get(`${base}/PersonnelStatus/selectPersonnelStatusQueryByPage`, params); }; //分页查询
 
-
+/*
+ * 电子围栏相关
+ */
+export const addElectronicFence = params => { return post(`${base}/ElectronicFence/addElectronicFence`, params, {emulateJSON: true}); }; //添加电子围栏
+export const deleteElectronicFence = params => { return post(`${base}/ElectronicFence/deleteElectronicFence`, params, {emulateJSON: true}); }; //删除电子围栏
+export const deleteElectronicFenceBatch = params => { return post(`${base}/ElectronicFence/deleteElectronicFenceBatch`, params, {emulateJSON: true}); }; //批量删除电子围栏
+export const getElectronicFence = params => { return get(`${base}/ElectronicFence/getElectronicFence`, params); };//根据id查询电子围栏
+export const selectElectronicFenceQuery = params => { return get(`${base}/ElectronicFence/selectElectronicFenceQueryByPage`, params); };//分页查询
+export const updateElectronicFence = params => { return post(`${base}/ElectronicFence/fenceRelationKyeUser`, params, {emulateJSON: true}); };//更新电子围栏

@@ -26,7 +26,7 @@ export default {
         BMap.Icon.prototype.setName = function(name){
             this.name = name;
         }
-        this.mainMap = new BMap.Map(this.$refs.allmap) // 创建Map实例
+        this.mainMap = new BMap.Map(this.$refs.allmap, {enableMapClick:false}) // 创建Map实例
         
         this.mainMap.centerAndZoom(new BMap.Point(116.323066,39.989956), 16) // 初始化地图,设置中心点坐标和地图级别
         this.mainMap.addControl(new BMap.MapTypeControl({ // 添加地图类型控件

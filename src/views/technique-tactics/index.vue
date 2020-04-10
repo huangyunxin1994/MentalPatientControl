@@ -1,7 +1,7 @@
 <template>
     <el-container class="tenchnique-container">
                 <el-row>
-                  <el-col :span="3">
+                  <el-col :span="3" class="tenchnique-container-nav">
                     <el-scrollbar style="height:100%;background-color: rgb(244, 244, 245)">
                     <el-menu
                       default-active="1"
@@ -79,8 +79,9 @@ export default {
       }
     }
   }
+  
   &-level1{
-    font-size: 16px;
+    font-size: 0.9vw;
     font-weight: bold;
   }
 }

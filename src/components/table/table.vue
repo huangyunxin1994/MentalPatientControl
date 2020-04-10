@@ -93,6 +93,10 @@
              return value == 1 ? '<i class="el-icon-heavy-rain" />' : (value == 2 ? '<i class="el-icon-moon" />' : value == 3?'<i class="el-icon-watch" />':"");
             else if(name == 'ifRelease')
              return value == 1 ? '已发布' : value == 0 ? '发布' : '';
+            else if(name == 'type')
+             return value == 1 ? '进入' : value == 2 ? '外出' : '';
+            else if(name == 'processingResult')
+             return value == 1 ? '处理中' : (value == 2 ? '未处理' : (value == 3? '已处理' : value == 4? '忽略':""));
             else
              return value;
         },
