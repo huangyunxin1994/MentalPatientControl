@@ -59,7 +59,14 @@ export const getPerWarnlData = params => { return get(`${base}/personnel/selectB
  */
 
 export const getPlanQueryData = params => { return get(`${base}/ReservePlan/selectReservePlanQueryByPage`, params); };
-
+export const deleteRelationReservePlan = params => { return post(`${base}/ReservePlan/deleteRelationReservePlan`, params, {emulateJSON: true}); };
+export const insertPlan = params => { return post(`${base}/ReservePlan/insertPlan`, params, {emulateJSON: true}); };
+export const addReservePlan = params => { return post(`${base}/ReservePlan/addReservePlan`, params, {emulateJSON: true}); };
+export const insertAlertCondition = params => { return post(`${base}/ReservePlan/insertAlertCondition`, params, {emulateJSON: true}); };
+export const updatePlan = params => { return post(`${base}/ReservePlan/updatePlan`, params, {emulateJSON: true}); };
+export const updateReservePlanAndCondition = params => { return post(`${base}/ReservePlan/updateReservePlanAndCondition`, params, {emulateJSON: true}); };
+export const relationReservePlan = params => { return post(`${base}/ReservePlan/relationReservePlan`, params, {emulateJSON: true}); };
+export const deleteReservePlan = params => { return post(`${base}/ReservePlan/deleteReservePlan`, params, {emulateJSON: true}); };
 /* 
  *人员状态模块接口 
  */
