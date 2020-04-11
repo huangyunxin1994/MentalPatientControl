@@ -17,7 +17,7 @@ export default {
   data(){
     return{
       tableTitle:[
-            { title : "姓名", name : "name", width : "120", type : "link" },
+            { title : "姓名", name : "keyUserid", width : "120", type : "link" },
             { title : "预警类型", name : "endTime", minwidth : "150", type : "equip"},
             { title : "所属组织", name : "duration", width : "120", type : "input" },
             { title : "预警时间", name : "reason", minwidth : "150", type : "input" },
