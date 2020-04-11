@@ -108,7 +108,7 @@ export default {
           .el-col{
               margin: 10px 0;
               color:#606266;
-              font-size: 15px;
+              font-size: 0.8vw;
           }
       }
   }

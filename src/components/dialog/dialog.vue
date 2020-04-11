@@ -41,18 +41,14 @@
                         </el-form-item>
                         <el-form-item :label="item.title" :prop="item.name" v-else-if="item.type=='cascader'" >
                             <!-- <el-input v-model="editForm.name" auto-complete="off"></el-input> -->
-                            <el-cascader
-                            ref="cascader"
-                                v-model="organValue"
-                                :options="organOptions"
-                                :props="{
-                                    'value':'id',
-                                    'label':'name',
-                                    'checkStrictly': true
-                                }"
-                                clearable
-                                @change="organChange">
-                            </el-cascader>
+                            <el-select v-model="form[item.name]" filterable placeholder="请选择">
+                                <el-option
+                                v-for="item in organOptions"
+                                :key="item.name"
+                                :label="item.name"
+                                :value="item.id">
+                                </el-option>
+                            </el-select>
                         </el-form-item>
                         <el-form-item :label="item.title" :prop="item.name" v-else-if="item.need==='1'&&item.type==='input'">
                             <el-input v-model="form[item.name]" auto-complete="off"></el-input>
@@ -74,23 +70,6 @@
                                 <el-radio class="radio" :label="1">是</el-radio>
                                 <el-radio class="radio" :label="0">否</el-radio>
                             </el-radio-group>
-                        </el-form-item>
-                        <el-form-item :label="item.title" :prop="item.name" v-else-if="item.type==='file'">
-                            <el-upload
-                            class="upload-demo"
-                            ref="upload"
-                            :action="item.link"
-                            :on-preview="handlePreview"
-                            :before-upload="beforeUpload"
-                            :on-remove="handleRemove"
-                            :file-list="fileList"
-                            :on-change="handleBefore"
-                            :limit="1"
-                            :on-exceed="handleExceed"
-                            :auto-upload="false">
-                            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-                            <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
-                            </el-upload>
                         </el-form-item>
                         <el-form-item :label="item.title" :prop="item.name" v-else-if="item.name==='age'">
                             <el-input-number v-model="form.age" :min="0" :max="200"></el-input-number>
@@ -115,6 +94,7 @@
                 </el-dialog>
 </template>
 <script>
+import { getOrganData } from "@/api/table"
 function filterArray(data) {
     data.forEach(function (item) {
     delete item.children;
@@ -161,15 +141,16 @@ export default {
         }
     },
     methods:{
-        //显示新增界面
+            
+        //显示界面
 			handleShow() {
                 if(this.form.submitType=="update")
                     this.title="修改"
                 else if(this.form.submitType=="insert")
                     this.title="新增"
+                this.getOrganData()
                 this.formVisible = true;	
 			},
-            //新增
 			addSubmit() {
                 this.$refs.form.validate((valid) => {
 					if (valid) {
@@ -197,40 +178,29 @@ export default {
                 this.formVisible=false
                 this.loading=false
             },
-            submitUpload() {
-                this.$refs.upload.submit();
+            getOrganData(){
+                let params={}
+                params.organizaId=1;
+                params.best=1
+                getOrganData(params).then((res)=>{
+                console.log(res)
+                if(res.code==0){
+                    let data = res.data.data;
+                    if(data.length>0){
+                    console.log(data)
+                    this.organOptions=data
+                    }else{
+
+                    }
+                }
+                }).catch(function (error) {
+                console.log(error);
+                });
             },
-            handleRemove(file, fileList) {
-                console.log(file, fileList);
-            },
-            handlePreview(file) {
-                 console.log(file);
-            },
-            handleBefore(file, fileList){
-                console.log(file, fileList);
-                let fileurl = URL.createObjectURL(file.raw);
-                console.log("fileurl="+fileurl)
-            },
-            handleExceed(file, fileList){
-                this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${file.length} 个文件，共选择了 ${file.length + fileList.length} 个文件`);
-            },
-            beforeUpload (file) { 
-                var FileExt = file.name.replace(/.+\./, "");       
-                if (['jpg','png','txt','zip', 'rar','pdf','doc','docx','xlsx'].indexOf(FileExt.toLowerCase()) === -1){            
-                    this.$message({ 
-                        type: 'warning', 
-                        message: '请上传后缀名为jpg、png、txt、pdf、doc、docx、xlsx、zip或rar的附件！' 
-                    });                
-                    return false;       
-                }  
-                this.uploadData = {id:this.proType};
-                    console.log(this.uploadData)
-                    let promise = new Promise((resolve) => {
-                        this.$nextTick(function () {
-                            resolve(true);
-                        });
-                    });
-                    return promise; //通过返回一个promis对象解决
+            organChange(value){
+                // let id = this.$refs['cascader'][0].getCheckedNodes()[0].value
+                // let name = this.$refs['cascader'][0].getCheckedNodes()[0].label
+                this.form.parentId = value[value.length-1]
             }
               
     }

@@ -18,7 +18,7 @@
                        <el-button v-else-if="item.type=='remove'" type="danger" icon="el-icon-delete" size="small" circle @click="handleRemove(scope.$index, scope.row)"></el-button>
                     </el-tooltip>
                 </div>
-                <el-button v-else-if="item.type=='button'"  icon="el-icon-setting" type="info" size="small" circle @click="handleSetting(scope.$index, scope.row)"></el-button>
+                <el-button v-else-if="item.type=='button'"  icon="el-icon-setting" type="info" size="small" circle @click="handleSetting(scope.$index, scope.row,item.name)"></el-button>
                 <div v-else-if="item.type=='equip'">
                   <span v-for="(ite,index) in scope.row[item.name]" :key="index" v-html="arrFormatter(ite.type,item.name)"></span>
                 </div>
@@ -97,6 +97,8 @@
              return value == 1 ? '进入' : value == 2 ? '外出' : '';
             else if(name == 'processingResult')
              return value == 1 ? '处理中' : (value == 2 ? '未处理' : (value == 3? '已处理' : value == 4? '忽略':""));
+            else if(name == 'equipmentType')
+             return value == 1 ? '活动监测器' : (value == 2 ? '睡眠监测器' : value == 3? '智能手表' :"");
             else
              return value;
         },
@@ -113,8 +115,9 @@
           })
         },
         //配置
-        handleSetting(index,row){
-          this.$emit('settingData',row)
+        handleSetting(index,row,name){
+        console.log(name)
+          this.$emit('settingData',row,name)
         },
         //编辑
         handleEdit(index,row){

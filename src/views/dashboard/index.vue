@@ -36,6 +36,7 @@
 <script>
 import  mymap  from '@/components/map/map'
 import  myTree from '@/components/tree/tree'
+
 export default {
   name: 'Dashboard',
   components:{

@@ -29,14 +29,14 @@ export default {
         tableTitle:[
             { title : "设备编号", name : "code", minwidth : "120", type : "name" },
             { title : "设备名称", name : "name", minwidth : "150", type : "input" },
-            { title : "设备类型", name : "type", minwidth : "150", type : "input" },
+            { title : "设备类型", name : "equipmentType", minwidth : "150", type : "input" },
             { title : "关联人员", name : "userName", width : "120", type : "input" },
             { title : "操作",width : "150", type : "handle",button:[{name:"编辑",type:"edit"},{name:"删除",type:"remove"}] }
         ],
         handleTitle:[
             { title : "设备编号", name : "code", type : "input" },
             { title : "设备名称", name : "name", type : "input" },
-            { title : "设备类型", name : "type", type : "input" },
+            { title : "设备类型", name : "equipmentType", type : "input" },
             { title : "关联人员", name : "userName", type : "input" },
         ],
         tableData:[]
@@ -70,6 +70,7 @@ export default {
     },
     /* 新增数据 */
     insertData(para){
+      para.type=para.equipmentType
       insertEquipData(para).then(res=>{
         this.$refs.dialog.loading = false;
         this.$refs.dialog.form={};
@@ -90,6 +91,8 @@ export default {
     },
     /* 修改数据 */
     updateData(para){
+      para.type=para.equipmentType
+      console.log(para)
       updateEquipData(para).then(res=>{
         this.$refs.dialog.loading = false;
         this.$refs.dialog.form={};

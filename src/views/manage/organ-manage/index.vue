@@ -1,6 +1,6 @@
 <template>
     <el-container class="organmanage-container">
-      <my-tree @getThisOrgan="getThisOrgan"></my-tree>
+      <my-tree @getThisOrgan="getThisOrgan" ref="tree"></my-tree>
       
       <div class="organmanage-table">
         <div  v-show="organData.id" class="organmanage-parent">
@@ -21,8 +21,8 @@
 import  myTable from '@/components/table/table'
 import  myTree from '@/components/tree/tree'
 import  myDialog from '@/components/dialog/dialog'
-import  myTransfer from '@/components/transfer/transfer'
-import { getChildOrganData,insertOrganData,updateOrganData,removeOrganData,bRemoveOrganData } from '@/api/table'
+import  myTransfer from '@/components/dialog-organ/dialog-user'
+import { getChildOrganData,insertOrganData,updateOrganData,removeOrganData } from '@/api/table'
 export default {
     name: 'Organmanage',
     components:{
@@ -40,13 +40,13 @@ export default {
             tableTitle:[
             { title : "组织名称", name : "name", minwidth : "120", type : "name" },
             { title : "描述", name : "organization", minwidth : "120", type : "input" },
-            { title : "关联管理", width : "100", type : "button" },
-            { title : "关联用户", width : "100", type : "button" },
+            { title : "关联管理", name : "user", width : "100", type : "button" },
+            { title : "关联用户", name : "person", width : "100", type : "button" },
             { title : "操作",width : "100", type : "handle",button:[{name:"编辑",type:"edit"},{name:"删除",type:"remove"}] }
             ],
             handleTitle:[
               { title : "组织名称", name : "name", type : "input" },
-              { title : "上级组织", name : "parentId", type : "select" },
+              { title : "上级组织", name : "parentId", type : "cascader" },
               { title : "描述", name : "organization", type : "input" },
             ],
             tableData:[]
@@ -87,20 +87,83 @@ export default {
         this.$refs.dialog.handleShow();
       },
       removeData(row){
-
+        let para ={}
+        para.id = row.id
+          removeOrganData(para).then(res=>{
+            if(res.code==0){
+              this.$message({
+              message: '删除成功',
+              type: 'success'
+              });
+              this.$refs.table.listLoading=false
+              this.$refs.tree.getOrganData()
+            }else{
+              this.$message({
+              message: '删除失败',
+              type: 'error'
+              });
+              this.$refs.table.listLoading=false
+            }
+          })
       },
       bRemoveData(row){
 
       },
-      settingData(para){
-        console.log(para)
+      settingData(para,name){
+        console.log(name)
+        this.$refs.transfer.name=name;
          this.$refs.transfer.handleShow(para);
       },
-      insertData(){
-
+      insertData(para){
+        insertOrganData(para).then(res=>{
+          if(res.code==0){
+            this.$message({
+              message: '添加成功',
+              type: 'success'
+            });
+            this.$refs.tree.getOrganData()
+            this.$refs.dialog.loading = false;
+            this.$refs.dialog.formVisible = false;
+          }else{
+            this.$message({
+              message: '添加失败',
+              type: 'error'
+            });
+            this.$refs.dialog.loading = false;
+          }
+        }).catch(res=>{
+           this.$message({
+              message: '添加失败',
+              type: 'error'
+            });
+            this.$refs.dialog.loading = false;
+        })
+      
       },
       updateData(para){
-
+        updateOrganData(para).then(res=>{
+          if(res.code==0){
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            });
+            this.$refs.tree.getOrganData()
+            this.$refs.dialog.loading = false;
+            this.$refs.dialog.formVisible = false;
+          }else{
+            this.$message({
+              message: '修改失败',
+              type: 'error'
+            });
+            this.$refs.dialog.loading = false;
+          }
+        }).catch(res=>{
+           this.$message({
+              message: '修改失败',
+              type: 'error'
+            });
+            this.$refs.dialog.loading = false;
+        })
       }
     }
 }

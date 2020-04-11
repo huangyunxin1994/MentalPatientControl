@@ -69,7 +69,7 @@ export default {
     }
   }
   &-level1{
-    font-size: 16px;
+    font-size: 0.9vw;
     font-weight: bold;
   }
 }

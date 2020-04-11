@@ -5,10 +5,13 @@ let base = '';
  */
 export const getOrganData = params => { return get(`${base}/organization/findOutAllPeople`, params); };
 export const getChildOrganData = params => { return get(`${base}/organization/selectByParentId`, params); };
-export const insertOrganData = params => { return post(`${base}/user/addRoleUser`, params, {emulateJSON: true}); };
+export const insertOrganData = params => { return post(`${base}/organization/insert`, params, {emulateJSON: true}); };
 export const updateOrganData = params => { return post(`${base}/organization/updateByPrimaryKeySelective`, params, {emulateJSON: true}); };
 export const removeOrganData = params => { return post(`${base}/organization/deleteByPrimaryKey`, params, {emulateJSON: true}); };
-export const bRemoveOrganData = params => { return post(`${base}/user/deleteBatchUser`, params, {emulateJSON: true}); };
+export const relationKeyPersonnel = params => { return post(`${base}/organization/relationKeyPersonnel`, params, {emulateJSON: true}); };
+export const relationAdmin = params => { return post(`${base}/organization/relationAdmin`, params, {emulateJSON: true}); };
+export const findPresent = params => { return post(`${base}/organization/findPresent`, params, {emulateJSON: true}); };
+export const selectPresent = params => { return get(`${base}/organization/selectPresent`, params); };
 /*
  * 用户增删查改 
  */
@@ -38,7 +41,7 @@ export const addRoleRelationMenu = params => { return post(`${base}/role/addRole
  */
 export const getEquipData = params => { return get(`${base}/equipment/selectByPage`, params); };
 export const insertEquipData = params => { return post(`${base}/equipment/insert`, params, {emulateJSON: true}); };
-export const updateEquipData = params => { return post(`${base}/role/updateRole`, params, {emulateJSON: true}); };
+export const updateEquipData = params => { return post(`${base}/equipment/update`, params, {emulateJSON: true}); };
 export const removeEquipData = params => { return post(`${base}/equipment/deleteEquipment`, params, {emulateJSON: true}); };
 /*
  * 重点人员增删查改 
@@ -84,3 +87,14 @@ export const deleteElectronicFenceBatch = params => { return post(`${base}/Elect
 export const getElectronicFence = params => { return get(`${base}/ElectronicFence/getElectronicFence`, params); };//根据id查询电子围栏
 export const selectElectronicFenceQuery = params => { return get(`${base}/ElectronicFence/selectElectronicFenceQueryByPage`, params); };//分页查询
 export const updateElectronicFence = params => { return post(`${base}/ElectronicFence/fenceRelationKyeUser`, params, {emulateJSON: true}); };//更新电子围栏
+
+/*
+ * 看板相关
+ */
+
+export const equipmentStatistics = params => { return get(`${base}/home/equipmentStatistics`, params); };
+export const keyPersonnelEarly = params => { return get(`${base}/home/keyPersonnelEarly`, params); };
+export const keyPersonnelStatistics = params => { return get(`${base}/home/keyPersonnelStatistics`, params); };
+export const selectCount = params => { return get(`${base}/home/selectCount`, params); };
+export const selectWlCount = params => { return get(`${base}/home/selectWlCount`, params); };
+export const userRoleStatistics = params => { return get(`${base}/home/userRoleStatistics`, params); };

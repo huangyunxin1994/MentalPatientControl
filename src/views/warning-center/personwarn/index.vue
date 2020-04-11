@@ -8,6 +8,7 @@
 
 <script>
 import  myTable  from '@/components/table/table'
+import { getPerWarnlData } from "@/api/table"
 export default {
   name: 'Personwarn',
   components:{
@@ -28,11 +29,23 @@ export default {
             { title : "处理人", name : "unsuccessfulReasons", minwidth : "150", type : "input" },
             { title : "操作",width : "150", type : "handle",button:[{name:"处理",type:"edit"}] }
         ],
+        tableData:[]
     }
   },
-    methods: {
-     
+  methods: {
+    getPerWarnlData(){
+      getPerWarnlData().then(res=>{
+        if(res.code==0){
+          this.tableData= res.data.data
+        }
+      }).catch(err=>{
+
+      })
     }
+  },
+  mounted(){
+    this.getPerWarnlData()
+  }
 }
 </script>
 <style lang="scss" scoped>

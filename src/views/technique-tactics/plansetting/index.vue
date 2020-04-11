@@ -21,45 +21,47 @@
                 <span>{{item.name}}</span>
               </div>
             </div>
-            <div  v-for="(ite,index) in item.opt" :key="index"> 
-              <div class="planset-content" v-if="ite.optName=='是否睡眠'">
-                <span class="planset-span"><span class="planset-label">预警类型:</span>{{ite.optName}}</span>
+            <div  v-for="(ite,index) in item.alertConditions" :key="index"> 
+              <div class="planset-content" v-if="ite.alertId=='1'">
+                <span class="planset-span"><span class="planset-label">预警类型:</span>{{ite.alertId | capitalize}}</span>
                 <span class="planset-date"><span class="planset-label">时间段:</span>{{ite.startTime}}至{{ite.endTime}}</span>
-                <span class="planset-span"><span class="planset-label">行为:</span>{{ite.type}}</span>
-                <span class="planset-span"><span class="planset-label">大于:</span>{{ite.time}}小时</span>
+                <span class="planset-span"><span class="planset-label">行为:</span>{{ite.averageAlert}}</span>
+                <span class="planset-span"><span class="planset-label">大于:</span>{{ite.achieveAlert}}小时</span>
               </div>
-              <div class="planset-content" v-else-if="ite.optName=='睡眠质量'">
-                <span class="planset-span"><span class="planset-label">预警类型:</span>{{ite.optName}}</span>
+              <div class="planset-content" v-else-if="ite.alertId=='2'">
+                <span class="planset-span"><span class="planset-label">预警类型:</span>{{ite.alertId | capitalize}}</span>
                 <span class="planset-date"><span class="planset-label">时间段:</span>{{ite.startTime}}至{{ite.endTime}}</span>
-                <span class="planset-span"><span class="planset-label">活动次数:</span>{{ite.stimes}} 次</span>
+                <span class="planset-span"><span class="planset-label">活动次数:</span>{{ite.achieveAlert}} 次</span>
               </div>
                 
-              <div class="planset-content" v-else-if="ite.optName=='活动频率'">
-                <span class="planset-span"><span class="planset-label">预警类型:</span>{{ite.optName}}</span>
+              <div class="planset-content" v-else-if="ite.alertId=='3'">
+                <span class="planset-span"><span class="planset-label">预警类型:</span>{{ite.alertId | capitalize}}</span>
                 <span class="planset-date"><span class="planset-label">时间段:</span>{{ite.startTime}}至{{ite.endTime}}</span>
-                <span class="planset-span"><span class="planset-label">频率大于:</span>{{ite.astimes}} 次</span>
+                <span class="planset-span"><span class="planset-label">频率大于:</span>{{ite.achieveAlert}} 次</span>
               </div>
-              <div class="planset-content" v-else-if="ite.optName=='活动时长'">
-                <span class="planset-span"><span class="planset-label">预警类型:</span>{{ite.optName}}</span>
+              <div class="planset-content" v-else-if="ite.alertId=='4'">
+                <span class="planset-span"><span class="planset-label">预警类型:</span>{{ite.alertId | capitalize}}</span>
                 <span class="planset-date"><span class="planset-label">时间段:</span>{{ite.startTime}}至{{ite.endTime}}</span>
-                <span class="planset-span"><span class="planset-label">时长大于:</span>{{ite.atimes}} 分</span>
+                <span class="planset-span"><span class="planset-label">时长大于:</span>{{ite.achieveAlert}} 分</span>
               </div>
-              <div class="planset-content" v-else-if="ite.optName=='心率'">
-                <span class="planset-span"><span class="planset-label">预警类型:</span>{{ite.optName}}</span>
+              <div class="planset-content" v-else-if="ite.alertId=='5'">
+                <span class="planset-span"><span class="planset-label">预警类型:</span>{{ite.alertId | capitalize}}</span>
                 <span class="planset-date"><span class="planset-label">时间段:</span>{{ite.startTime}}至{{ite.endTime}}</span>
-                <span class="planset-span"><span class="planset-label">值:</span>{{ite.hval}}</span>
-                <span class="planset-span">{{ite.htimes}}<span class="planset-label">次/每分</span></span>
+                <span class="planset-span"><span class="planset-label">值:</span>{{ite.averageAlert}}</span>
+                <span class="planset-span">{{ite.achieveAlert}}<span class="planset-label">次/每分</span></span>
               </div>
-              <div class="planset-content" v-else-if="ite.optName=='血压'">
-                <span class="planset-span"><span class="planset-label">预警类型:</span>{{ite.optName}}</span>
+              <div class="planset-content" v-else-if="ite.alertId=='6'">
+                <span class="planset-span"><span class="planset-label">预警类型:</span>{{ite.alertId | capitalize}}</span>
                 <span class="planset-date"><span class="planset-label">时间段:</span>{{ite.startTime}}至{{ite.endTime}}</span>
-                <span class="planset-span"><span class="planset-label">值:</span>{{ite.bval}}</span>
+                <span class="planset-span"><span class="planset-label">值:</span>{{ite.averageAlert}}</span>
               </div>
               
             </div>
             <div class="planset-icon">
+                
                 <el-button type="danger" icon="el-icon-edit" size="mini"  @click="handleRemove(index)">删除</el-button>
                 <el-button type="primary" icon="el-icon-delete" size="mini" @click="handleEdit(index)">编辑</el-button>
+                <el-button type="info" icon="el-icon-user" size="mini"  @click="setUser(index)">关联患者</el-button>
                 
               </div>
             
@@ -67,7 +69,8 @@
           </div>
             
           </el-scrollbar>
-          <my-dialog ref="dialog" ></my-dialog>
+          <my-dialog ref="dialog" :submitType="submitType" @getPlanQueryData="getPlanQueryData"></my-dialog>
+          <my-transfer ref="transfer" @selectElec="getPlanQueryData"></my-transfer>
           <!-- @insertData="insertData" @updateData="updateData" -->
       </el-main>
       
@@ -77,61 +80,34 @@
 <script>
 import breadcrumb from "@/components/Breadcrumb/index"
 import myDialog from '@/components/dialog-planset/dialog' 
-import { getPlanQueryData } from '@/api/table'
+import myTransfer from '@/components/dialog-planset/dialog-user'
+import { getPlanQueryData,deleteReservePlan } from '@/api/table'
   export default {
     name: 'Plansetting',
+    filters: {
+      capitalize: function (value) {
+         console.log(value)
+        if (!value) return ''
+        value = value.toString()
+       
+       if(value==="1") return '是否睡眠'
+       else if(value==="2") return '睡眠质量'
+       else if(value==="3") return '活动频率'
+       else if(value==="4") return '活动时长'
+       else if(value==="5") return '心率'
+       else if(value==="6") return '血压'
+       else return value
+      }
+    },
     components:{
         breadcrumb,
-        myDialog
+        myDialog,
+        myTransfer
     },
     data() {
       return {
-        arr:[
-              {
-                id:"1",
-                name:"重度患者",
-                opt:[
-                    {optName:"是否睡眠",startTime:"23:00:00",endTime:"07:00:00",type:"离床",time:"0.5"},
-                    {optName:"睡眠质量",startTime:"01:00:00",endTime:"05:00:00",stimes:"50"},
-                    {optName:"活动频率",startTime:"01:00:00",endTime:"05:00:00",astimes:"50"},
-                    {optName:"活动时长",startTime:"01:00:00",endTime:"05:00:00",atimes:"50"},
-                    {optName:"心率",startTime:"07:00:00",endTime:"21:00:00",hval:"大于",htimes:"120"},
-                    {optName:"心率",startTime:"07:00:00",endTime:"21:00:00",hval:"小于",htimes:"60"},
-                    {optName:"血压",startTime:"07:00:00",endTime:"21:00:00",bval:"高血压"},
-                    {optName:"血压",startTime:"07:00:00",endTime:"21:00:00",bval:"低血压"},
-                ],
-                conditionValue:"4"
-              },
-              
-              {
-                id:"2",
-                name:"轻度患者",
-                opt:[
-                    {optName:"是否睡眠",startTime:"23:00:00",endTime:"07:00:00",type:"离床",time:"0.5"},
-                    {optName:"睡眠质量",startTime:"01:00:00",endTime:"05:00:00",stimes:"50"},
-                    {optName:"活动频率",startTime:"01:00:00",endTime:"05:00:00",astimes:"50"},
-                    {optName:"活动时长",startTime:"01:00:00",endTime:"05:00:00",atimes:"50"},
-                    {optName:"心率",startTime:"07:00:00",endTime:"21:00:00",hval:"大于",htimes:"120"},
-                    {optName:"心率",startTime:"07:00:00",endTime:"21:00:00",hval:"小于",htimes:"60"},
-                    {optName:"血压",startTime:"07:00:00",endTime:"21:00:00",bval:"高血压"},
-                    {optName:"血压",startTime:"07:00:00",endTime:"21:00:00",bval:"低血压"},
-                ],
-                conditionValue:"4"
-              },
-              
-              {
-                id:"3",
-                name:"预案1",
-                opt:[
-                    {optName:"是否睡眠",startTime:"23:00:00",endTime:"07:00:00",type:"离床",time:"0.5"},
-                    {optName:"心率",startTime:"07:00:00",endTime:"21:00:00",hval:"大于",htimes:"120"},
-                    {optName:"心率",startTime:"07:00:00",endTime:"21:00:00",hval:"小于",htimes:"60"},
-                    {optName:"血压",startTime:"07:00:00",endTime:"21:00:00",bval:"高血压"},
-                    {optName:"血压",startTime:"07:00:00",endTime:"21:00:00",bval:"低血压"},
-                ],
-                conditionValue:"4"
-              }
-            ]
+        arr:[],
+        submitType:""
 
       };
     },
@@ -150,19 +126,61 @@ import { getPlanQueryData } from '@/api/table'
         this.$refs[formName].resetFields();
       },
       handleInsert(){
-        this.$refs.dialog.handleShow();
+        this.submitType="insert"
+        this.$refs.dialog.handleShow("insert");
       },
       handleEdit(i){
+        this.submitType="update"
         let para = Object.assign({}, this.arr[i])
         this.$refs.dialog.form=JSON.parse(JSON.stringify(para))
-        this.$refs.dialog.handleShow();
+        this.$refs.dialog.handleShow("update");
       },
       handleRemove(i){
+        this.$confirm('确认删除该记录吗?', '提示', {
+				    type: 'warning'
+        }).then(() => {
+          let id = this.arr[i].id
+          deleteReservePlan({id:id}).then(res=>{
+            if(res.code==0){
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              });
+              this.getPlanQueryData()
+            }else{
+              this.$message({
+                message: '删除失败',
+                type: 'error'
+              });
+            }
+          }).catch(err=>{
 
+          })
+        }).catch(err=>{
+
+        })
+        
+      },
+      setUser(i){
+        console.log(i)
+        let row = this.arr[i]
+        this.$refs.transfer.handleShow(row)
       },
       getPlanQueryData(){
         getPlanQueryData().then((res)=>{
-          console.log(res)
+          if(res.code==0){
+            console.log(res.data.data)
+            let data = res.data.data;
+            let arr = [];
+            for(let i in data){
+              let para = data[i].electronicFence
+              para.userList = data[i].userList
+              para.alertConditions = data[i].AlertConditionList
+              arr.push(para)
+            }
+            this.arr = arr
+            console.log(arr)
+          }
         }).catch((err)=>{
 
         })

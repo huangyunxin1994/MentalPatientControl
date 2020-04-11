@@ -20,7 +20,8 @@
 </template>
 
 <script>
-import { getOrganData,insertUserData,updateUserData,removeUserData,bRemoveUserData } from '@/api/table'
+import { getOrganData,insertUserData,updateUserData,removeUserData,bRemoveUserData,findSubordinate } from '@/api/table'
+import { getUser, getRole } from '@/utils/auth'
 function filterArray(data) {
     data.forEach(function (item) {
         delete item.children;
@@ -72,22 +73,29 @@ export default {
         return data.name.indexOf(value) !== -1;
       },
       getOrganData(){
-        getOrganData().then(res=>{
+        let user = JSON.parse(getUser()) 
+        console.log(user)
+        let organizaId = user.organizationId;
+        let para
+        let role = JSON.parse(getRole()) 
+        console.log(role)
+        if(role==0)
+         para= {organizaId:0,best:1}
+        else
+         para= {organizaId:organizaId,best:1}
+        getOrganData(para).then(res=>{
           console.log(res)
           this.data=res.data.data
           let organ = res.data.data;
           let person = res.data.user;
-          console.log(this.showPerson)
           let arr=[]
           if(this.showPerson=="true")
             arr = organ.concat(person)
           else
             arr = organ
           let filterarr = filterArray(arr)
-          console.log(filterarr)
           this.data=filterarr
         }).catch(err=>{
-          console.log(err)
         })
       },
       renderContent(h, { node, data, store }) {

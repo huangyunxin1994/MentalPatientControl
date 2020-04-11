@@ -44,6 +44,7 @@
 <script>
 import echarts from 'echarts'
 import  mymap  from '@/components/map/map'
+import {equipmentStatistics,keyPersonnelEarly,keyPersonnelStatistics,selectCount,selectWlCount,userRoleStatistics } from "@/api/table"
 export default {
   name: 'Login',
   components:{
@@ -62,15 +63,51 @@ export default {
         { value: 335, name: '重度患者' },
         { value: 310, name: '中度患者' },
         { value: 234, name: '轻度患者' }
-      ]
+      ],
+      equipOnline:[],
+      equipOutline:[],
+      equipWarn:[],
     }
   },
   mounted(){
     this.drawChart();
+    this.equipmentStatistics()
   },
   methods: {
     enterSys(){
       this.$router.push({ path: '/' })
+    },
+    equipmentStatistics(){
+      equipmentStatistics().then(res=>{
+         console.log(res)
+        if(res.code==0){
+          let data = res.data.data
+          let para ={}
+          let arr1,arr2,arr3
+          console.log(data)
+          for(let i in data){
+            if(data[i].type==1){
+              arr1.push(data[i].count1)
+              arr1.push(data[i].count2)
+              arr1.push(data[i].count3)
+            }else if(data[i].type==2){
+              arr2.push(data[i].count1)
+              arr2.push(data[i].count2)
+              arr2.push(data[i].count3)
+            }else if(data[i].type==3){
+              arr3.push(data[i].count1)
+              arr3.push(data[i].count2)
+              arr3.push(data[i].count3)
+            }
+            
+          }
+          this.equipOnline = arr1
+          this.equipOutline = arr2
+          this.equipWarn = arr3
+          console.log(arr1)
+        }
+        
+      })
     },
     drawChart() {
                 let chartKeyPerson = echarts.init(document.getElementById('chartKeyPerson'));
@@ -324,17 +361,17 @@ export default {
                             {
                                 name: '在线数',
                                 type: 'bar',
-                                data: [10, 20, 10, 50, 10, 21,15]
+                                data: this.equipOnline
                             },
                             {
                                 name: '离线数',
                                 type: 'bar',
-                                data: [1, 2, 1, 5, 2, 3,1]
+                                data: this.equipOutline
                             },
                             {
                                 name: '预警数',
                                 type: 'bar',
-                                data: [1, 2, 1, 5, 2, 3,1]
+                                data: this.equipWarn
                             }
                         ]
                 });
