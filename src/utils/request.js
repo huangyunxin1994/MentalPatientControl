@@ -20,7 +20,7 @@ service.interceptors.request.use(
       // let each request carry token
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
-      
+
       //config.headers={'Content-Type':'application/x-www-form-urlencoded'}
       config.headers['Authorization'] = getToken()
     }
@@ -52,7 +52,7 @@ service.interceptors.response.use(
         store.dispatch('user/resetToken').then(() => {
           location.reload()
         })
-          //           
+          //
           //         })
         break
       default:
@@ -118,7 +118,7 @@ export function post (url, data) {
     else
     para=Qs.stringify(data)
     return new Promise((resolve, reject) => {
-      
+
       service.post(url, para)
         .then(response => {
           resolve(response.data)

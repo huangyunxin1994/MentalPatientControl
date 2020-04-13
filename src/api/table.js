@@ -1,7 +1,7 @@
 import {get,post} from '@/utils/request'
 let base = '';
 /*
- * 组织增删查改 
+ * 组织增删查改
  */
 export const getOrganData = params => { return get(`${base}/organization/findOutAllPeople`, params); };
 export const getChildOrganData = params => { return get(`${base}/organization/selectByParentId`, params); };
@@ -13,7 +13,7 @@ export const relationAdmin = params => { return post(`${base}/organization/relat
 export const findPresent = params => { return post(`${base}/organization/findPresent`, params, {emulateJSON: true}); };
 export const selectPresent = params => { return get(`${base}/organization/selectPresent`, params); };
 /*
- * 用户增删查改 
+ * 用户增删查改
  */
 export const getUserData = params => { return get(`${base}/user/selectUserQueryByPage`, params); };
 export const insertUserData = params => { return post(`${base}/user/addRoleUser`, params, {emulateJSON: true}); };
@@ -21,7 +21,7 @@ export const updateUserData = params => { return post(`${base}/user/updateUser`,
 export const removeUserData = params => { return post(`${base}/user/deleteUser`, params, {emulateJSON: true}); };
 export const bRemoveUserData = params => { return post(`${base}/user/deleteBatchUser`, params, {emulateJSON: true}); };
 /*
- * 角色增删查改 
+ * 角色增删查改
  */
 export const getRoleData = params => { return get(`${base}/role/selectRoleQueryByPage`, params); };
 export const insertRoleData = params => { return post(`${base}/role/addRole`, params, {emulateJSON: true}); };
@@ -37,14 +37,14 @@ export const addUserRole = params => { return post(`${base}/role/addUserRole`, p
 export const deleteUserRole = params => { return post(`${base}/role/deleteUserRole`, params,{emulateJSON: true}); };
 export const addRoleRelationMenu = params => { return post(`${base}/role/addRoleRelationMenu`, params, {emulateJSON: true}); };
 /*
- * 设备增删查改 
+ * 设备增删查改
  */
 export const getEquipData = params => { return get(`${base}/equipment/selectByPage`, params); };
 export const insertEquipData = params => { return post(`${base}/equipment/insert`, params, {emulateJSON: true}); };
 export const updateEquipData = params => { return post(`${base}/equipment/update`, params, {emulateJSON: true}); };
 export const removeEquipData = params => { return post(`${base}/equipment/deleteEquipment`, params, {emulateJSON: true}); };
 /*
- * 重点人员增删查改 
+ * 重点人员增删查改
  */
 export const getKeyPnlData = params => { return get(`${base}/keypersonnel/selectByPage`, params); };
 export const insertKeyPnlData = params => { return post(`${base}/keypersonnel/insert`, params, {emulateJSON: true}); };
@@ -56,6 +56,8 @@ export const removeKeyPnlData = params => { return post(`${base}/keypersonnel/de
  *人员预警信息查询
  */
 export const getPerWarnlData = params => { return get(`${base}/personnel/selectByPage`, params); };
+export const getWarnListData = params => { return get(`${base}/personnel/selectByPage`,params); };
+export const changeWarnData = params => { return post(`${base}/personnel/update`,params, {emulateJSON: true} ) }
 
 /*
  *设备预警信息查询
@@ -74,8 +76,8 @@ export const updatePlan = params => { return post(`${base}/ReservePlan/updatePla
 export const updateReservePlanAndCondition = params => { return post(`${base}/ReservePlan/updateReservePlanAndCondition`, params, {emulateJSON: true}); };
 export const relationReservePlan = params => { return post(`${base}/ReservePlan/relationReservePlan`, params, {emulateJSON: true}); };
 export const deleteReservePlan = params => { return post(`${base}/ReservePlan/deleteReservePlan`, params, {emulateJSON: true}); };
-/* 
- *人员状态模块接口 
+/*
+ *人员状态模块接口
  */
 export const getPerSe = params => { return get(`${base}/PersonnelStatus/se`, params); }; //活动状态统计
 export const getPersonAlert = params => { return get(`${base}/PersonnelStatus/selectPersonnelAlert`, params); }; //电子围栏预警记录
