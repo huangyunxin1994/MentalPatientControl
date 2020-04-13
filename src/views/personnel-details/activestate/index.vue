@@ -19,11 +19,10 @@
           <div class="activestate-handle">
                 <my-date @getData="setDateTime"></my-date>
                 <el-badge :value="3" class="item">
-                <el-button type="danger">处理预警</el-button>
+                <el-button type="danger" @click='showDialogWarn' :disabled="warnActive">处理预警</el-button>
                 </el-badge>
           </div>
         </el-header>
-         
           <el-main>
             <div class="activestate-chart">
                 <div id="activerate" style="width:50%; height:40vh;background:#fff;padding:20px;"/>
@@ -37,11 +36,12 @@
                 <div id="sleepquality" style="width:50%; height:40vh;background:#fff;padding:20px;"/>
                 <div id="inouthome" style="width:50%; height:40vh;background:#fff;padding:20px;"/>
             </div>
-        </el-main> 
+        </el-main>
          </el-scrollbar>
       <el-row>
-         
+
       </el-row>
+       <dialog-warn @dialog="getDialogData" ref="senda" :message="warnTableData" ></dialog-warn>
     </el-container>
 </template>
 
@@ -49,18 +49,24 @@
 import echarts from 'echarts'
 import myDate from "@/components/date/date"
 import { parseTime } from '@/utils/index.js'
-import { getPerSe } from '@/api/table'
+import { getPerSe , getWarnListData } from '@/api/table'
+import dialogWarn from '@/components/dialog-warn/dialog'
 export default {
   name: 'Activestate',
   components:{
-      myDate
+      myDate,
+      dialogWarn
   },
   data(){
     return{
       value4:"",
       echartsData:{},
       dateTime:"",
-      personData:{}
+      personData:{},
+      dialoWarn:false,
+      dialogTableVisible:false,
+      warnTableData: 'aaa',
+      warnActive: false
     }
   },
     methods: {
@@ -79,17 +85,19 @@ export default {
               let para=[]
               para.push(time+i*3600*1000)
               para.push(Math.ceil(Math.random()*100))
+              // para.push(Math.ceil(Math.round(Math.random()*100)))
+              // para.push(Math.ceil(Math.round(Math.random())))
               data.push(para)
           }
           return data
       },
       formatterFun(e){
-        var d=new Date(e); 
+        var d=new Date(e);
         var getHour = d.getHours()<10?"0"+d.getHours():d.getHours()
-        
+
         var getMinute = d.getMinutes()<10?"0"+d.getMinutes():d.getMinutes()
         return getHour+":"+getMinute
-                            
+
       },
       drawChart() {
                 let activerate = echarts.init(document.getElementById('activerate'));
@@ -102,14 +110,21 @@ export default {
                     title: {text: '活动频率'},
                     tooltip:{trigger: 'axis',},
                     legend: {data:['今日','平均']},
-                    xAxis: {type: 'time',boundaryGap: false,name:"单位:小时",interval:4*3600*1000,
+                    xAxis: {
+                      type: 'time',
+                      boundaryGap: false,
+                      name:"单位:小时",
+                      interval:4*3600*1000,
                         axisLabel : {
                             formatter: this.formatterFun
                         }
                     },
                     yAxis: {
                         type: 'value',
-                        name:"单位:次"
+                        name:"单位:次",
+                        min: 0,
+                        max: 100,
+                        splitNumber: 5
                     },
                     series: [{
                         name:"今日",
@@ -142,7 +157,16 @@ export default {
                     },
                     yAxis: {
                         type: 'value',
-                        name:"单位:分钟"
+                        name:"单位:分钟",
+                        x: 'center',
+                        splitLine: {
+                          lineStyle: {
+                            type: 'dashed'
+                          }
+                        },
+                        min:84,
+                        max:104,
+                        splitNumber: 4
                     },
                     series: [{
                         name:"今日",
@@ -167,16 +191,25 @@ export default {
                 let option3={
                     title: {text: '心率'},
                     tooltip:{trigger: 'axis',},
-                    xAxis: {type: 'time',boundaryGap: false,name:"单位:小时",interval:4*3600*1000,
+                    backgroundColor:'#fadfe2',
+                    xAxis: {
+                        type: 'time',
+                        boundaryGap: false,
+                        name:"单位:小时",
+                        interval:2*3600*1000,
                         axisLabel : {
                             formatter: this.formatterFun
                         }
                     },
                     yAxis: {
                         type: 'value',
-                        name:"单位:bpm"
+                        name:"单位:bpm",
+                        min:60,
+                        max:90,
+                        splitNumber: 7
                     },
                     series: [{
+                        name:"今日",
                         data: this.getEchartData(),
                         type: 'line',
                         itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
@@ -190,14 +223,21 @@ export default {
                     title: {text: '血压'},
                     tooltip:{trigger: 'axis',},
                     legend: {data:['高压','低压']},
-                    xAxis: {type: 'time',boundaryGap: false,name:"单位:小时",interval:4*3600*1000,
+                    xAxis: {
+                        type: 'time',
+                        boundaryGap: false,
+                        name:"单位:小时",
+                        interval:2*3600*1000,
                         axisLabel : {
                             formatter: this.formatterFun
                         }
                     },
                     yAxis: {
                         type: 'value',
-                        name:"单位:mmHg"
+                        name:"单位:mmHg",
+                        min:60,
+                        max:130,
+                        splitNumber: 10
                     },
                     series: [{
                         name:"高压",
@@ -223,14 +263,32 @@ export default {
                     title: {text: '睡眠质量'},
                     tooltip:{trigger: 'axis',},
                     legend: {data:['今日','平均']},
-                    xAxis: {type: 'time',boundaryGap: false,name:"单位:小时",interval:4*3600*1000,
+                    xAxis: {
+                        type: 'time',
+                        boundaryGap: false,
+                        name:"单位:小时",
+                        interval:2*3600*1000,
                         axisLabel : {
                             formatter: this.formatterFun
                         }
                     },
                     yAxis: {
                         type: 'value',
-                        name:"单位:次"
+                        name:"单位:次",
+                        min:0,
+                        max:10,
+                        splitNumber: 10,
+                        axisLabel: {
+                          formatter: function(value,index){
+                      		var value;
+                      		if (value == 1) {
+                      			value = '睡觉';
+                      		}else if(value != 1){
+                      			value = value;
+                      		}
+                      		return value
+                      	}
+                      },
                     },
                     series: [{
                         name:"今日",
@@ -256,18 +314,46 @@ export default {
                     title: {text: '在家/离家情况'},
                     tooltip:{trigger: 'axis',},
                     legend: {data:['今日','平均']},
-                    xAxis: {type: 'time',boundaryGap: false,name:"单位:小时",interval:4*3600*1000,
+                    toolbox: {
+                        feature: {
+                            saveAsImage: {}
+                        }
+                    },
+                    xAxis: {
+                        type: 'time',
+                        boundaryGap: false,
+                        name:"单位: 小时",
+                        interval:2*3600*1000,
                         axisLabel : {
                             formatter: this.formatterFun
                         }
                     },
                     yAxis: {
                         type: 'value',
-                        name:"单位:次"
+                        name:"单位: 在家/离家",
+                        min:0,
+                        max:1,
+                        splitNumber: 5,
+                        axisLabel:{
+                          formatter: function (value) {
+                            var texts = [];
+                            if(value==1){
+                              texts.push('离家');
+                            }
+                            else if (value <1 && value >0) {
+                              texts.push(' ');
+                            }
+                            else if(value== 0){
+                              texts.push('在家');
+                            }
+                              return texts;
+                            }
+                        }
                     },
                     series: [{
                         name:"今日",
                         data: this.getEchartData(),
+                        step: 'start',
                         type: 'line',
                         itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                             color: '#E6A23C',
@@ -277,6 +363,7 @@ export default {
                     {
                         name:"平均",
                         data: this.getEchartData(),
+                        step: 'start',
                         type: 'line',
                         itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                             color: '#409EFF',
@@ -285,7 +372,7 @@ export default {
                     }
                     ]
                 }
-                
+
                 activerate.setOption(option1);
                 activetime.setOption(option2);
                 heartrate.setOption(option3);
@@ -299,13 +386,39 @@ export default {
                     bloodpress.resize()
                     sleepquality.resize()
                     inouthome.resize()
-                } 
-            }
+                }
+            },
+
+      showDialogWarn() {
+        console.log(this.dialoWarn)
+        //this.dialogTableVisible = true
+        console.log(this.personData.name)
+        this.$refs.senda.getWarnListData1(this.personData)
+      },
+      getDialogData(data){
+        if(data){
+          this.dialogTableVisible = false
+        }
+      },
+      getWarnList(){
+        getWarnListData({keyUserid:this.personData.id}).then(res =>{
+
+          console.log(res.data.data)
+          this.warnTableData = res.data.data
+          this.$refs.senda.getListData(this.warnTableData)
+          if(res.data.data == undefined){
+            this.warnActive = true
+          }else{
+            this.warnActive = false
+          }
+        })
+      }
     },
     mounted(){
         this.drawChart();
         this.getEchartData()
         this.personData=this.$route.query.row
+        this.getWarnList()
     }
 }
 </script>
@@ -341,7 +454,7 @@ export default {
       background: #ddd;
       font-weight: bold;;
       color: #303133;
-      
+
   }
   &-handle{
       padding: 20px;
@@ -349,6 +462,6 @@ export default {
       justify-content: space-between;
       align-items: center;
   }
-  
+
 }
 </style>

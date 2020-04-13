@@ -6,7 +6,7 @@ import Qs from 'qs'
 
 // create an axios instance
 const service = axios.create({
-  baseURL: "http://192.168.1.111:8080", // url = base url + request url
+  baseURL: "http://192.168.1.3:8080", // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000 // request timeout
 })
@@ -20,7 +20,7 @@ service.interceptors.request.use(
       // let each request carry token
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
-      
+
       //config.headers={'Content-Type':'application/x-www-form-urlencoded'}
       config.headers['Authorization'] = getToken()
     }
@@ -52,7 +52,7 @@ service.interceptors.response.use(
         store.dispatch('user/resetToken').then(() => {
           location.reload()
         })
-          //           
+          //
           //         })
         break
       default:
@@ -118,7 +118,7 @@ export function post (url, data) {
     else
     para=Qs.stringify(data)
     return new Promise((resolve, reject) => {
-      
+
       service.post(url, para)
         .then(response => {
           resolve(response.data)
