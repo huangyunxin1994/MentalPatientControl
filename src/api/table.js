@@ -55,7 +55,7 @@ export const removeKeyPnlData = params => { return post(`${base}/keypersonnel/de
 /*
  *人员预警信息查询
  */
-export const getPerWarnlData = params => { return get(`${base}/personnel/selectByPage`, params); };
+export const getPerWarnlData = params => { return get(`${base}/personnel/selectPersonnelAlert`, params); };
 export const getWarnListData = params => { return get(`${base}/personnel/selectByPage`,params); };
 export const changeWarnData = params => { return post(`${base}/personnel/update`,params, {emulateJSON: true} ) }
 

@@ -9,6 +9,7 @@
 <script>
 import  myTable  from '@/components/table/table'
 import { getPerWarnlData } from "@/api/table"
+import { getRole,getUser } from '@/utils/auth'
 export default {
   name: 'Personwarn',
   components:{
@@ -17,13 +18,13 @@ export default {
   data(){
     return{
       tableTitle:[
-            { title : "姓名", name : "keyUserid", width : "120", type : "link" },
+            { title : "姓名", name : "name", width : "120", type : "link" },
             { title : "预警类型", name : "alertType", minwidth : "150", type : "input"},
-            { title : "所属组织", name : "organizationId", width : "120", type : "input" },
+            { title : "所属组织", name : "organizationName", width : "120", type : "input" },
             { title : "预警时间", name : "alertTime", minwidth : "150", type : "input" },
-            { title : "监护人", name : "guardianId", width : "120", type : "input" },
-            { title : "网格管理员", name : "networkAdministratorId", minwidth : "150", type : "input" },
-            { title : "责任医师", name : "responsiblePhysicianId", width : "120", type : "input" },
+            { title : "监护人", name : "guardian", width : "120", type : "input" },
+            { title : "网格管理员", name : "networkAdministrator", minwidth : "150", type : "input" },
+            { title : "责任医师", name : "responsiblePhysician", width : "120", type : "input" },
             { title : "处理结果", name : "processingResult", minwidth : "150", type : "input" },
             { title : "处理时间", name : "handleTime", width : "120", type : "input" },
             { title : "处理人", name : "handleUsername", minwidth : "150", type : "input" },
@@ -34,8 +35,16 @@ export default {
   },
   methods: {
     getPerWarnlData(){
-      getPerWarnlData().then(res=>{
+      let role = JSON.parse(getRole()) 
+      let user = JSON.parse(getUser());
+      console.log(user)
+      let param ={}
+      param.roleId=role
+      param.userId=user.userId
+      param.organizaId=user.organizationId||""
+      getPerWarnlData(param).then(res=>{
         if(res.code==0){
+          console.log(res)
           this.tableData= res.data.data
         }
       }).catch(err=>{
