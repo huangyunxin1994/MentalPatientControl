@@ -57,6 +57,10 @@ export const removeKeyPnlData = params => { return post(`${base}/keypersonnel/de
  */
 export const getPerWarnlData = params => { return get(`${base}/personnel/selectByPage`, params); };
 
+/*
+ *设备预警信息查询
+ */
+export const getEquWarnlData = params => { return get(`${base}/equipmentalert/selectByPage`, params); };
 /* 
  *预案管理增删查改
  */

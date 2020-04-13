@@ -1,7 +1,7 @@
 <template>
     <el-container class="personwarn-container">
       
-          <my-table :tableTitle="tableTitle"></my-table>
+          <my-table :tableTitle="tableTitle" :tableData="tableData"></my-table>
         
     </el-container>
 </template>
@@ -18,15 +18,15 @@ export default {
     return{
       tableTitle:[
             { title : "姓名", name : "keyUserid", width : "120", type : "link" },
-            { title : "预警类型", name : "endTime", minwidth : "150", type : "equip"},
-            { title : "所属组织", name : "duration", width : "120", type : "input" },
-            { title : "预警时间", name : "reason", minwidth : "150", type : "input" },
-            { title : "监护人", name : "approvalResult", width : "120", type : "input" },
-            { title : "网络管理员", name : "reason", minwidth : "150", type : "input" },
-            { title : "责任医师", name : "approvalResult", width : "120", type : "input" },
-            { title : "处理结果", name : "unsuccessfulReasons", minwidth : "150", type : "input" },
-            { title : "处理时间", name : "approvalResult", width : "120", type : "input" },
-            { title : "处理人", name : "unsuccessfulReasons", minwidth : "150", type : "input" },
+            { title : "预警类型", name : "alertType", minwidth : "150", type : "input"},
+            { title : "所属组织", name : "organizationId", width : "120", type : "input" },
+            { title : "预警时间", name : "alertTime", minwidth : "150", type : "input" },
+            { title : "监护人", name : "guardianId", width : "120", type : "input" },
+            { title : "网格管理员", name : "networkAdministratorId", minwidth : "150", type : "input" },
+            { title : "责任医师", name : "responsiblePhysicianId", width : "120", type : "input" },
+            { title : "处理结果", name : "processingResult", minwidth : "150", type : "input" },
+            { title : "处理时间", name : "handleTime", width : "120", type : "input" },
+            { title : "处理人", name : "handleUsername", minwidth : "150", type : "input" },
             { title : "操作",width : "150", type : "handle",button:[{name:"处理",type:"edit"}] }
         ],
         tableData:[]
