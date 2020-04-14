@@ -26,7 +26,7 @@
        
         <el-col :span="12">
             <div style="width:100%;height:100%">
-              <mymap></mymap>
+              <mymap ref="map"></mymap>
             </div>
         </el-col>
         <el-col :span="6">
@@ -76,7 +76,7 @@ export default {
   },
   mounted(){
     this.getDrawData()
-    
+    this.$refs.map.getmap()
     
   },
   methods: {

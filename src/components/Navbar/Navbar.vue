@@ -29,9 +29,10 @@
         <router-link tag="i" to="/manage" class="navbar-message el-icon-s-tools" ></router-link> 
       </el-tooltip>
       
-      <el-badge :value="warnNum" class="item">
+      <el-badge :value="warnNum" class="item" v-if="warnNum>0">
         <router-link tag="i" to="/warningcenter" class="navbar-message el-icon-message-solid" ></router-link> 
       </el-badge>
+      <router-link v-else tag="i" to="/warningcenter" class="navbar-message el-icon-message-solid" ></router-link> 
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
@@ -99,7 +100,8 @@ export default {
     },
     selectCount(){
       selectCount().then(res=>{
-        this.warnNum=res.data.data
+        console.log(res)
+        this.warnNum=res.data.eCount+res.data.pCount
       })
     }
   },

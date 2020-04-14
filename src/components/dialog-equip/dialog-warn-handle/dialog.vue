@@ -12,21 +12,15 @@
          <el-button type="" :class="{'handleBtn':true,'btnActive':btnNum===3}" @click="writeResult">填写处理结果</el-button>
        </el-row>
 
-      <el-row class="cancelSwrap">
-        <div class="cancel">
-          <button @click="cancel" class="cancelBtn">取消</button>
-          <button @click="cancel" class="sureBtn">确定</button>
-        </div>
-      </el-row>
     </div>
     </el-dialog>
-    <dialog-warn-handle-result ref = 'showResult'></dialog-warn-handle-result>
+    <dialog-warn-handle-result ref = 'showResult' @cancel="cancel"></dialog-warn-handle-result>
   </div>
 </template>
 
 <script>
-  import { getPerSe , getWarnListData , changeWarnData } from '@/api/table'
-  import dialogWarnHandleResult from '@/components/dialog-warn-handle-result/dialog'
+  import { changeEquipData } from '@/api/table'
+  import dialogWarnHandleResult from '@/components/dialog-equip/dialog-warn-handle-result/dialog'
 
   import {getUser} from '@/utils/auth'
 
@@ -52,36 +46,72 @@
       },
       getDandleShow(val){
         this.changeData = val
+        console.log(this.changeData.id)
         this.dialogHandleVisible = true
         let bb = getUser()
+        console.log(typeof(bb))
         bb = JSON.parse(bb)
-        this.operationer = bb.account
+        this.operationer = bb.name
       },
       //点击忽略按钮
       ignore(){
-        this.btnNum = 1
-        this.changeData.processingResult = 4
-        changeWarnData({
-          id:this.changeData.id,
-          processingResult:this.changeData.processingResult
-        }).then(res =>{
-          console.log('忽略成功')
-          console.log(res)
+        this.$confirm('确认忽略该预警吗？', '提示', {}).then(() => {
+          this.btnNum = 1
+          this.changeData.processingResult = 4
+          changeEquipData({
+            id:this.changeData.id,
+            processingResult:this.changeData.processingResult
+          }).then(res =>{
+            if(res.code==0){
+              this.$message({
+                message: '忽略成功',
+                type: 'success'
+              });
+              this.cancel()
+            }else{
+              this.$message({
+                message: '忽略时出现错误',
+                type: 'error'
+              });
+            }
+          }).catch(err=>{
+            this.$message({
+                message: '忽略时出现异常',
+                type: 'error'
+              });
+          })
         })
       },
       //点击开始处理按钮
       startHandle(){
-        this.btnNum = 2
-        this.changeData.processingResult = 1
-        let nowData = this.getTime()
-        changeWarnData({
-          id:this.changeData.id,
-          processingResult:this.changeData.processingResult,
-          handleUsername:this.operationer,
-          handleTime:nowData
-        }).then(res =>{
-          console.log('开始处理成功')
-          console.log(res)
+        this.$confirm('确认开始处理该预警吗？', '提示', {}).then(() => {
+          this.btnNum = 2
+          this.changeData.processingResult = 1
+          let nowData = this.getTime()
+          changeEquipData({
+            id:this.changeData.id,
+            processingResult:this.changeData.processingResult,
+            handleUsername:this.operationer,
+            handleTime:nowData
+          }).then(res =>{
+            if(res.code==0){
+              this.$message({
+                message: '开始处理成功',
+                type: 'success'
+              });
+              this.cancel()
+            }else{
+              this.$message({
+                message: '开始处理时出现错误',
+                type: 'error'
+              });
+            }
+          }).catch(res=>{
+             this.$message({
+                message: '开始处理时出现异常',
+                type: 'error'
+              });
+          })
         })
       },
       //点击填写处理结果按钮
@@ -148,14 +178,5 @@
     color: rgb(153, 153, 153);
     border-radius: 3px;
     background-color: white;
-  }
-  .cancelBtn{
-    background: rgba(0, 153, 255, 1);
-    color: white;
-    width: 110px;
-    height: 40px;
-    border-radius: 3px;
-    border: 1px solid transparent;
-    outline: none;
   }
 </style>

@@ -3,10 +3,10 @@
       <my-tree @getThisOrgan="getThisOrgan" ref="tree"></my-tree>
       
       <div class="organmanage-table">
-        <div  v-show="organData.id" class="organmanage-parent">
+        <!-- <div  v-show="organData.id" class="organmanage-parent">
           <span style="color:#606266">{{organData.name}}</span>
           <el-button size="small" round  @click="handleEdit()">编辑</el-button>
-        </div>
+        </div> -->
           
           <el-button class="organmanage-table-button" type="primary" size="small" @click="newData">添加组织</el-button>
           <my-table :tableTitle="tableTitle" :tableData="tableData" ref="table" @changeData="changeData" @removeData="removeData" @bRemoveData="bRemoveData" @settingData="settingData"></my-table>
@@ -35,12 +35,13 @@ export default {
         return{
             organData:{},
             formRule:{
-              name: [{ required: true, message: '请输入角色', trigger: 'blur' }]
+              name: [{ required: true, message: '请输入组织名称', trigger: 'blur' }],
+              parentId: [{ required: true, message: '请选择上级组织', trigger: 'blur' }]
             },
             tableTitle:[
             { title : "组织名称", name : "name", minwidth : "120", type : "name" },
             { title : "描述", name : "organization", minwidth : "120", type : "input" },
-            { title : "关联管理", name : "user", width : "100", type : "button" },
+            { title : "关联管理员", name : "user", width : "100", type : "button" },
             { title : "关联用户", name : "person", width : "100", type : "button" },
             { title : "操作",width : "100", type : "handle",button:[{name:"编辑",type:"edit"},{name:"删除",type:"remove"}] }
             ],
@@ -48,6 +49,9 @@ export default {
               { title : "组织名称", name : "name", type : "input" },
               { title : "上级组织", name : "parentId", type : "cascader" },
               { title : "描述", name : "organization", type : "input" },
+              { title : "关联管理员", name : "user", width : "100", type : "organuser" },
+              { title : "关联用户", name : "person", width : "100", type : "organperson" },
+              
             ],
             tableData:[]
         }
@@ -78,13 +82,15 @@ export default {
       newData(){
         let para = {'submitType':"insert"}
         this.$refs.dialog.form=para
-        this.$refs.dialog.handleShow();
+        let arr = ["organ"]
+        this.$refs.dialog.handleShow(arr);
       },
       changeData(row){
         console.log(row)
         row.submitType="update"
         this.$refs.dialog.form=Object.assign({}, row)
-        this.$refs.dialog.handleShow();
+        let arr = ["organ"]
+        this.$refs.dialog.handleShow(arr);
       },
       removeData(row){
         let para ={}

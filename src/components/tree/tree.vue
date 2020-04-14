@@ -82,12 +82,13 @@ export default {
         if(role==0)
          para= {organizaId:0,best:1}
         else
-         para= {organizaId:organizaId,best:1}
+         para= {organizaId:organizaId}
         getOrganData(para).then(res=>{
           console.log(res)
           this.data=res.data.data
           let organ = res.data.data;
           let person = res.data.user;
+          this.$emit("getPersonData",person)
           let arr=[]
           if(this.showPerson=="true")
             arr = organ.concat(person)

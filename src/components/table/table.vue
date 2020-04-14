@@ -14,7 +14,7 @@
                 <!-- <el-link :type="scope.row[item.name] == 1 ? 'success' : value == 0 ? 'primary' : ''" v-else-if="item.type=='button'" @click="changeNoticeSates(scope.$index, scope.row)" v-html="arrFormatter(scope.row[item.name],item.name)"></el-link> -->
                 <div v-else-if="item.type=='handle'">
                     <el-tooltip v-for="(item,index) in item.button" :key="index" :content="item.name" placement="top">
-                      <el-button v-if="item.type=='edit'" type="primary" icon="el-icon-edit" size="small" circle  @click="handleEdit(scope.$index, scope.row)"></el-button>
+                      <el-button v-if="item.type=='edit'&&scope.row['processingResult']!=3" type="primary" icon="el-icon-edit" size="small" circle @click="handleEdit(scope.$index, scope.row)"></el-button>
                        <el-button v-else-if="item.type=='remove'" type="danger" icon="el-icon-delete" size="small" circle @click="handleRemove(scope.$index, scope.row)"></el-button>
                     </el-tooltip>
                 </div>
@@ -97,7 +97,7 @@
             else if(name == 'type')
              return value == 1 ? '进入' : value == 2 ? '外出' : '';
             else if(name == 'processingResult')
-             return value == 1 ? '处理中' : (value == 2 ? '未处理' : (value == 3? '已处理' : value == 4? '忽略':""));
+             return value == 1 ? '<span style="color:#E6A23C;font-weight:bold">处理中</span>' : (value == 2 ? '<span style="color:#F56C6C;font-weight:bold">未处理</span>' : (value == 3? '<span style="color:#67C23A;font-weight:bold">已处理</span>' : value == 4? '<span style="color:#909399;font-weight:bold">已忽略</span>':""));
             else if(name == 'equipmentType')
              return value == 1 ? '活动监测器' : (value == 2 ? '睡眠监测器' : value == 3? '智能手表' :"");
             else if(name == 'level')

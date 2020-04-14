@@ -63,7 +63,8 @@ export const changeWarnData = params => { return post(`${base}/personnel/update`
  *设备预警信息查询
  */
 export const getEquWarnlData = params => { return get(`${base}/equipmentalert/selectByPage`, params); };
-/*
+export const changeEquipData = params => { return post(`${base}/equipmentalert/handle`,params, {emulateJSON: true} ) }
+/* 
  *预案管理增删查改
  */
 
@@ -102,6 +103,6 @@ export const updateElectronicFence = params => { return post(`${base}/Electronic
 export const equipmentStatistics = params => { return get(`${base}/home/equipmentStatistics`, params); };
 export const keyPersonnelEarly = params => { return get(`${base}/home/keyPersonnelEarly`, params); };
 export const keyPersonnelStatistics = params => { return get(`${base}/home/keyPersonnelStatistics`, params); };
-export const selectCount = params => { return get(`${base}/home/selectCount`, params); };
+export const selectCount = params => { return get(`${base}/home/untreatedCount`, params); };
 export const selectWlCount = params => { return get(`${base}/home/selectWlCount`, params); };
 export const userRoleStatistics = params => { return get(`${base}/home/userRoleStatistics`, params); };

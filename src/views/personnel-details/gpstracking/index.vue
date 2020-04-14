@@ -20,8 +20,13 @@
                <div class="block">
                     <span class="demonstration">轨迹查询</span>
                     <el-date-picker
-                    type="date"
-                    placeholder="选择日期">
+                      v-model="value2"
+                      type="datetimerange"
+                      :picker-options="pickerOptions"
+                      range-separator="至"
+                      start-placeholder="开始日期"
+                      end-placeholder="结束日期"
+                      align="right" @change="changeDate">
                     </el-date-picker>
                 </div>
           </div>
@@ -49,6 +54,7 @@ import myMap from "@/components/map/map"
 import myTable from "@/components/table/table"
 import myDate from "@/components/date/date"
 import { getPersonAlert,getPersonCoordinate } from "@/api/table"
+import { parseTime} from '@/utils/index'
 export default {
   name: 'Gpstracking',
   components:{
@@ -58,10 +64,40 @@ export default {
   },
   data(){
     return{
+      pickerOptions: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+      },
+      value2: '',
       value4:"",
       echartsData:{},
       dateTime:"",
       personData:{},
+      beginTime:"",
+      endTime:"",
       tableTitle:[
             { title : "预警围栏", name : "fenceName", width : "120", type : "input" },
             { title : "进入/离开", name : "type", width : "120", type : "input"},
@@ -75,6 +111,9 @@ export default {
     }
   },
     methods: {
+      getPersonCoordinate(){
+
+      },
       getPersonAlert(){
         let id = this.personData.id
         getPersonAlert({keyUserid:id}).then(res=>{
@@ -82,6 +121,16 @@ export default {
             this.tableData=res.data.data
           }
         })
+      },
+      changeDate(val){
+        console.log(val)
+        if(val==null){
+          this.beginTime = ""
+          this.endTime = ""
+        }else{
+          this.beginTime = parseTime(val[0])
+          this.endTime = parseTime(val[1])
+        }
       }
     },
     mounted(){

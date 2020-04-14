@@ -1,12 +1,12 @@
 <template>
     <el-container class="dashboard-container">
-      <mymap class="dashboard-map" ref="map" :pointsArr="pointsArr" :electricFenceArr="electricFenceArr"></mymap>
-      <my-tree showPerson='true' class="dashboard-tree" @getThisOrgan="getThisOrgan"></my-tree>
+      <mymap class="dashboard-map" ref="map" :pointsArr="pointsArr" :enterElecArr="enterElecArr"></mymap>
+      <my-tree showPerson='true' class="dashboard-tree" @getThisOrgan="getThisOrgan" @getPersonData="getPersonData"></my-tree>
       <div class="dashboard-button">
         <el-button type="primary" @click="showThisMark('0')">在家人员数<br/><br/>{{inHomeNum}}</el-button>
         <el-button type="primary" @click="showThisMark('1')">离家人员数<br/><br/>{{outHomeNum}}</el-button>
         <el-button type="primary" @click="showThisMark('2')">今日预警数<br/><br/>{{warningNum}}</el-button>
-        <el-button type="primary" @click="showThisCircle(showflag)">电子围栏数<br/><br/>{{electricFenceArr.length}}</el-button>
+        <el-button type="primary" @click="showThisCircle(showflag)">电子围栏数<br/><br/>{{enterElecArr.length}}</el-button>
       </div>
       <div class="dashboard-message">
         <div class="box-card">
@@ -15,9 +15,9 @@
           </div>
           <el-scrollbar class="dashboard-scrollbar" v-if="dashboardContext.length!=0">
             <div v-for="(item,index) in dashboardContext" :key="index" class="dashboard-context">
-              <span>{{item.date}}</span>
-              <span>预警类型：{{item.type}}</span>
-              <span>预警地址：{{item.addr}}</span>
+              <span>{{item.alertTime}}</span>
+              <span>预警类型：{{item.alertType}}</span>
+              <span>预警地址：{{item.address}}</span>
               <span>预警人名字：{{item.name}}</span>
               <div class="dashboard-context-handle">
                  <el-button type="danger" size="mini" @click="getLocation(item.pointX,item.pointY)">定位</el-button>
@@ -36,6 +36,8 @@
 <script>
 import  mymap  from '@/components/map/map'
 import  myTree from '@/components/tree/tree'
+import { getPerWarnlData,selectElectronicFenceQuery } from "@/api/table"
+import { getRole,getUser } from '@/utils/auth'
 export default {
   name: 'Dashboard',
   components:{
@@ -46,19 +48,19 @@ export default {
   computed:{
     inHomeNum(){
       var inHomeArr = this.pointsArr.filter((item) => {
-            return item.state === 0
+            return item.personnelStatus === "1"
       })
       return inHomeArr.length
     },
     outHomeNum(){
       var outHomeArr = this.pointsArr.filter((item) => {
-            return item.state === 1
+            return item.personnelStatus === "2"
       })
       return outHomeArr.length
     },
     warningNum(){
       var warningArr = this.pointsArr.filter((item) => {
-            return item.state === 2
+            return item.personnelStatus === "3"
       })
       return warningArr.length
     }
@@ -67,23 +69,9 @@ export default {
   data(){
     return{
       showflag:true,
-      dashboardContext:[
-        {date:"2020-02-20 01:30:00",type:"xx",addr:"xx省xx市xx区",name:"孙七",id:"1",pointX:116.332453,pointY:39.989007},
-        {date:"2020-02-20 01:30:00",type:"xx",addr:"xx省xx市xx区",name:"宋八",id:"2",pointX:116.324045,pointY:39.987984}
-      ],
-      pointsArr:[
-          {pointX:116.316967,pointY:39.990748,state:0,name:"张三",phone:"13845684561"},
-          {pointX:116.323938,pointY:39.989919,state:0,name:"李四",phone:"13845684561"},
-          {pointX:116.328896,pointY:39.988039,state:1,name:"王五",phone:"13845684561"},
-          {pointX:116.321135,pointY:39.987072,state:1,name:"赵六",phone:"13845684561"},
-          {pointX:116.332453,pointY:39.989007,state:2,name:"孙七",phone:"13845684561"},
-          {pointX:116.324045,pointY:39.987984,state:2,name:"宋八",phone:"13845684561"}
-      ],
-      electricFenceArr:[
-          {pointX:116.316967,pointY:39.990748},
-          {pointX:116.323938,pointY:39.989919},
-          {pointX:116.328896,pointY:39.988039},
-      ]
+      dashboardContext:[],
+      pointsArr:[],
+      enterElecArr:[]
     }
   },
     methods: {
@@ -102,7 +90,57 @@ export default {
       },
       getThisOrgan(data){
         console.log(data)
+        if(data.className=="person"){
+          this.$refs.map.movePosBypoint(data.longitude,data.latitude)
+        }
+      },
+      getPersonData(val){
+        this.pointsArr=val
+      },
+      async getPerWarnlData(){
+        let role = JSON.parse(getRole()) 
+        let user = JSON.parse(getUser());
+        console.log(user)
+        let param ={}
+        param.roleId=role
+        param.userId=user.userId
+        param.organizaId=user.organizationId||""
+        await getPerWarnlData(param).then(res=>{
+          if(res.code==0){
+            console.log(res)
+            let data = res.data.data.filter(item=>{
+              return item.processingResult==2
+            })
+            this.dashboardContext=data
+          }
+        }).catch(err=>{
+
+        })
+      },
+      async selectElectronicFence(){
+        await selectElectronicFenceQuery().then(res=>{
+          if(res.code==0){
+             console.log(res)
+            let data = res.data.data
+            console.log(data)
+            let arr1=[]
+            for(let i in data){
+              let o = data[i].electronicFence;
+              o.userList = data[i].userList
+              arr1.push(o)
+            }
+            console.log(arr1)
+            this.enterElecArr=arr1;
+          }
+        }).catch(err=>{
+
+        })
       }
+    },
+    async mounted(){
+      await this.getPerWarnlData();
+      await this.selectElectronicFence()
+      await this.$refs.map.getmap();
     }
 }
 </script>
@@ -187,7 +225,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.5em;
+    font-size: 1.5vw;
     color:#909399
   }
 }

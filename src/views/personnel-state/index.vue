@@ -4,7 +4,7 @@
       <div class="personneldetails-table">
           <my-table :tableTitle="tableTitle" :tableData="tableData"></my-table>
       </div>
-      <dialog-warn-handle ref="sendData"></dialog-warn-handle>
+      <!-- <dialog-warn-handle ref="sendData"></dialog-warn-handle> -->
     </el-container>
 </template>
 
@@ -60,7 +60,7 @@ export default {
   },
   mounted(){
     this.getPersonStatusQuery()
-    this.$refs.sendData.getDandleShow(row)
+    //this.$refs.sendData.getDandleShow(row)
   }
 }
 </script>

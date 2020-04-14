@@ -45,7 +45,7 @@
 
 <script>
   import {getWarnListData} from '@/api/table'
-  import dialogWarnHandle from '@/components/dialog-warn-handle/dialog'
+  import dialogWarnHandle from '@/components/dialog-person/dialog-warn-handle/dialog'
 
   export default{
     props:['message'],

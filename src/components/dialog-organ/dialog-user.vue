@@ -1,6 +1,6 @@
 <template>
 <!-- 新增 -->
-    <el-dialog :title='title' :visible.sync="roleFormVisible" :before-close="handleClose" :close-on-click-modal="false" top="12vh" >
+    <el-dialog :title='title' :visible.sync="roleFormVisible" :before-close="handleClose" :close-on-click-modal="false" top="12vh" append-to-body >
                         
                     <el-transfer
                         v-model="value"
@@ -10,7 +10,7 @@
                         }"
                         :titles="['可添加用户', '已添加用户']"
                         :button-texts="['删除', '添加']"
-                        :data="data" filterable class="Transfer" @change="handleChange">
+                        :data="data" filterable class="Transfer" @change="handleChange" :render-content="renderFunc">
                     </el-transfer>
                     <div slot="footer" class="dialog-footer">
                         <el-button @click.native="handleClose">关闭</el-button>
@@ -19,7 +19,7 @@
 </template>
 <script>
 import {findPresent,selectPresent,getUserData,relationKeyPersonnel,relationAdmin} from '@/api/table'
-import { getRole } from '@/utils/auth'
+import { getRole, getUser } from '@/utils/auth'
 export default {
     data(){
         return {
@@ -46,7 +46,12 @@ export default {
                     this.value=[]
                     if(this.name=="person"){
                         this.title="关联患者"
-                        findPresent({organizaId:row.id}).then((res) => {
+                        let role = JSON.parse(getRole())
+                        let user = JSON.parse(getUser())
+                        let params = {}
+                        params.roleId = role
+                        params.organizaId = user.organizationId
+                        findPresent(params).then((res) => {
                         if(res.code=="0"){
                             let userList = res.data.data
                             console.log(userList)
@@ -54,7 +59,7 @@ export default {
                             for(let i = 0;i < userList.length; i++){
                                 userArr.push({
                                     value: parseInt(userList[i].id),
-                                    desc: userList[i].name
+                                    desc: userList[i].name+","+userList[i].organizationName
                                 });
                             }
                             this.data=userArr
@@ -92,7 +97,7 @@ export default {
                             for(let i = 0;i < userList.length; i++){
                                 userArr.push({
                                     value: parseInt(userList[i].userId),
-                                    desc: userList[i].name
+                                    desc: userList[i].name+","+userList[i].organizationName
                                 });
                             }
                             this.data=userArr
@@ -156,12 +161,12 @@ export default {
                         relationAdmin(params).then((res)=>{
                         if(res.code=="0"){
                             this.$message({
-                            message: '移除成功',
+                            message: '添加成功',
                             type: 'success'
                             });
                         }else{
                             this.$message({
-                            message: '移除失败',
+                            message: '添加失败',
                             type: 'error'
                             });
                         }
@@ -179,12 +184,12 @@ export default {
                         relationKeyPersonnel(params).then((res)=>{
                         if(res.code=="0"){
                             this.$message({
-                            message: '添加成功',
+                            message: '移除成功',
                             type: 'success'
                             });
                         }else{
                             this.$message({
-                            message: '添加失败',
+                            message: '移除失败',
                             type: 'error'
                             });
                         }
@@ -215,6 +220,11 @@ export default {
             handleClose() {
                 this.roleFormVisible=false
                 this.$emit("selectElec")
+            },
+            renderFunc(h, option) {
+                console.log(option.desc)
+                let arr = option.desc.split(",")
+                return <div><span style="display:inline-block;width:50px;font-weight:bold">{ arr[0] }</span><span style="margin-left:20px;font-size:12px;color:#909399">{ arr[1] }</span></div>
             }
             
     }

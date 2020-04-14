@@ -13,9 +13,12 @@
                         <router-link to="/warningcenter/personwarn">
 
                           <el-menu-item index="1"  class="warningcenter-level1">
-                            <el-badge :value="2" class="item">
+                            <el-badge :value="pCount" class="item" v-if="pCount>0">
                               人员预警
                               </el-badge>
+                              <span v-else class="item">
+                                人员预警
+                              </span>
                               </el-menu-item>
 
                           </router-link>
@@ -24,9 +27,12 @@
                         <router-link to="/warningcenter/equipwarn">
 
                           <el-menu-item index="2"  class="warningcenter-level1">
-                            <el-badge :value="10" class="item">
+                            <el-badge :value="eCount" class="item" v-if="eCount>0">
                               设备预警
                               </el-badge>
+                              <span v-else class="item">
+                                设备预警
+                              </span>
                           </el-menu-item>
 
                          </router-link>
@@ -44,11 +50,13 @@
 </template>
 
 <script>
-
+import { selectCount } from "@/api/table"
 export default {
   name: 'techniquetactics',
   data(){
     return{
+      pCount:0,
+      eCount:0
     }
   },
     methods: {
@@ -57,7 +65,16 @@ export default {
       },
       handleClose(key, keyPath) {
         console.log(key, keyPath);
+      },
+      selectCount(){
+        selectCount().then(res=>{
+          this.eCount=res.data.eCount
+          this.pCount=res.data.pCount
+        })
       }
+    },
+    mounted(){
+      this.selectCount()
     }
 }
 </script>

@@ -40,16 +40,36 @@
         this.dialogHandleResult = false
       },
       sureBtn(){
-        this.changeDataResult.processingResult = 3
-        changeWarnData({
-          id:this.changeDataResult.id,
-          //处理记录
-          handleRecord:this.textarea,
-          processingResult:this.changeDataResult.processingResult
-        }).then(res =>{
-          console.log('处理结果填写成功')
-          this.dialogHandleResult = false
-          console.log(res)
+        this.$confirm('确认提交处理结果吗？', '提示', {}).then(() => {
+          this.changeDataResult.processingResult = 3
+          changeWarnData({
+            id:this.changeDataResult.id,
+            //处理记录
+            handleRecord:this.textarea,
+            processingResult:this.changeDataResult.processingResult
+          }).then(res =>{
+            if(res.code==0){
+              this.$message({
+                message: '提交成功',
+                type: 'success'
+              });
+              console.log('处理结果填写成功')
+              this.dialogHandleResult = false
+              this.$emit("cancel")
+              console.log(res)
+            }else{
+              this.$message({
+                message: '提交时出现错误',
+                type: 'success'
+              });
+            }
+           
+          }).catch(err=>{
+             this.$message({
+                message: '提交时出现错误',
+                type: 'success'
+              });
+          })
         })
       },
       getDandleResultShow(val){
