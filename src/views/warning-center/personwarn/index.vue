@@ -1,6 +1,5 @@
 <template>
     <el-container class="personwarn-container">
-
           <my-table :tableTitle="tableTitle" :tableData="tableData" @changeData="changeData"></my-table>
           <dialog-warn-handle ref="sendData" @sendState='getSendData'></dialog-warn-handle>
     </el-container>
@@ -54,7 +53,6 @@ export default {
       })
     },
     changeData(val){
-      console.log(val)
       this.$refs.sendData.getDandleShow(val)
     },
     getSendData(val){

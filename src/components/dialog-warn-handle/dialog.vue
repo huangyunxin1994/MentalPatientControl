@@ -52,10 +52,8 @@
       },
       getDandleShow(val){
         this.changeData = val
-        console.log(this.changeData.id)
         this.dialogHandleVisible = true
         let bb = getUser()
-        console.log(typeof(bb))
         bb = JSON.parse(bb)
         this.operationer = bb.account
       },

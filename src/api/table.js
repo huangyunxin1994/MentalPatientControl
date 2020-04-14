@@ -63,7 +63,7 @@ export const changeWarnData = params => { return post(`${base}/personnel/update`
  *设备预警信息查询
  */
 export const getEquWarnlData = params => { return get(`${base}/equipmentalert/selectByPage`, params); };
-/* 
+/*
  *预案管理增删查改
  */
 
@@ -76,6 +76,7 @@ export const updatePlan = params => { return post(`${base}/ReservePlan/updatePla
 export const updateReservePlanAndCondition = params => { return post(`${base}/ReservePlan/updateReservePlanAndCondition`, params, {emulateJSON: true}); };
 export const relationReservePlan = params => { return post(`${base}/ReservePlan/relationReservePlan`, params, {emulateJSON: true}); };
 export const deleteReservePlan = params => { return post(`${base}/ReservePlan/deleteReservePlan`, params, {emulateJSON: true}); };
+export const relationReservePlanList = params => { return get(`${base}/keypersonnel/selectPlan`, params); };
 /*
  *人员状态模块接口
  */

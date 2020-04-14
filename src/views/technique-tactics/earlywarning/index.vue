@@ -2,21 +2,23 @@
     <el-container class="earlywarning-container">
       <my-tree></my-tree>
       <div class="earlywarning-table">
-          <my-table :tableTitle="tableTitle" :tableData="tableData"></my-table>
+          <my-table :tableTitle="tableTitle" :tableData="tableData"  @changeData="changeData"></my-table>
       </div>
-        
+      <dialog-relation ref='sendData' @sendState='getSendData'></dialog-relation>
     </el-container>
 </template>
 
 <script>
 import  myTable from '@/components/table/table'
 import  myTree from '@/components/tree/tree'
-import {getPersonStatusQuery} from '@/api/table'
+import  dialogRelation from '@/components/dialog-relation/dialog'
+import {getPersonStatusQuery , getKeyPnlData ,relationReservePlanList} from '@/api/table'
 export default {
   name: 'Earlywarning',
   components:{
     myTable,
-    myTree
+    myTree,
+    dialogRelation
   },
   data(){
     return{
@@ -43,14 +45,33 @@ export default {
           console.log(obj)
           this.tableData=obj
         }
-       
+
       }).catch((err)=>{
 
       })
       },
+      //获取到预警关联列表
+      getKeyPnlDataList(){
+        relationReservePlanList().then((res)=>{
+          if(res.code == 0){
+            var obj=[]
+            this.tableData = res.data.data
+          }
+        }).catch((err)=>{
+
+        })
+      },
+      changeData(val){
+        console.log(val)
+        this.$refs.sendData.getDandleResultShow(val)
+      },
+      getSendData(val){
+        this.getKeyPnlDataList()
+      }
     },
     mounted(){
       this.getKeyPnlList()
+      this.getKeyPnlDataList()
     }
 }
 </script>
@@ -65,7 +86,7 @@ export default {
     width: 85%;
     height: 100%;
     padding: 1%;
-    
+
   }
 }
 </style>

@@ -100,6 +100,8 @@
              return value == 1 ? '处理中' : (value == 2 ? '未处理' : (value == 3? '已处理' : value == 4? '忽略':""));
             else if(name == 'equipmentType')
              return value == 1 ? '活动监测器' : (value == 2 ? '睡眠监测器' : value == 3? '智能手表' :"");
+            else if(name == 'level')
+             return value == 1 ? '一级' : (value == 2 ? '二级' : (value == 3? '三级' :(value == 4 ? '四级' :(value == 5 ? '五级' :(value == 6 ? '六级' :(value == 7 ? '七级' :(value == 8 ? '八级' : value == 9 ? '九级' :' ')))))))
             else
              return value;
         },
