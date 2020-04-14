@@ -18,7 +18,7 @@
           </div>
           <div class="activestate-handle">
                 <my-date @getData="setDateTime"></my-date>
-                <el-badge :value="3" class="item">
+                <el-badge :value="warnNum" class="item">
                 <el-button type="danger" @click='showDialogWarn' :disabled="warnActive">处理预警</el-button>
                 </el-badge>
           </div>
@@ -56,6 +56,7 @@ export default {
   components:{
       myDate,
       dialogWarn
+
   },
   data(){
     return{
@@ -66,7 +67,8 @@ export default {
       dialoWarn:false,
       dialogTableVisible:false,
       warnTableData: 'aaa',
-      warnActive: false
+      warnActive: false,
+      warnNum:0
     }
   },
     methods: {
@@ -401,15 +403,21 @@ export default {
         }
       },
       getWarnList(){
-        getWarnListData({keyUserid:this.personData.id}).then(res =>{
-
+        getWarnListData({keyUserid:this.personData.keyUserid}).then(res =>{
           console.log(res.data.data)
-          this.warnTableData = res.data.data
-          this.$refs.senda.getListData(this.warnTableData)
-          if(res.data.data == undefined){
-            this.warnActive = true
-          }else{
-            this.warnActive = false
+          if(res.code == 0){
+
+            if(res.data.data == undefined){
+              this.warnActive = true
+            }else{
+              let data =  res.data.data.filter(item=>{
+                  return item.processingResult != 3
+              })
+              this.warnTableData = data
+              this.warnNum = data.length
+              this.warnActive = false
+            }
+            this.$refs.senda.getListData(this.warnTableData)
           }
         })
       }
@@ -418,6 +426,7 @@ export default {
         this.drawChart();
         this.getEchartData()
         this.personData=this.$route.query.row
+        console.log(this.personData)
         this.getWarnList()
     }
 }

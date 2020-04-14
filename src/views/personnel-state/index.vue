@@ -4,14 +4,16 @@
       <div class="personneldetails-table">
           <my-table :tableTitle="tableTitle" :tableData="tableData"></my-table>
       </div>
-        
+      <dialog-warn-handle ref="sendData"></dialog-warn-handle>
     </el-container>
 </template>
 
 <script>
 import  myTable from '@/components/table/table'
 import  myTree from '@/components/tree/tree'
+
 import { getPersonStatusQuery } from '@/api/table'
+
 export default {
   name: 'Personneldetails',
   components:{
@@ -50,7 +52,7 @@ export default {
           console.log(obj)
           this.tableData=obj
         }
-       
+
       }).catch((err)=>{
 
       })
@@ -58,6 +60,7 @@ export default {
   },
   mounted(){
     this.getPersonStatusQuery()
+    this.$refs.sendData.getDandleShow(row)
   }
 }
 </script>
@@ -72,7 +75,7 @@ export default {
     width: 85%;
     height: 100%;
     padding: 1%;
-    
+
   }
 }
 </style>

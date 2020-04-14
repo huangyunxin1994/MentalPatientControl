@@ -9,28 +9,28 @@
                       @open="handleOpen"
                       @close="handleClose"
                       background-color="#e6e6e6">
-                      
+
                         <router-link to="/warningcenter/personwarn">
-                        
+
                           <el-menu-item index="1"  class="warningcenter-level1">
                             <el-badge :value="2" class="item">
                               人员预警
                               </el-badge>
                               </el-menu-item>
-                              
+
                           </router-link>
-                      
-                      
+
+
                         <router-link to="/warningcenter/equipwarn">
-                        
+
                           <el-menu-item index="2"  class="warningcenter-level1">
                             <el-badge :value="10" class="item">
                               设备预警
                               </el-badge>
                           </el-menu-item>
-                          
+
                          </router-link>
-                      
+
                     </el-menu>
                     </el-scrollbar>
                   </el-col>
@@ -44,6 +44,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'techniquetactics',
   data(){

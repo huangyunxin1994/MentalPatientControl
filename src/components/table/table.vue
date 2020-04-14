@@ -32,10 +32,11 @@
       </el-pagination>
     </el-col>
 </section>
-  
+
 </template>
 
 <script>
+
   export default {
     props:{
         tableTitle:Array,
@@ -107,7 +108,7 @@
         },
         userDetails(index,row){
           this.$router.push(
-            { 
+            {
               path: '/persondetails' ,
               query: {
                 row: row
@@ -121,7 +122,7 @@
         },
         //编辑
         handleEdit(index,row){
-          console.log(row)
+          // console.log(row)
           this.$emit('changeData',row)
         },
         //删除
@@ -132,7 +133,7 @@
               this.listLoading = true;
               //NProgress.start();
               this.$emit('removeData',row)
-              
+
             }).catch(() => {
 
             });
@@ -148,7 +149,7 @@
               let para = this.sels;
               console.log(para)
               this.$emit('bRemoveData',para)
-              
+
             }).catch(() => {
 
             });

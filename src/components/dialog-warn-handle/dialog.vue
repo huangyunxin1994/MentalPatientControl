@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @changeData = "getWarnData">
     <el-dialog title="处理预警" :visible.sync="dialogHandleVisible" center :append-to-body='true' :lock-scroll="false" width="30%">
     <div class="warnList">
        <el-row class="btnClass">
@@ -28,6 +28,8 @@
   import { getPerSe , getWarnListData , changeWarnData } from '@/api/table'
   import dialogWarnHandleResult from '@/components/dialog-warn-handle-result/dialog'
 
+  import {getUser} from '@/utils/auth'
+
   export default{
     props:['message'],
     components:{
@@ -38,19 +40,24 @@
         dialogHandleVisible:false,
         data:false,
         btnNum:3,
-        changeData:''
+        changeData:'',
+        operationer:''
       }
     },
     methods:{
       cancel(){
         // this.$emit('dialog','1')
         this.dialogHandleVisible = false
+        this.$emit('sendState',1)
       },
       getDandleShow(val){
-        console.log('-------------'+val+'-----------------------')
         this.changeData = val
         console.log(this.changeData.id)
         this.dialogHandleVisible = true
+        let bb = getUser()
+        console.log(typeof(bb))
+        bb = JSON.parse(bb)
+        this.operationer = bb.account
       },
       //点击忽略按钮
       ignore(){
@@ -68,9 +75,12 @@
       startHandle(){
         this.btnNum = 2
         this.changeData.processingResult = 1
+        let nowData = this.getTime()
         changeWarnData({
           id:this.changeData.id,
-          processingResult:this.changeData.processingResult
+          processingResult:this.changeData.processingResult,
+          handleUsername:this.operationer,
+          handleTime:nowData
         }).then(res =>{
           console.log('开始处理成功')
           console.log(res)
@@ -80,6 +90,24 @@
       writeResult(){
         this.btnNum = 3
         this.$refs.showResult.getDandleResultShow(this.changeData)
+      },
+      getWarnData(val){
+        this.dialogHandleVisible = true
+      },
+      //获取当前时间
+      getTime(){
+        let nowTime = new Date();
+        let nowYear = nowTime.getFullYear();
+        let nowMon = nowTime.getMonth() + 1;
+        if(nowMon < 10){
+          nowMon = '0'+nowMon
+        }
+        let nowDay = nowTime.getDate()
+        if(nowDay < 10){
+          nowDay = '0'+ nowDay
+        }
+        let nowDate = nowYear + '-' + nowMon + '-' + nowDay
+        return nowDate
       }
     },
     created() {
@@ -87,6 +115,7 @@
     },
     mounted(){
       // console.log(this.warnData)
+      this.getTime()
     }
   }
 

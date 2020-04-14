@@ -1,19 +1,21 @@
 <template>
     <el-container class="personwarn-container">
-      
-          <my-table :tableTitle="tableTitle" :tableData="tableData"></my-table>
-        
+
+          <my-table :tableTitle="tableTitle" :tableData="tableData" @changeData="changeData"></my-table>
+          <dialog-warn-handle ref="sendData" @sendState='getSendData'></dialog-warn-handle>
     </el-container>
 </template>
 
 <script>
 import  myTable  from '@/components/table/table'
+import  dialogWarnHandle from '@/components/dialog-warn-handle/dialog'
 import { getPerWarnlData } from "@/api/table"
 import { getRole,getUser } from '@/utils/auth'
 export default {
   name: 'Personwarn',
   components:{
-    myTable
+    myTable,
+    dialogWarnHandle
   },
   data(){
     return{
@@ -35,7 +37,7 @@ export default {
   },
   methods: {
     getPerWarnlData(){
-      let role = JSON.parse(getRole()) 
+      let role = JSON.parse(getRole())
       let user = JSON.parse(getUser());
       console.log(user)
       let param ={}
@@ -50,6 +52,13 @@ export default {
       }).catch(err=>{
 
       })
+    },
+    changeData(val){
+      console.log(val)
+      this.$refs.sendData.getDandleShow(val)
+    },
+    getSendData(val){
+      this.getPerWarnlData()
     }
   },
   mounted(){

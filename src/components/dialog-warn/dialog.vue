@@ -23,10 +23,10 @@
               label="预警时间">
             </el-table-column>
             <el-table-column
-              label="操作"
+              label= '操作'
               width="100">
               <template scope='scope'>
-                <el-button type="text" size="small" @click="compile(scope.$index, scope.row)">编辑</el-button>
+                <el-button type="text" size="small" @click="compile(scope.$index, scope.row)">{{isCompile}}</el-button>
               </template>
             </el-table-column>
         </el-table>
@@ -57,7 +57,8 @@
         dialogTableVisible:false,
         warnData:[],//初始化后台传过来的数据
         tableData: [],
-        data:false
+        data:false,
+        isCompile:'编辑'
       }
     },
     methods:{
