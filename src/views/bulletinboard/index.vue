@@ -17,8 +17,8 @@
           <div id="warnMess" style="width:100%;height:33%;background:#fff;padding:20px;">
             <div class="warnMess-title">预警信息</div>
             <el-scrollbar style="width:100%;height:95%;">
-              <div class="warnMess-content" v-for="i in 15" :key="i" style="white-space:nowrap">
-                <i class="el-icon-warning warnMess-content-icon"></i>&nbsp;&nbsp;[2020-3-3 20:20:20]&nbsp;&nbsp; 轻度人员预警：张三  
+              <div class="warnMess-content" v-for="(i,index) in warnData" :key="index" style="white-space:nowrap">
+                <i class="el-icon-warning warnMess-content-icon"></i>&nbsp;&nbsp;[{{i.alertTime}}]&nbsp;&nbsp; 人员预警：{{i.name}}  
               </div>
             </el-scrollbar>
           </div>
@@ -44,7 +44,8 @@
 <script>
 import echarts from 'echarts'
 import  mymap  from '@/components/map/map'
-import {equipmentStatistics,keyPersonnelEarly,keyPersonnelStatistics,selectCount,selectWlCount,userRoleStatistics } from "@/api/table"
+import {equipmentStatistics,keyPersonnelEarly,keyPersonnelStatistics,selectCount,selectWlCount,userRoleStatistics,getPerWarnlData } from "@/api/table"
+import { getRole,getUser } from '@/utils/auth'
 export default {
   name: 'Login',
   components:{
@@ -55,9 +56,10 @@ export default {
       loading: false,
       redirect: undefined,
       ManPersonData:[
-        {value: 335, name: '监护人'},
-        {value: 310, name: '医师'},
-        {value: 234, name: '网格员'}
+        {value: 0, name: '民警'},
+        {value: 0, name: '网格员'},
+        {value: 0, name: '医师'},
+        {value: 0, name: '监护人'},
       ],
       KeyPersonData:[
         { value: "", name: '重度患者' },
@@ -68,6 +70,7 @@ export default {
       equipSleep:[],
       equipActive:[],
       alert1:[],alert2:[],alert3:[],alert4:[],alert5:[],alert6:[],alert7:[],
+      warnData:[]
 
     }
   },
@@ -82,9 +85,10 @@ export default {
     },
     async getDrawData(){
       await this.keyPersonnelStatistics()
-      await this.userRoleStatistics()
       await this.keyPersonnelEarly()
-      
+      await this.userRoleStatistics()
+      await this.selectCount()
+      await this.getPerWarnlData()
       await this.equipmentStatistics()
       await this.drawChart();
     },
@@ -104,16 +108,24 @@ export default {
       await userRoleStatistics().then(res=>{
         if(res.code==0){
           let data = res.data.data
-          console.log(data)
+          for( let i in data){
+            if(data[i].roleId == 1){
+              this.ManPersonData[0].value = data[i].count//民警
+            }else if(data[i].roleId == 2){
+              this.ManPersonData[1].value = data[i].count//网格员
+            }else if(data[i].roleId == 3){
+              this.ManPersonData[2].value = data[i].count//医生
+            }else if(data[i].roleId == 4){
+              this.ManPersonData[3].value = data[i].count//监护人
+            }
+          }
          
         }
         
       })
     },
     async keyPersonnelEarly(){
-      
       await keyPersonnelEarly().then(res=>{
-        
         if(res.code==0){
           let data = res.data.data
           let para ={}
@@ -153,6 +165,37 @@ export default {
           
         }
         
+      })
+    },
+    async selectCount(){
+      await selectCount().then(res=>{
+        if(res.code==0){
+          let data = res.data.data
+          let para ={}
+          console.log(data)
+          
+        }
+        
+      })
+    },
+    async getPerWarnlData(){
+      let role = JSON.parse(getRole()) 
+      let user = JSON.parse(getUser());
+      console.log(user)
+      let param ={}
+      param.roleId=role
+      param.userId=user.userId
+      param.organizaId=user.organizationId||""
+      await getPerWarnlData(param).then(res=>{
+        if(res.code==0){
+          console.log(res)
+          let data = res.data.data.filter(item=>{
+            return item.processingResult==2
+          })
+          this.warnData=data
+        }
+      }).catch(err=>{
+
       })
     },
     async equipmentStatistics(){
@@ -287,12 +330,12 @@ export default {
                         textStyle:{
                             rich:{
                                 a:{
-                                    fontSize:12,
+                                    fontSize:10,
                                     verticalAlign:'top',
                                     padding:[10,0,10,0]
                                 },
                                 b:{
-                                    fontSize:12,
+                                    fontSize:10,
                                     padding:[0,0,0,0],
                                     lineHeight:0
                                 }

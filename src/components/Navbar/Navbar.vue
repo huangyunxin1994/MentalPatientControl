@@ -29,7 +29,7 @@
         <router-link tag="i" to="/manage" class="navbar-message el-icon-s-tools" ></router-link> 
       </el-tooltip>
       
-      <el-badge :value="12" class="item">
+      <el-badge :value="warnNum" class="item">
         <router-link tag="i" to="/warningcenter" class="navbar-message el-icon-message-solid" ></router-link> 
       </el-badge>
       <el-dropdown class="avatar-container" trigger="click">
@@ -70,7 +70,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-
+import { selectCount} from '@/api/table'
 export default {
   computed: {
     ...mapGetters([
@@ -79,6 +79,11 @@ export default {
     ]),
     key() {
       return this.$route.path
+    }
+  },
+  data(){
+    return{
+      warnNum:0
     }
   },
   methods: {
@@ -91,7 +96,15 @@ export default {
     },
     enterBulletin(){
        this.$router.push({ path: '/bulletinboard' })
+    },
+    selectCount(){
+      selectCount().then(res=>{
+        this.warnNum=res.data.data
+      })
     }
+  },
+  mounted(){
+    this.selectCount()
   }
 }
 </script>

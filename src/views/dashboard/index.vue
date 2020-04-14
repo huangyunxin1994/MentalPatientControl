@@ -1,7 +1,7 @@
 <template>
     <el-container class="dashboard-container">
       <mymap class="dashboard-map" ref="map" :pointsArr="pointsArr" :electricFenceArr="electricFenceArr"></mymap>
-      <my-tree showPerson='true' class="dashboard-tree"></my-tree>
+      <my-tree showPerson='true' class="dashboard-tree" @getThisOrgan="getThisOrgan"></my-tree>
       <div class="dashboard-button">
         <el-button type="primary" @click="showThisMark('0')">在家人员数<br/><br/>{{inHomeNum}}</el-button>
         <el-button type="primary" @click="showThisMark('1')">离家人员数<br/><br/>{{outHomeNum}}</el-button>
@@ -36,7 +36,6 @@
 <script>
 import  mymap  from '@/components/map/map'
 import  myTree from '@/components/tree/tree'
-
 export default {
   name: 'Dashboard',
   components:{
@@ -100,8 +99,10 @@ export default {
       showThisCircle(val){
         this.$refs.map.showCircleOver(val)
         this.showflag=!this.showflag
+      },
+      getThisOrgan(data){
+        console.log(data)
       }
-
     }
 }
 </script>

@@ -62,24 +62,38 @@ export default {
               { title : "账号", name : "account", type : "input" },
               { title : "密码", name : "password", type : "input" },
               { title : "姓名", name : "name", type : "input" },
-              { title : "所属组织", name : "organizationName", type : "input" },
+              { title : "是否复用", name : "multiplexMark", type : "radio" },
+              { title : "性别", name : "sex", type : "radio" },
+              { title : "角色", name : "roleId", type : "roleselect" },
+              { title : "所属组织", name : "organizationId", type : "cascader" },
+              { title : "关联用户", name : "", type : "userbutton" },
               { title : "联系电话", name : "phone", type : "number" },
-              { title : "是否复用", name : "multiplexMark", type : "radio" }
+              { title : "身份证号", name : "idCard", type : "number" },
+              
       ]
       let para = {'submitType':"insert"}
       this.$refs.dialog.form=para
-      this.$refs.dialog.handleShow();
+      let arr = ["organ","role"]
+      this.$refs.dialog.handleShow(arr);
     },
     changeData(row){
       this.handleTitle=[
+              { title : "账号", name : "account", type : "input" },
+              { title : "密码", name : "password", type : "input" },
               { title : "姓名", name : "name", type : "input" },
-              { title : "所属组织", name : "organizationName", type : "input" },
+              { title : "是否复用", name : "multiplexMark", type : "radio" },
+              { title : "性别", name : "sex", type : "radio" },
+              { title : "角色", name : "roleId", type : "roleselect" },
+              { title : "所属组织", name : "organizationId", type : "cascader" },
+              { title : "关联用户", name : "", type : "userbutton" },
               { title : "联系电话", name : "phone", type : "number" },
-              { title : "是否复用", name : "multiplexMark", type : "radio" }
+              { title : "身份证号", name : "idCard", type : "number" },
+              
       ]
       row.submitType="update"
       this.$refs.dialog.form=Object.assign({}, row)
-      this.$refs.dialog.handleShow();
+       let arr = ["organ","role"]
+      this.$refs.dialog.handleShow(arr);
     },
     /* 新增数据 */
     insertData(para){
@@ -103,6 +117,7 @@ export default {
     },
     /* 修改数据 */
     updateData(para){
+      console.log(para)
       updateUserData(para).then(res=>{
         this.$refs.dialog.loading = false;
         this.$refs.dialog.form={};

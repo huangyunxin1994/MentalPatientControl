@@ -17,12 +17,45 @@
                                 </el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item :label="item.title" :prop="item.name" v-else-if="item.type=='select'">
+                        <el-form-item :label="item.title" :prop="item.name" v-else-if="item.type=='userselect'">
+                            <!-- <el-input v-model="editForm.name" auto-complete="off"></el-input> -->
+                            <el-select v-model="form[item.name]" filterable placeholder="请选择"  @change="userChange">
+                                <el-option
+                                v-for="item in userOptions"
+                                :key="item.name"
+                                :label="item.name"
+                                :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item :label="item.title" :prop="item.name" v-else-if="item.type=='roleselect'">
                             <!-- <el-input v-model="editForm.name" auto-complete="off"></el-input> -->
                             <el-select v-model="form[item.name]" filterable placeholder="请选择">
                                 <el-option
-                                v-for="item in selectOptions"
+                                v-for="item in roleOptions"
                                 :key="item.name"
+                                :label="item.name"
+                                :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item :label="item.title" :prop="item.name" v-else-if="item.type=='personselect'">
+                            <!-- <el-input v-model="editForm.name" auto-complete="off"></el-input> -->
+                            <el-select v-model="form[item.name]" filterable placeholder="请选择" @change="personChange(item.name,form[item.name])">
+                                <el-option
+                                v-for="item in personOptions"
+                                :key="item.name"
+                                :label="item.name"
+                                :value="item.userId">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item :label="item.title" :prop="item.name" v-else-if="item.type=='equipselects'">
+                            <!-- <el-input v-model="editForm.name" auto-complete="off"></el-input> -->
+                            <el-select v-model="form[item.name]" filterable placeholder="请选择"  @change="equipChange">
+                                <el-option
+                                v-for="(item,index) in equipOptions"
+                                :key="item.name+index"
                                 :label="item.name"
                                 :value="item.id">
                                 </el-option>
@@ -41,17 +74,21 @@
                         </el-form-item>
                         <el-form-item :label="item.title" :prop="item.name" v-else-if="item.type=='cascader'" >
                             <!-- <el-input v-model="editForm.name" auto-complete="off"></el-input> -->
-                            <el-select v-model="form[item.name]" filterable placeholder="请选择">
+                            <el-select v-model="form[item.name]" filterable placeholder="请选择"  @change="organChange">
                                 <el-option
                                 v-for="item in organOptions"
                                 :key="item.name"
                                 :label="item.name"
-                                :value="item.id">
+                                :value="item.id"
+                               >
                                 </el-option>
                             </el-select>
                         </el-form-item>
                         <el-form-item :label="item.title" :prop="item.name" v-else-if="item.need==='1'&&item.type==='input'">
                             <el-input v-model="form[item.name]" auto-complete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item :label="item.title" :prop="item.name" v-else-if="item.type==='userbutton'">
+                            <el-button type="primary" @click="handleChooseUser()">选择</el-button>
                         </el-form-item>
                         <el-form-item :label="item.title" :prop="item.name" v-else-if="item.type==='radio'&&item.name==='sex'">
                             <el-radio-group v-model="form[item.name]">
@@ -82,10 +119,24 @@
                             <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="form[item.name]" >
                             </el-input>
                         </el-form-item>
+                        <el-form-item :label="item.title" :prop="item.name" v-else-if="item.type==='number'">
+                            <el-input v-model="form[item.name]" type="number"></el-input>
+                        </el-form-item>
+                         <el-form-item :label="item.title" :prop="item.name" v-else-if="item.type==='equipselect'">
+                            <el-radio-group v-model="form[item.name]">
+                                <el-radio-button v-model="form[item.name]" label="1">活动监测器</el-radio-button>
+                                <el-radio-button v-model="form[item.name]" label="2">睡眠监测器</el-radio-button>
+                                <el-radio-button v-model="form[item.name]" label="3">智能手表</el-radio-button>
+                            </el-radio-group>
+                        </el-form-item>
+                        
                         <el-form-item :label="item.title" :prop="item.name" v-else>
                             <el-input v-model="form[item.name]"></el-input>
                         </el-form-item>
                         </div>
+                        <el-form-item label="上传频率" v-if="form['equipmentType']==='3'">
+                            <el-input v-model="form['uploadInterval']"></el-input>
+                        </el-form-item>
                     </el-form>
                     <div slot="footer" class="dialog-footer">
                         <el-button @click.native="handleClose">取消</el-button>
@@ -94,7 +145,7 @@
                 </el-dialog>
 </template>
 <script>
-import { getOrganData } from "@/api/table"
+import { getOrganData,getRoleData,getKeyPnlData,getUserData,getEquipData } from "@/api/table"
 function filterArray(data) {
     data.forEach(function (item) {
     delete item.children;
@@ -121,6 +172,7 @@ export default {
     },
     data(){
         return {
+            radio1:"1",
             formVisible:false,
             loading: false,
             fileList: [],
@@ -135,6 +187,10 @@ export default {
             },
             organValue:[],
             organOptions: [],
+            roleOptions:[],
+            userOptions:[],
+            personOptions:[],
+            equipOptions:[],
             cascaderselectOptions:[],
             title:""
             
@@ -143,12 +199,24 @@ export default {
     methods:{
             
         //显示界面
-			handleShow() {
+			handleShow(arr) {
                 if(this.form.submitType=="update")
                     this.title="修改"
                 else if(this.form.submitType=="insert")
                     this.title="新增"
-                this.getOrganData()
+                for(let i in arr){
+                    if(arr[i]=="organ")
+                      this.getOrganData()
+                    if(arr[i]=="role")
+                      this.getRoleData()
+                    if(arr[i]=="user")
+                      this.getUserData()
+                    if(arr[i]=="person")
+                      this.getPersonData()
+                    if(arr[i]=="equip")
+                      this.getEquipData()
+                }
+                
                 this.formVisible = true;	
 			},
 			addSubmit() {
@@ -158,7 +226,7 @@ export default {
 							this.loading = true;
 							//NProgress.start();
                             let para = Object.assign({}, this.form);
-                            console.log(para)
+                            //console.log(para)
                             if(para.submitType=="insert"){
                                 this.$emit("insertData",para)
                             }else if(para.submitType=="update"){
@@ -178,29 +246,115 @@ export default {
                 this.formVisible=false
                 this.loading=false
             },
-            getOrganData(){
+             getOrganData(){
                 let params={}
                 params.organizaId=1;
                 params.best=1
                 getOrganData(params).then((res)=>{
-                console.log(res)
+                //console.log(res)
                 if(res.code==0){
                     let data = res.data.data;
                     if(data.length>0){
-                    console.log(data)
+                    //console.log(data)
                     this.organOptions=data
                     }else{
 
                     }
                 }
                 }).catch(function (error) {
-                console.log(error);
+                //console.log(error);
                 });
             },
+            getPersonData(){
+                getUserData().then(res=>{
+                    //console.log(res)
+                    if(res.code==0){
+                    this.personOptions=res.data.data
+                    }
+
+                }).catch(error => {
+                    //console.log(error)
+                })
+            },
+            getEquipData(){
+                let para ={currentPage:1,pageSize:100}
+                getEquipData(para).then(res=>{
+                //console.log(res)
+                if(res.code==0){
+                    this.equipOptions=res.data.data
+                    console.log(this.equipselect)
+                }
+
+                }).catch(error => {
+                    //console.log(error)
+                })
+            },
             organChange(value){
+                //console.log(value)
                 // let id = this.$refs['cascader'][0].getCheckedNodes()[0].value
                 // let name = this.$refs['cascader'][0].getCheckedNodes()[0].label
-                this.form.parentId = value[value.length-1]
+                let arr = this.organOptions.filter(item=>{
+                    return item.id == value
+                })
+                this.form.organizationName = arr[0].name
+                this.form.parentId = value
+            },
+            userChange(value){
+                //console.log(value)
+                // let id = this.$refs['cascader'][0].getCheckedNodes()[0].value
+                // let name = this.$refs['cascader'][0].getCheckedNodes()[0].label
+                let arr = this.userOptions.filter(item=>{
+                    return item.id == value
+                })
+                this.form.keyUserid = arr[0].name
+                //console.log(this.form)
+            },
+            personChange(name,value){
+                console.log(name)
+                console.log(value)
+                name = name.substring(0, name.length - 2)
+                // let id = this.$refs['cascader'][0].getCheckedNodes()[0].value
+                // let name = this.$refs['cascader'][0].getCheckedNodes()[0].label
+                let arr = this.personOptions.filter(item=>{
+                    return item.userId == value
+                })
+                this.form[name] = arr[0].name
+                console.log(this.form)
+            },
+            equipChange(value){
+                let arr = this.equipOptions.filter(item=>{
+                    return item.id == value
+                })
+                this.form.equipmentName = arr[0].name
+                console.log(this.form)
+            },
+            getRoleData(){
+                getRoleData().then(res=>{
+                    ////console.log(res)
+                    if(res.code==0){
+                    this.roleOptions=res.data.data
+                    //console.log(this.roleOptions)
+                    
+                    }
+
+                }).catch(error => {
+                    ////console.log(error)
+                })
+            },
+            getUserData(){
+                getKeyPnlData().then(res=>{
+                    //console.log(res)
+                    if(res.code==0){
+                    this.userOptions=res.data.data
+                    //console.log(this.tableData)
+                    }
+
+                }).catch(error => {
+                //console.log(error)
+                })
+            },
+            handleChooseUser(){
+
             }
               
     }
