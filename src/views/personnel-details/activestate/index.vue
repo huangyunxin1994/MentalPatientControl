@@ -7,12 +7,12 @@
               <el-row :gutter="20">
                 <el-col :span="8">姓名：{{personData.name}}</el-col>
                 <el-col :span="8">联系电话：{{personData.phone}}</el-col>
-                <el-col :span="8">网格管理员：赵枫</el-col>
+                <el-col :span="8">网格管理员：{{personData.networkAdministrator}}</el-col>
                 <el-col :span="8">人员级别：二级</el-col>
-                <el-col :span="8">住址：xxx省xxx市</el-col>
-                <el-col :span="8">责任医师：钱塘</el-col>
+                <el-col :span="8">住址：{{personData.address}}</el-col>
+                <el-col :span="8">责任医师：{{personData.responsiblePhysician}}</el-col>
                 <el-col :span="8">病情描述：活动频率异常，情绪不稳定</el-col>
-                <el-col :span="8">监护人：李四</el-col>
+                <el-col :span="8">监护人：{{personData.guardian}}</el-col>
                 <el-col :span="8">所属组织：{{personData.organizationName}}</el-col>
             </el-row>
           </div>
@@ -68,7 +68,12 @@ export default {
       dialogTableVisible:false,
       warnTableData: 'aaa',
       warnActive: false,
-      warnNum:0
+      warnNum:0,
+      time:["00:00","01:00","02:00","03:00","04:00","05:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"],
+      activityFrequencyT:[],
+      activityFrequencyA:[],
+      activityTimeT:[],
+      activityTimeA:[]
     }
   },
     methods: {
@@ -81,12 +86,90 @@ export default {
           if(time==""){
               time=new Date(new Date().toLocaleDateString()).getTime()
           }
+          let para ={}
+          console.log(this.personData.keyUserid)
+          para.keyUserId  = this.personData.keyUserid
+          para.time = parseTime(time,'{y}-{m}-{d}')
+          //console.log(para)
+          getPerSe(para).then(res=>{
+              console.log(res)
+              if(res.code==0){
+                  let arr1=[],arr2=[],arr3=[],arr4=[],arr5=[],arr6=[],arr7=[]
+                  for(let i in res.data.frequency_today){
+                      let para=[],para2=[]
+                      para.push(res.data.frequency_today[i].hours+":00")
+                      para.push(res.data.frequency_today[i].activityFrequency)
+                      para2.push(res.data.frequency_today[i].hours+":00")
+                      para2.push(res.data.frequency_today[i].activityTime)
+                      arr1.push(para)
+                      arr2.push(para2)
+                  }
+                  for(let i in res.data.frequency_lastday){
+                      let para=[],para2=[]
+                      para.push(res.data.frequency_lastday[i].hours+":00")
+                      para.push(res.data.frequency_lastday[i].activityFrequency)
+                      para2.push(res.data.frequency_lastday[i].hours+":00")
+                      para2.push(res.data.frequency_lastday[i].activityTime)
+                      arr3.push(para)
+                      arr4.push(para2)
+                  }
+                  for(let i in res.data.Blood_today){
+                      let para=[],para2=[],para3=[]
+                      para.push(res.data.Blood_today[i].hours+":00")
+                      para.push(res.data.Blood_today[i].heartRate)
+                      para2.push(res.data.Blood_today[i].hours+":00")
+                      para2.push(res.data.Blood_today[i].diastolicPressure)
+                      para3.push(res.data.Blood_today[i].hours+":00")
+                      para3.push(res.data.Blood_today[i].systolicPressure)
+                      arr5.push(para)
+                      arr6.push(para2)
+                      arr7.push(para3)
+                  }
+                  this.activityFrequencyT = arr1
+                  this.activityTimeT = arr2
+                  this.activityFrequencyA = arr3
+                  this.activityTimeA = arr4
+                  this.heartRateT = arr5
+                  this.diastolicPressureT = arr6
+                  this.systolicPressureT = arr7
+                  console.log(arr5)
+                  console.log(arr6)
+                   console.log(arr7)
+                  this.drawChart();
+              }
+          }).catch(err=>{
+
+          })
+      },
+      
+      getEchartData2(){
+          let time=this.dateTime;
+          if(time==""){
+              time=new Date(new Date().toLocaleDateString()).getTime()
+          }
           getPerSe
           let data=[];
           for(let i = 0; i < 25; i ++){
               let para=[]
               para.push(time+i*3600*1000)
-              para.push(Math.ceil(Math.random()*100))
+              para.push(Math.ceil(Math.round(Math.random()*10)))
+              // para.push(Math.ceil(Math.round(Math.random()*100)))
+              // para.push(Math.ceil(Math.round(Math.random())))
+              data.push(para)
+          }
+          return data
+      },
+      getEchartData3(){
+          let time=this.dateTime;
+          if(time==""){
+              time=new Date(new Date().toLocaleDateString()).getTime()
+          }
+          getPerSe
+          let data=[];
+          for(let i = 0; i < 25; i ++){
+              let para=[]
+              para.push(time+i*3600*1000)
+              para.push(Math.ceil(Math.round(Math.random())))
               // para.push(Math.ceil(Math.round(Math.random()*100)))
               // para.push(Math.ceil(Math.round(Math.random())))
               data.push(para)
@@ -102,6 +185,7 @@ export default {
 
       },
       drawChart() {
+          console.log(172)
                 let activerate = echarts.init(document.getElementById('activerate'));
                 let activetime = echarts.init(document.getElementById('activetime'));
                 let heartrate = echarts.init(document.getElementById('heartrate'));
@@ -113,24 +197,19 @@ export default {
                     tooltip:{trigger: 'axis',},
                     legend: {data:['今日','平均']},
                     xAxis: {
-                      type: 'time',
+                      type: 'category',
                       boundaryGap: false,
                       name:"单位:小时",
-                      interval:4*3600*1000,
-                        axisLabel : {
-                            formatter: this.formatterFun
-                        }
+                      interval:4,
+                      data: this.time
                     },
                     yAxis: {
                         type: 'value',
                         name:"单位:次",
-                        min: 0,
-                        max: 100,
-                        splitNumber: 5
                     },
                     series: [{
                         name:"今日",
-                        data: this.getEchartData(),
+                        data: this.activityFrequencyT,
                         type: 'line',
                         itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                             color: '#E6A23C',
@@ -139,7 +218,7 @@ export default {
                     },
                     {
                         name:"平均",
-                        data: this.getEchartData(),
+                        data: this.activityFrequencyA,
                         type: 'line',
                         itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                             color: '#409EFF',
@@ -149,13 +228,15 @@ export default {
                     ]
                 }
                 let option2={
-                    title: {text: '活动次数'},
+                    title: {text: '活动时长'},
                     tooltip:{trigger: 'axis',},
                     legend: {data:['今日','平均']},
-                    xAxis: {type: 'time',boundaryGap: false,name:"单位:小时",interval:4*3600*1000,
-                        axisLabel : {
-                            formatter: this.formatterFun
-                        }
+                    xAxis: {
+                      type: 'category',
+                      boundaryGap: false,
+                      name:"单位:小时",
+                      interval:4,
+                      data: this.time
                     },
                     yAxis: {
                         type: 'value',
@@ -165,14 +246,11 @@ export default {
                           lineStyle: {
                             type: 'dashed'
                           }
-                        },
-                        min:84,
-                        max:104,
-                        splitNumber: 4
+                        }
                     },
                     series: [{
                         name:"今日",
-                        data: this.getEchartData(),
+                        data: this.activityTimeT,
                         type: 'line',
                         itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                             color: '#E6A23C',
@@ -181,7 +259,7 @@ export default {
                     },
                     {
                         name:"平均",
-                        data: this.getEchartData(),
+                        data: this.activityTimeA,
                         type: 'line',
                         itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                             color: '#409EFF',
@@ -195,24 +273,19 @@ export default {
                     tooltip:{trigger: 'axis',},
                     backgroundColor:'#fadfe2',
                     xAxis: {
-                        type: 'time',
-                        boundaryGap: false,
-                        name:"单位:小时",
-                        interval:2*3600*1000,
-                        axisLabel : {
-                            formatter: this.formatterFun
-                        }
+                         type: 'category',
+                      boundaryGap: false,
+                      name:"单位:小时",
+                      interval:4,
+                      data: this.time
                     },
                     yAxis: {
                         type: 'value',
                         name:"单位:bpm",
-                        min:60,
-                        max:90,
-                        splitNumber: 7
                     },
                     series: [{
                         name:"今日",
-                        data: this.getEchartData(),
+                        data: this.heartRateT,
                         type: 'line',
                         itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                             color: '#E6A23C',
@@ -226,24 +299,19 @@ export default {
                     tooltip:{trigger: 'axis',},
                     legend: {data:['高压','低压']},
                     xAxis: {
-                        type: 'time',
-                        boundaryGap: false,
-                        name:"单位:小时",
-                        interval:2*3600*1000,
-                        axisLabel : {
-                            formatter: this.formatterFun
-                        }
+                         type: 'category',
+                      boundaryGap: false,
+                      name:"单位:小时",
+                      interval:4,
+                      data: this.time
                     },
                     yAxis: {
                         type: 'value',
                         name:"单位:mmHg",
-                        min:60,
-                        max:130,
-                        splitNumber: 10
                     },
                     series: [{
                         name:"高压",
-                        data: this.getEchartData(),
+                        data: this.systolicPressureT,
                         type: 'line',
                         itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                             color: '#E6A23C',
@@ -252,7 +320,7 @@ export default {
                     },
                     {
                         name:"低压",
-                        data: this.getEchartData(),
+                        data: this.diastolicPressureT,
                         type: 'line',
                         itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                             color: '#409EFF',
@@ -294,7 +362,7 @@ export default {
                     },
                     series: [{
                         name:"今日",
-                        data: this.getEchartData(),
+                        data: this.getEchartData2(),
                         type: 'line',
                         itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                             color: '#E6A23C',
@@ -303,7 +371,7 @@ export default {
                     },
                     {
                         name:"平均",
-                        data: this.getEchartData(),
+                        data: this.getEchartData2(),
                         type: 'line',
                         itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                             color: '#409EFF',
@@ -354,7 +422,7 @@ export default {
                     },
                     series: [{
                         name:"今日",
-                        data: this.getEchartData(),
+                        data: this.getEchartData3(),
                         step: 'start',
                         type: 'line',
                         itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
@@ -364,7 +432,7 @@ export default {
                     },
                     {
                         name:"平均",
-                        data: this.getEchartData(),
+                        data: this.getEchartData3(),
                         step: 'start',
                         type: 'line',
                         itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
@@ -422,12 +490,15 @@ export default {
         })
       }
     },
-    mounted(){
-        this.drawChart();
-        this.getEchartData()
-        this.personData=this.$route.query.row
+    async mounted(){
+        this.personData=await this.$route.query.row
         console.log(this.personData)
-        this.getWarnList()
+      
+       
+       await this.getEchartData()
+       await this.getWarnList()
+        
+        
     }
 }
 </script>

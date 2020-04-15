@@ -21,7 +21,7 @@
 <script>
   import { changeEquipData } from '@/api/table'
   import dialogWarnHandleResult from '@/components/dialog-equip/dialog-warn-handle-result/dialog'
-
+  import store from "@/store"
   import {getUser} from '@/utils/auth'
 
   export default{
@@ -68,6 +68,7 @@
                 type: 'success'
               });
               this.cancel()
+              store.dispatch('user/getWarnNum')
             }else{
               this.$message({
                 message: '忽略时出现错误',
@@ -100,6 +101,7 @@
                 type: 'success'
               });
               this.cancel()
+              store.dispatch('user/getWarnNum')
             }else{
               this.$message({
                 message: '开始处理时出现错误',

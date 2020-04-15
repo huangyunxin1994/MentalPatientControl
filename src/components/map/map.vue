@@ -95,12 +95,11 @@ export default {
                 this.addClickHandler(content,marker);
             };
           }
-          console.log(this.enterElecArr.length)
           for( var i = 0;i < this.enterElecArr.length; i++){
             var point = new BMap.Point(this.enterElecArr[i].longitude,this.enterElecArr[i].latitude);
             var circle = new BMap.Circle(point,this.enterElecArr[i].radius,{strokeColor:"red", strokeWeight:2, strokeOpacity:0.5});
             this.mainMap.addOverlay(circle);   
-            //circle.hide()
+            circle.hide()
           }
         }
         

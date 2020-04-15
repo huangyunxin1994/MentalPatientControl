@@ -24,7 +24,7 @@
 
 <script>
   import { getPerSe , getWarnListData , changeWarnData } from '@/api/table'
-
+  import store from "@/store"
   export default{
     props:['message'],
     data() {
@@ -56,6 +56,7 @@
               console.log('处理结果填写成功')
               this.dialogHandleResult = false
               this.$emit("cancel")
+              store.dispatch('user/getWarnNum')
               console.log(res)
             }else{
               this.$message({

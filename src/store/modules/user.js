@@ -1,4 +1,5 @@
 import { requestLogin, requestLogout, login, logout, getInfo } from '@/api/user'
+import { selectCount } from '@/api/table'
 import { getToken, setToken, removeToken,getUser,setUser,removeUser,setRole,removeRole } from '@/utils/auth'
 import { resetRouter } from '@/router'
 import jwt from 'jwt-decode';// jwt-decode 解析token
@@ -7,7 +8,8 @@ const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    avatar: ''
+    avatar: '',
+    warnNum: 0
   }
 }
 
@@ -25,10 +27,27 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_WARNNUM: (state, warnNum) => {
+    state.warnNum = warnNum
   }
 }
 
 const actions = {
+  // get warnnum
+  getWarnNum({ commit }, state){
+    return new Promise((resolve, reject) => {
+      selectCount().then(response => {
+        console.log(response)
+        const data = response
+        let totle = data.data.eCount+data.data.pCount
+        commit('SET_WARNNUM', totle)
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
   // user login
   login({ commit }, userInfo) {
     const { username, password } = userInfo

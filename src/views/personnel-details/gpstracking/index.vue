@@ -34,7 +34,7 @@
          
           <el-main>
               <div  class="gpstracking-map">
-                   <my-map></my-map>
+                   <my-map ref="map"></my-map>
               </div>
               <div class="gpstracking-map">
                 电子围栏预警记录:
@@ -136,6 +136,7 @@ export default {
     mounted(){
       this.personData=this.$route.query.row
       this.getPersonAlert()
+      this.$refs.map.getmap()
     }
 }
 </script>

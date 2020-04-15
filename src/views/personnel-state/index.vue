@@ -25,15 +25,15 @@ export default {
        tableTitle:[
             { title : "姓名", name : "name", width : "120", type : "link" },
             { title : "关联设备", name : "eqlist", minwidth : "150", type : "equip"},
-            { title : "状态", name : "duration", width : "120", type : "input" },
-            { title : "人员级别", name : "reason", minwidth : "150", type : "input" },
-            { title : "住址", name : "approvalResult", width : "120", type : "input" },
-            { title : "监护人", name : "unsuccessfulReasons", minwidth : "150", type : "input" },
-            { title : "网络管理员", name : "reason", minwidth : "150", type : "input" },
-            { title : "责任医师", name : "approvalResult", width : "120", type : "input" },
+            { title : "状态", name : "personnelStatus", width : "120", type : "input" },
+            { title : "人员级别", name : "level", minwidth : "150", type : "input" },
+            { title : "住址", name : "address", width : "120", type : "input" },
+            { title : "监护人", name : "guardian", minwidth : "150", type : "input" },
+            { title : "网络管理员", name : "networkAdministrator", minwidth : "150", type : "input" },
+            { title : "责任医师", name : "responsiblePhysician", width : "120", type : "input" },
             { title : "所属组织", name : "organizationName", minwidth : "150", type : "input" },
             { title : "联系电话", name : "phone", width : "120", type : "input" },
-            { title : "身份证号", name : "unsuccessfulReasons", minwidth : "150", type : "input" }
+            { title : "身份证号", name : "idCard", minwidth : "150", type : "input" }
         ],
         tableData:[]
     }

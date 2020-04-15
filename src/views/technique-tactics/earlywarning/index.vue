@@ -27,7 +27,6 @@ export default {
             { title : "人员级别", name : "level", minwidth : "150", type : "input"},
             { title : "所属组织", name : "organizationName", width : "120", type : "input" },
             { title : "地址", name : "address", minwidth : "150", type : "input" },
-            { title : "关联预案", name : "planName", width : "120", type : "input" },
             { title : "操作",width : "150", type : "handle",button:[{name:"关联预案",type:"edit"}] }
         ],
       tableData:[]
@@ -52,7 +51,7 @@ export default {
       },
       //获取到预警关联列表
       getKeyPnlDataList(){
-        relationReservePlanList().then((res)=>{
+        getKeyPnlData().then((res)=>{
           if(res.code == 0){
             var obj=[]
             this.tableData = res.data.data
@@ -63,14 +62,14 @@ export default {
       },
       changeData(val){
         console.log(val)
-        this.$refs.sendData.getDandleResultShow(val)
+        this.$refs.sendData.handleShow(val)
       },
       getSendData(val){
         this.getKeyPnlDataList()
       }
     },
     mounted(){
-      this.getKeyPnlList()
+      //this.getKeyPnlList()
       this.getKeyPnlDataList()
     }
 }

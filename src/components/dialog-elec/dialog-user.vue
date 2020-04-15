@@ -18,7 +18,7 @@
                 </el-dialog>
 </template>
 <script>
-import {getPersonStatusQuery,updateElectronicFence} from '@/api/table'
+import {getPersonStatusQuery,updateElectronicFence,getElectronicFence} from '@/api/table'
 import { getRole } from '@/utils/auth'
 export default {
     data(){
@@ -50,17 +50,24 @@ export default {
                             let userArr = [];
                             for(let i = 0;i < userList.length; i++){
                                 userArr.push({
-                                    value: parseInt(userList[i].personnelStatus.id),
+                                    value: parseInt(userList[i].personnelStatus.keyUserid),
                                     desc: userList[i].personnelStatus.name
                                 });
                             }
                             this.data=userArr
-                            for(let i in row.userList){
-                                this.value.push(row.userList[i].id)
-                            }
-                            
-                            this.roleFormVisible = true;
-                            
+                             getElectronicFence({id:row.id}).then((res) => {
+                                 if(res.code=="0"){
+                                    let userList = res.data.userList
+                                    console.log(userList)
+                                    let userArr = [];
+                                    for(let i = 0;i < userList.length; i++){
+                                        userArr.push(parseInt(userList[i].id));
+                                    } 
+                                    this.value = userArr
+                                    this.roleFormVisible = true;
+                                 }
+                             })
+                         
                         }else{
 
                         }

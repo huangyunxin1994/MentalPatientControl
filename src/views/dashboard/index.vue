@@ -17,10 +17,10 @@
             <div v-for="(item,index) in dashboardContext" :key="index" class="dashboard-context">
               <span>{{item.alertTime}}</span>
               <span>预警类型：{{item.alertType}}</span>
-              <span>预警地址：{{item.address}}</span>
+              <span>预警人地址：{{item.address}}</span>
               <span>预警人名字：{{item.name}}</span>
               <div class="dashboard-context-handle">
-                 <el-button type="danger" size="mini" @click="getLocation(item.pointX,item.pointY)">定位</el-button>
+                 <el-button type="danger" size="mini" @click="getLocation(item.longitude,item.latitude)">定位</el-button>
                  <el-button type="danger" size="mini" @click="getDetails(item.id)" plain>详情</el-button>
               </div>
             </div>
@@ -36,6 +36,7 @@
 <script>
 import  mymap  from '@/components/map/map'
 import  myTree from '@/components/tree/tree'
+import store from '@/store'
 import { getPerWarnlData,selectElectronicFenceQuery } from "@/api/table"
 import { getRole,getUser } from '@/utils/auth'
 export default {
@@ -98,6 +99,8 @@ export default {
         this.pointsArr=val
       },
       async getPerWarnlData(){
+        console.log(getRole())
+        console.log(getUser())
         let role = JSON.parse(getRole()) 
         let user = JSON.parse(getUser());
         console.log(user)
@@ -141,6 +144,7 @@ export default {
       await this.getPerWarnlData();
       await this.selectElectronicFence()
       await this.$refs.map.getmap();
+      await store.dispatch('user/getWarnNum')
     }
 }
 </script>

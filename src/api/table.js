@@ -78,10 +78,11 @@ export const updateReservePlanAndCondition = params => { return post(`${base}/Re
 export const relationReservePlan = params => { return post(`${base}/ReservePlan/relationReservePlan`, params, {emulateJSON: true}); };
 export const deleteReservePlan = params => { return post(`${base}/ReservePlan/deleteReservePlan`, params, {emulateJSON: true}); };
 export const relationReservePlanList = params => { return get(`${base}/keypersonnel/selectPlan`, params); };
+export const getReservePlan = params => { return get(`${base}/ReservePlan/getReservePlan`, params); };
 /*
  *人员状态模块接口
  */
-export const getPerSe = params => { return get(`${base}/PersonnelStatus/se`, params); }; //活动状态统计
+export const getPerSe = params => { return get(`${base}/PersonnelStatus/ActivityStatistics`, params); }; //活动状态统计
 export const getPersonAlert = params => { return get(`${base}/PersonnelStatus/selectPersonnelAlert`, params); }; //电子围栏预警记录
 export const getPersonCoordinate = params => { return get(`${base}/PersonnelStatus/selectPersonnelCoordinate`, params); };  //轨迹查询
 export const getPersonStatusQuery = params => { return get(`${base}/PersonnelStatus/selectPersonnelStatusQueryByPage`, params); }; //分页查询

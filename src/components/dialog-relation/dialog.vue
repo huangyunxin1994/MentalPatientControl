@@ -1,130 +1,177 @@
 <template>
-  <el-dialog title="关联预案" :visible.sync="dialogHandleResult" center :append-to-body='true' :lock-scroll="false" width="30%">
-  <div class="warnList">
-    <div class="warnResultLeft">
-      <p>选择预案</p>
-    </div>
-    <div class="warnResultRight">
-      <el-select v-model="value" clearable placeholder="请选择">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
-    </div>
-  </div>
-  <el-row class="cancelSwrap">
-    <div class="cancel">
-      <button @click="cancel" class="cancelBtn">取消</button>
-      <button @click="sureBtn" class="sureBtn">确定</button>
-    </div>
-  </el-row>
-  </el-dialog>
+<!-- 新增 -->
+    <el-dialog title='关联用户' :visible.sync="roleFormVisible" :before-close="handleClose" :close-on-click-modal="false" top="12vh" >
+                        
+                    <el-transfer
+                        v-model="value"
+                        :props="{
+                        key: 'value',
+                        label: 'desc'
+                        }"
+                        :titles="['可添加预案', '已添加预案']"
+                        :button-texts="['删除', '添加']"
+                        :data="data" filterable class="Transfer" @change="handleChange">
+                    </el-transfer>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click.native="handleClose">关闭</el-button>
+                    </div>
+                </el-dialog>
 </template>
-
 <script>
-  import {relationReservePlan} from '@/api/table'
-
-  export default{
-    data() {
-      return {
-        dialogHandleResult:false,
-        changeDataResult:'',
-        textarea: '',
-        options: [{
-          value: 0,
-          label: '重度预案'
-        }, {
-          value: 1,
-          label: '轻度预案'
-        }],
-        value: ''
-      }
+import {getPersonStatusQuery,updateElectronicFence,getPlanQueryData,relationReservePlan} from '@/api/table'
+import { getRole } from '@/utils/auth'
+export default {
+    data(){
+        return {
+            roleFormVisible:false,
+            roleLoading: false,
+            roleName:"",
+            id:"",
+            //角色权限界面数据
+            data: [],
+            value: [],
+            form:{},
+            idArr:"",
+            type:""
+            
+        }
+        
     },
     methods:{
-      cancel(){
-        // this.$emit('dialog','1')
-        this.dialogHandleResult = false
-      },
-      sureBtn(){
-        this.dialogHandleResult = false
-        this.relationReservePlan()
-        console.log(this.value)
-      },
-      getDandleResultShow(val){
-        // this.changeData = val
-        this.dialogHandleResult = true
-        this.changeDataResult = val
-        console.log(this.changeDataResult)
-      },
-      relationReservePlan(){
-        relationReservePlan({
-          keyUserId:this.changeDataResult.id,
-          planId:this.value,
-          type:1
-        }).then((res)=>{
-          this.$message({
-            message: '关联预案成功',
-            type: 'success'
-          });
-          this.$emit('sendState',1)
-        }).catch((err)=>{
-          this.$message.error('关联预案失败');
-        })
-      }
-    },
-    created() {
-      // getWarnListData()
-    },
-    mounted(){
-      // console.log(this.warnData)
+        //显示新增界面
+			handleShow(row) {
+        console.log(row)
+                    this.id = row.id
+                    this.data=[]
+                    this.value=[]
+                    getPlanQueryData().then((res) => {
+                        if(res.code=="0"){
+                            let userList = res.data.data
+                            console.log(userList)
+                            let userArr = [];
+                            for(let i = 0;i < userList.length; i++){
+                                userArr.push({
+                                    value: parseInt(userList[i].ReservePlan.id),
+                                    desc: userList[i].ReservePlan.name
+                                });
+                            }
+                            this.data=userArr
+                             getPlanQueryData({keyId:this.id}).then((res) => {
+                                if(res.code=="0"){
+                                    let userList = res.data.data
+                                    console.log(userList)
+                                    let userArr = [];
+                                    for(let i = 0;i < userList.length; i++){
+                                        this.value.push(parseInt(userList[i].ReservePlan.id))
+                                    }
+                                    
+                                    console.log(this.data)
+                                    this.roleFormVisible = true;
+                                    
+                                }else{
+
+                                }
+                                
+                            
+                            }).catch(function (error) {
+                                console.log(error);
+                            });
+                            
+                        }else{
+
+                        }
+                        
+                    
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                
+				
+            },
+            //添加删除成员
+            handleChange(value, direction, movedKeys) {
+                let idArr=movedKeys.join();
+                if(direction=="right"){
+                    let params={}
+                    params.planId=idArr;
+                    params.keyUserId=this.id
+                    params.type=3
+                    relationReservePlan(params).then((res)=>{
+                    if(res.code=="0"){
+                        this.$message({
+                        message: '添加成功',
+                        type: 'success'
+                        });
+                    }else{
+                        this.$message({
+                        message: '添加失败',
+                        type: 'error'
+                        });
+                    }
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }else{
+                    let params={}
+                    params.planId=idArr;
+                    params.keyUserId=this.id
+                    params.type=4
+                    relationReservePlan(params).then((res)=>{
+                    if(res.code=="0"){
+                        this.$message({
+                        message: '移除成功',
+                        type: 'success'
+                        });
+                    }else{
+                        this.$message({
+                        message: '移除失败',
+                        type: 'error'
+                        });
+                    }
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
+                
+            },
+            handleClose() {
+                this.roleFormVisible=false
+                this.$emit("selectElec")
+            }
+            
     }
-  }
-
+}
 </script>
+<style lang="scss" scoped>
+.el-dialog{
+    width: 35vw !important;
+}
+</style>
+<style lang="scss">
 
-<style scoped="scoped">
-  .warnList{
-    display: flex;
-    justify-content: space-around;
-  }
+.el-transfer-panel{
+    width: 20vw;
+    height:50vh;
+}
+ .el-transfer-panel__list.is-filterable{
+        height: 40vh;
+ }
+ .el-transfer__buttons{
+     display: flex;
+     flex-direction: column;
+     justify-content: space-between;
+     align-items: center;
 
-  .warnResultLeft{
-    width: 25vw;
-    text-align: center;
-    padding: 0px 10px;
-  }
-  .warnResultRight{
-    width: 75vw;
-  }
+     .el-button{
+         margin: 0;
+         margin-bottom: 1vh;
+         width: 100px;
 
-
-
-  .cancelSwrap{
-    width: 100%;
-  }
-  .cancel{
-    display: flex;
-    justify-content: space-around;
-    margin: 20px auto 0px;
-  }
-  .sureBtn{
-    background: rgba(0, 153, 255, 1);
-    color: white;
-    width: 200px;
-    height: 40px;
-    border-radius: 3px;
-    border: 1px solid transparent;
-    outline: none;
-  }
-  .cancelBtn{
-    width: 200px;
-    height: 40px;
-    border: 1px solid rgb(204, 204, 204);
-    color: rgb(153, 153, 153);
-    border-radius: 3px;
-    background-color: white;
-  }
+     }
+ }
+ .Transfer{
+     display: flex;
+     justify-content: space-between;
+     align-items: center
+ }
 </style>

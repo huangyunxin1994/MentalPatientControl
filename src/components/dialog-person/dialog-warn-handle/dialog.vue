@@ -20,6 +20,7 @@
 
 <script>
   import { getPerSe , getWarnListData , changeWarnData } from '@/api/table'
+  import store from "@/store"
   import dialogWarnHandleResult from '@/components/dialog-person/dialog-warn-handle-result/dialog'
 
   import {getUser} from '@/utils/auth'
@@ -68,6 +69,7 @@
                 type: 'success'
               });
               this.cancel()
+              store.dispatch('user/getWarnNum')
             }else{
               this.$message({
                 message: '忽略时出现错误',
@@ -100,6 +102,7 @@
                 type: 'success'
               });
               this.cancel()
+              store.dispatch('user/getWarnNum')
             }else{
               this.$message({
                 message: '开始处理时出现错误',

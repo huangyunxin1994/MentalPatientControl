@@ -5,7 +5,7 @@
       </el-header>
       
           <div style="width:20%;padding-top:1vh;padding-left:20px">
-                  <el-input ></el-input>
+                  <el-input v-model="inputVal" @input="filterData"></el-input>
             </div>
             <div style="width:20%;padding-top:1vh;padding-left:20px">
                   <el-button type="primary" @click="handleInsert">添加预案</el-button>
@@ -13,7 +13,7 @@
             <el-main>
           <el-scrollbar style="height:100%;">
               
-          <div class="planset" v-for="(item,index) in arr" :key="index">
+          <div class="planset" v-for="(item,index) in filterArr" :key="index">
             
             <div class="planset-content">
               <div class="planset-name">
@@ -107,8 +107,9 @@ import { getPlanQueryData,deleteReservePlan } from '@/api/table'
     data() {
       return {
         arr:[],
-        submitType:""
-
+        submitType:"",
+        inputVal:"",
+        filterArr:[]
       };
     },
     methods: {
@@ -173,17 +174,26 @@ import { getPlanQueryData,deleteReservePlan } from '@/api/table'
             let data = res.data.data;
             let arr = [];
             for(let i in data){
-              let para = data[i].electronicFence
+              let para = data[i].ReservePlan
               para.userList = data[i].userList
               para.alertConditions = data[i].AlertConditionList
               arr.push(para)
+              
             }
             this.arr = arr
+            this.filterArr = arr
             console.log(arr)
           }
         }).catch((err)=>{
 
         })
+      },
+      filterData(val){
+        let arr = this.arr.filter(item=>{
+          if (!val) return true;
+          return item.name.indexOf(val) !== -1;
+        })
+        this.filterArr=arr
       }
     },
     mounted(){

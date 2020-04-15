@@ -72,7 +72,7 @@ export default {
         },
         getmap () {
             this.map = new BMap.Map(this.$refs.allmap, {enableMapClick:false}) // 创建Map实例 
-            this.map.centerAndZoom(new BMap.Point(116.323066,39.989956), 16) // 初始化地图,设置中心点坐标和地图级别
+            this.map.centerAndZoom(new BMap.Point(108.386207,22.830839), 16) // 初始化地图,设置中心点坐标和地图级别
             this.map.setCurrentCity('北京') // 设置地图显示的城市 此项是必须设置的
             this.map.enableScrollWheelZoom(true)// 开启鼠标滚轮缩放
             this.longitude = this.map.getCenter().lng
