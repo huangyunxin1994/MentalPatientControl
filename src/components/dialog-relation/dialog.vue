@@ -8,7 +8,7 @@
                         key: 'value',
                         label: 'desc'
                         }"
-                        :titles="['可添加用户', '已添加用户']"
+                        :titles="['可添加预案', '已添加预案']"
                         :button-texts="['删除', '添加']"
                         :data="data" filterable class="Transfer" @change="handleChange">
                     </el-transfer>
@@ -18,7 +18,7 @@
                 </el-dialog>
 </template>
 <script>
-import {getPersonStatusQuery,updateElectronicFence,getElectronicFence} from '@/api/table'
+import {getPersonStatusQuery,updateElectronicFence,getPlanQueryData,relationReservePlan} from '@/api/table'
 import { getRole } from '@/utils/auth'
 export default {
     data(){
@@ -40,34 +40,43 @@ export default {
     methods:{
         //显示新增界面
 			handleShow(row) {
+        console.log(row)
                     this.id = row.id
                     this.data=[]
                     this.value=[]
-                    getPersonStatusQuery().then((res) => {
+                    getPlanQueryData().then((res) => {
                         if(res.code=="0"){
                             let userList = res.data.data
                             console.log(userList)
                             let userArr = [];
                             for(let i = 0;i < userList.length; i++){
                                 userArr.push({
-                                    value: parseInt(userList[i].personnelStatus.keyUserid),
-                                    desc: userList[i].personnelStatus.name
+                                    value: parseInt(userList[i].ReservePlan.id),
+                                    desc: userList[i].ReservePlan.name
                                 });
                             }
                             this.data=userArr
-                             getElectronicFence({id:row.id}).then((res) => {
-                                 if(res.code=="0"){
-                                    let userList = res.data.userList
+                             getPlanQueryData({keyId:this.id}).then((res) => {
+                                if(res.code=="0"){
+                                    let userList = res.data.data
                                     console.log(userList)
                                     let userArr = [];
                                     for(let i = 0;i < userList.length; i++){
-                                        userArr.push(parseInt(userList[i].id));
-                                    } 
-                                    this.value = userArr
+                                        this.value.push(parseInt(userList[i].ReservePlan.id))
+                                    }
+                                    
+                                    console.log(this.data)
                                     this.roleFormVisible = true;
-                                 }
-                             })
-                         
+                                    
+                                }else{
+
+                                }
+                                
+                            
+                            }).catch(function (error) {
+                                console.log(error);
+                            });
+                            
                         }else{
 
                         }
@@ -84,18 +93,18 @@ export default {
                 let idArr=movedKeys.join();
                 if(direction=="right"){
                     let params={}
-                    params.fenceId=this.id;
-                    params.keUserId=idArr
-                    params.type=1
-                    updateElectronicFence(params).then((res)=>{
+                    params.planId=idArr;
+                    params.keyUserId=this.id
+                    params.type=3
+                    relationReservePlan(params).then((res)=>{
                     if(res.code=="0"){
                         this.$message({
-                        message: '新增成功',
+                        message: '添加成功',
                         type: 'success'
                         });
                     }else{
                         this.$message({
-                        message: '新增失败',
+                        message: '添加失败',
                         type: 'error'
                         });
                     }
@@ -104,18 +113,18 @@ export default {
                     });
                 }else{
                     let params={}
-                    params.fenceId=this.id;
-                    params.keUserId=idArr
-                    params.type=2
-                    updateElectronicFence(params).then((res)=>{
+                    params.planId=idArr;
+                    params.keyUserId=this.id
+                    params.type=4
+                    relationReservePlan(params).then((res)=>{
                     if(res.code=="0"){
                         this.$message({
-                        message: '删除成功',
+                        message: '移除成功',
                         type: 'success'
                         });
                     }else{
                         this.$message({
-                        message: '删除失败',
+                        message: '移除失败',
                         type: 'error'
                         });
                     }

@@ -38,19 +38,19 @@ export default {
             { title : "监护人", name : "guardian", width : "120", type : "input" },
             { title : "网络管理员", name : "networkAdministrator", minwidth : "150", type : "input" },
             { title : "责任医师", name : "responsiblePhysician", minwidth : "150", type : "input" },
-            { title : "关联设备", name : "approvalResult", width : "120", type : "input" },
+            { title : "关联设备", name : "equipmentid", width : "120", type : "input" },
             { title : "操作",width : "150", type : "handle",button:[{name:"编辑",type:"edit"},{name:"删除",type:"remove"}] }
         ],
         handleTitle:[
             { title : "姓名", name : "name", type : "input" },
             { title : "病情描述", name : "level", type : "input" },
-            { title : "联系电话", name : "phone", type : "input" },
+            { title : "联系电话", name : "phone", type : "number" },
             { title : "住址", name : "address", type : "input" },
-            { title : "所属组织", name : "organizationName", type : "input" },
-            { title : "监护人", name : "guardian", type : "input" },
-            { title : "网络管理员", name : "networkAdministrator", type : "input" },
-            { title : "责任医师", name : "responsiblePhysician", type : "input" },
-            { title : "关联设备", name : "approvalResult", type : "input" },
+            { title : "所属组织", name : "organizationId", type : "cascader" },
+            { title : "监护人", name : "guardianId", type : "personselect" },
+            { title : "网格管理员", name : "networkAdministratorId", type : "personselect" },
+            { title : "责任医师", name : "responsiblePhysicianId", type : "personselect" },
+            { title : "关联设备", name : "equipmentid", type : "equipselects" },
         ],
         tableData:[]
     }
@@ -73,12 +73,14 @@ export default {
       newData(){
         let para = {'submitType':"insert"}
         this.$refs.dialog.form=para
-        this.$refs.dialog.handleShow();
+        let arr = ["organ","person","equip"]
+        this.$refs.dialog.handleShow(arr);
       },
       changeData(row){
         row.submitType="update"
         this.$refs.dialog.form=Object.assign({}, row)
-        this.$refs.dialog.handleShow();
+        let arr = ["organ","person","equip"]
+        this.$refs.dialog.handleShow(arr);
       },
       /* 新增数据 */
       insertData(para){

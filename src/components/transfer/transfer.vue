@@ -18,6 +18,7 @@
                 </el-dialog>
 </template>
 <script>
+
 export default {
     props:{
         tableTitle:Array

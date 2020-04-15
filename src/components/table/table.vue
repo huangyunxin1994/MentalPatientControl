@@ -14,11 +14,11 @@
                 <!-- <el-link :type="scope.row[item.name] == 1 ? 'success' : value == 0 ? 'primary' : ''" v-else-if="item.type=='button'" @click="changeNoticeSates(scope.$index, scope.row)" v-html="arrFormatter(scope.row[item.name],item.name)"></el-link> -->
                 <div v-else-if="item.type=='handle'">
                     <el-tooltip v-for="(item,index) in item.button" :key="index" :content="item.name" placement="top">
-                      <el-button v-if="item.type=='edit'" type="primary" icon="el-icon-edit" size="small" circle  @click="handleEdit(scope.$index, scope.row)"></el-button>
+                      <el-button v-if="item.type=='edit'&&scope.row['processingResult']!=3" type="primary" icon="el-icon-edit" size="small" circle @click="handleEdit(scope.$index, scope.row)"></el-button>
                        <el-button v-else-if="item.type=='remove'" type="danger" icon="el-icon-delete" size="small" circle @click="handleRemove(scope.$index, scope.row)"></el-button>
                     </el-tooltip>
                 </div>
-                <el-button v-else-if="item.type=='button'"  icon="el-icon-setting" type="info" size="small" circle @click="handleSetting(scope.$index, scope.row)"></el-button>
+                <el-button v-else-if="item.type=='button'"  icon="el-icon-setting" type="info" size="small" circle @click="handleSetting(scope.$index, scope.row,item.name)"></el-button>
                 <div v-else-if="item.type=='equip'">
                   <span v-for="(ite,index) in scope.row[item.name]" :key="index" v-html="arrFormatter(ite.type,item.name)"></span>
                 </div>
@@ -32,10 +32,11 @@
       </el-pagination>
     </el-col>
 </section>
-  
+
 </template>
 
 <script>
+
   export default {
     props:{
         tableTitle:Array,
@@ -96,7 +97,13 @@
             else if(name == 'type')
              return value == 1 ? '进入' : value == 2 ? '外出' : '';
             else if(name == 'processingResult')
-             return value == 1 ? '处理中' : (value == 2 ? '未处理' : (value == 3? '已处理' : value == 4? '忽略':""));
+             return value == 1 ? '<span style="color:#E6A23C;font-weight:bold">处理中</span>' : (value == 2 ? '<span style="color:#F56C6C;font-weight:bold">未处理</span>' : (value == 3? '<span style="color:#67C23A;font-weight:bold">已处理</span>' : value == 4? '<span style="color:#909399;font-weight:bold">已忽略</span>':""));
+            else if(name == 'equipmentType')
+             return value == 1 ? '活动监测器' : (value == 2 ? '睡眠监测器' : value == 3? '智能手表' :"");
+            else if(name == 'level')
+             return value == 1 ? '一级' : (value == 2 ? '二级' : (value == 3? '三级' :(value == 4 ? '四级' :(value == 5 ? '五级' :(value == 6 ? '六级' :(value == 7 ? '七级' :(value == 8 ? '八级' : value == 9 ? '九级' :' ')))))))
+            else if(name == 'alertType')
+             return value == 1 ? '活动频率异常' : (value == 2 ? '活动时间异常' : (value == 3? '心率异常' :(value == 4 ? '血压异常' :(value == 5 ? '睡眠质量异常' :(value == 6 ? '居家/离家异常' :(value == 7 ? '电子围栏触发' :' '))))))
             else
              return value;
         },
@@ -105,7 +112,7 @@
         },
         userDetails(index,row){
           this.$router.push(
-            { 
+            {
               path: '/persondetails' ,
               query: {
                 row: row
@@ -113,12 +120,13 @@
           })
         },
         //配置
-        handleSetting(index,row){
-          this.$emit('settingData',row)
+        handleSetting(index,row,name){
+        console.log(name)
+          this.$emit('settingData',row,name)
         },
         //编辑
         handleEdit(index,row){
-          console.log(row)
+          // console.log(row)
           this.$emit('changeData',row)
         },
         //删除
@@ -129,7 +137,7 @@
               this.listLoading = true;
               //NProgress.start();
               this.$emit('removeData',row)
-              
+
             }).catch(() => {
 
             });
@@ -145,7 +153,7 @@
               let para = this.sels;
               console.log(para)
               this.$emit('bRemoveData',para)
-              
+
             }).catch(() => {
 
             });

@@ -29,9 +29,10 @@
         <router-link tag="i" to="/manage" class="navbar-message el-icon-s-tools" ></router-link> 
       </el-tooltip>
       
-      <el-badge :value="12" class="item">
+      <el-badge :value="warnNum" class="item" v-if="warnNum>0">
         <router-link tag="i" to="/warningcenter" class="navbar-message el-icon-message-solid" ></router-link> 
       </el-badge>
+      <router-link v-else tag="i" to="/warningcenter" class="navbar-message el-icon-message-solid" ></router-link> 
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
@@ -41,17 +42,11 @@
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
             <el-dropdown-item>
-              Home
+              回到首页
             </el-dropdown-item>
           </router-link>
-          <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">
-            <el-dropdown-item>Github</el-dropdown-item>
-          </a>
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item>Docs</el-dropdown-item>
-          </a>
           <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">Log Out</span>
+            <span style="display:block;">退出登录</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -70,15 +65,21 @@
 
 <script>
 import { mapGetters } from 'vuex'
-
+import { selectCount} from '@/api/table'
 export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar'
+      'avatar',
+      'warnNum'
     ]),
     key() {
       return this.$route.path
+    }
+  },
+  data(){
+    return{
+      
     }
   },
   methods: {
@@ -91,7 +92,16 @@ export default {
     },
     enterBulletin(){
        this.$router.push({ path: '/bulletinboard' })
+    },
+    selectCount(){
+      selectCount().then(res=>{
+        console.log(res)
+        this.warnNum=res.data.eCount+res.data.pCount
+      })
     }
+  },
+  mounted(){
+    //this.selectCount()
   }
 }
 </script>

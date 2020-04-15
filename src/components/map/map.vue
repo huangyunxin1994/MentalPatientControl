@@ -10,7 +10,7 @@ export default {
   name: 'Map',
   props:{
     pointsArr:Array,
-    electricFenceArr:Array
+    enterElecArr:Array
   },
   data(){
     return{
@@ -19,8 +19,6 @@ export default {
     }
   },
   methods:{
-      getMapData(){
-      },
       getmap () {
         BMap.Icon.prototype.name = "";
         BMap.Icon.prototype.setName = function(name){
@@ -28,7 +26,7 @@ export default {
         }
         this.mainMap = new BMap.Map(this.$refs.allmap, {enableMapClick:false}) // 创建Map实例
         
-        this.mainMap.centerAndZoom(new BMap.Point(116.323066,39.989956), 16) // 初始化地图,设置中心点坐标和地图级别
+        this.mainMap.centerAndZoom(new BMap.Point(108.386207,22.830839), 16) // 初始化地图,设置中心点坐标和地图级别
         this.mainMap.addControl(new BMap.MapTypeControl({ // 添加地图类型控件
           mapTypes: [
             window.BMAP_NORMAL_MAP,
@@ -41,13 +39,13 @@ export default {
         if(this.pointsArr){
           // 向地图添加标注
           var inHomeArr = this.pointsArr.filter((item) => {
-            return item.state === 0
+            return item.personnelStatus === "1"
           })
            var outHomeArr = this.pointsArr.filter((item) => {
-            return item.state === 1
+            return item.personnelStatus === "2"
           })
           var warningArr = this.pointsArr.filter((item) => {
-            return item.state === 2
+            return item.personnelStatus === "3"
           })
           if(inHomeArr.length>0){
             for( var i = 0;i < inHomeArr.length; i++){
@@ -58,7 +56,7 @@ export default {
               });
               myIcon.setName("0");
               var content= "<p>姓名："+inHomeArr[i].name+"<p/><p style='color:blue'>状态：在家<p/><p>"+"联系电话："+inHomeArr[i].phone+"</p>";
-              var point = new BMap.Point(inHomeArr[i].pointX,inHomeArr[i].pointY);
+              var point = new BMap.Point(inHomeArr[i].longitude,inHomeArr[i].latitude);
               // 创建标注对象并添加到地图 
               var marker = new BMap.Marker(point,{icon: myIcon});
               this.mainMap.addOverlay(marker);
@@ -74,7 +72,7 @@ export default {
                 });
                 myIcon.setName("1");
                 var content= "<p>姓名："+outHomeArr[i].name+"<p/><p style='color:blue'>状态：离家<p/><p>"+"联系电话："+outHomeArr[i].phone+"</p>";
-                var point = new BMap.Point(outHomeArr[i].pointX,outHomeArr[i].pointY);
+                var point = new BMap.Point(outHomeArr[i].longitude,outHomeArr[i].latitude);
                 // 创建标注对象并添加到地图 
                 var marker = new BMap.Marker(point,{icon: myIcon});
                 this.mainMap.addOverlay(marker);
@@ -90,19 +88,19 @@ export default {
                 });
                 myIcon.setName("2");
                 var content= "<p>姓名："+warningArr[i].name+"<p/><p style='color:blue'>状态：预警<p/><p>"+"联系电话："+warningArr[i].phone+"</p>";
-                var point = new BMap.Point(warningArr[i].pointX,warningArr[i].pointY);
+                var point = new BMap.Point(warningArr[i].longitude,warningArr[i].latitude);
                 // 创建标注对象并添加到地图 
                 var marker = new BMap.Marker(point,{icon: myIcon});
                 this.mainMap.addOverlay(marker);
                 this.addClickHandler(content,marker);
             };
           }
-          for( var i = 0;i < this.electricFenceArr.length; i++){
-            var point = new BMap.Point(this.electricFenceArr[i].pointX,this.electricFenceArr[i].pointY);
-            var circle = new BMap.Circle(point,200);
+          for( var i = 0;i < this.enterElecArr.length; i++){
+            var point = new BMap.Point(this.enterElecArr[i].longitude,this.enterElecArr[i].latitude);
+            var circle = new BMap.Circle(point,this.enterElecArr[i].radius,{strokeColor:"red", strokeWeight:2, strokeOpacity:0.5});
             this.mainMap.addOverlay(circle);   
             circle.hide()
-            }
+          }
         }
         
         
@@ -171,8 +169,7 @@ export default {
       }
   },
   mounted(){
-    this.getmap();
-    this.getMapData()
+    
   },
   watch:{
     pointsArr:{//深度监听，可监听到对象、数组的变化

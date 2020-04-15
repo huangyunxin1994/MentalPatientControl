@@ -17,8 +17,8 @@
           <div id="warnMess" style="width:100%;height:33%;background:#fff;padding:20px;">
             <div class="warnMess-title">预警信息</div>
             <el-scrollbar style="width:100%;height:95%;">
-              <div class="warnMess-content" v-for="i in 15" :key="i" style="white-space:nowrap">
-                <i class="el-icon-warning warnMess-content-icon"></i>&nbsp;&nbsp;[2020-3-3 20:20:20]&nbsp;&nbsp; 轻度人员预警：张三  
+              <div class="warnMess-content" v-for="(i,index) in warnData" :key="index" style="white-space:nowrap">
+                <i class="el-icon-warning warnMess-content-icon"></i>&nbsp;&nbsp;[{{i.alertTime}}]&nbsp;&nbsp; 人员预警：{{i.name}}  
               </div>
             </el-scrollbar>
           </div>
@@ -26,7 +26,7 @@
        
         <el-col :span="12">
             <div style="width:100%;height:100%">
-              <mymap></mymap>
+              <mymap ref="map"></mymap>
             </div>
         </el-col>
         <el-col :span="6">
@@ -44,6 +44,8 @@
 <script>
 import echarts from 'echarts'
 import  mymap  from '@/components/map/map'
+import {equipmentStatistics,keyPersonnelEarly,keyPersonnelStatistics,selectCount,selectWlCount,userRoleStatistics,getPerWarnlData } from "@/api/table"
+import { getRole,getUser } from '@/utils/auth'
 export default {
   name: 'Login',
   components:{
@@ -54,24 +56,179 @@ export default {
       loading: false,
       redirect: undefined,
       ManPersonData:[
-        {value: 335, name: '监护人'},
-        {value: 310, name: '医师'},
-        {value: 234, name: '网格员'}
+        {value: 0, name: '民警'},
+        {value: 0, name: '网格员'},
+        {value: 0, name: '医师'},
+        {value: 0, name: '监护人'},
       ],
       KeyPersonData:[
-        { value: 335, name: '重度患者' },
-        { value: 310, name: '中度患者' },
-        { value: 234, name: '轻度患者' }
-      ]
+        { value: "", name: '重度患者' },
+        { value: "", name: '中度患者' },
+        { value: "", name: '轻度患者' }
+      ],
+      equipWatch:[],
+      equipSleep:[],
+      equipActive:[],
+      alert1:[],alert2:[],alert3:[],alert4:[],alert5:[],alert6:[],alert7:[],
+      warnData:[]
+
     }
   },
   mounted(){
-    this.drawChart();
+    this.getDrawData()
+    this.$refs.map.getmap()
+    
   },
   methods: {
     enterSys(){
       this.$router.push({ path: '/' })
     },
+    async getDrawData(){
+      await this.keyPersonnelStatistics()
+      await this.keyPersonnelEarly()
+      await this.userRoleStatistics()
+      await this.selectCount()
+      await this.getPerWarnlData()
+      await this.equipmentStatistics()
+      await this.drawChart();
+    },
+    async keyPersonnelStatistics(){
+      await keyPersonnelStatistics().then(res=>{
+        if(res.code==0){
+          let data = res.data.data
+          console.log(data)
+          this.KeyPersonData[0].value = data.severe
+          this.KeyPersonData[1].value = data.moderate
+          this.KeyPersonData[2].value = data.light
+        }
+        
+      })
+    },
+    async userRoleStatistics(){
+      await userRoleStatistics().then(res=>{
+        if(res.code==0){
+          let data = res.data.data
+          for( let i in data){
+            if(data[i].roleId == 1){
+              this.ManPersonData[0].value = data[i].count//民警
+            }else if(data[i].roleId == 2){
+              this.ManPersonData[1].value = data[i].count//网格员
+            }else if(data[i].roleId == 3){
+              this.ManPersonData[2].value = data[i].count//医生
+            }else if(data[i].roleId == 4){
+              this.ManPersonData[3].value = data[i].count//监护人
+            }
+          }
+         
+        }
+        
+      })
+    },
+    async keyPersonnelEarly(){
+      await keyPersonnelEarly().then(res=>{
+        if(res.code==0){
+          let data = res.data.data
+          let para ={}
+          let arr1=[],arr2=[],arr3=[],arr4=[],arr5=[],arr6=[],arr7=[]
+          console.log(data)
+          for(let i in data){
+            if(data[i].alert_type==1){
+              arr1.push(data[i].processed)
+              arr1.push(data[i].untreated)
+            }else if(data[i].alert_type==2){
+              arr2.push(data[i].processed)
+              arr2.push(data[i].untreated)
+            }else if(data[i].alert_type==3){
+              arr3.push(data[i].processed)
+              arr3.push(data[i].untreated)
+            }else if(data[i].alert_type==4){
+              arr4.push(data[i].processed)
+              arr4.push(data[i].untreated)
+            }else if(data[i].alert_type==5){
+              arr5.push(data[i].processed)
+              arr5.push(data[i].untreated)
+            }else if(data[i].alert_type==6){
+              arr6.push(data[i].processed)
+              arr6.push(data[i].untreated)
+            }else if(data[i].alert_type==7){
+              arr7.push(data[i].processed)
+              arr7.push(data[i].untreated)
+            }
+            this.alert1=arr1
+            this.alert2=arr2
+            this.alert3=arr3
+            this.alert4=arr4
+            this.alert5=arr5
+            this.alert6=arr6
+            this.alert7=arr7
+          }
+          
+        }
+        
+      })
+    },
+    async selectCount(){
+      await selectCount().then(res=>{
+        if(res.code==0){
+          let data = res.data.data
+          let para ={}
+          console.log(data)
+          
+        }
+        
+      })
+    },
+    async getPerWarnlData(){
+      let role = JSON.parse(getRole()) 
+      let user = JSON.parse(getUser());
+      console.log(user)
+      let param ={}
+      param.roleId=role
+      param.userId=user.userId
+      param.organizaId=user.organizationId||""
+      await getPerWarnlData(param).then(res=>{
+        if(res.code==0){
+          console.log(res)
+          let data = res.data.data.filter(item=>{
+            return item.processingResult==2
+          })
+          this.warnData=data
+        }
+      }).catch(err=>{
+
+      })
+    },
+    async equipmentStatistics(){
+      await equipmentStatistics().then(res=>{
+        if(res.code==0){
+          let data = res.data.data
+          let para ={}
+          let arr1=[],arr2=[],arr3=[]
+          for(let i in data){
+            if(data[i].type==1){
+              arr1.push(data[i].count1)
+              arr1.push(data[i].count2)
+              arr1.push(data[i].count3)
+            }else if(data[i].type==2){
+              arr2.push(data[i].count1)
+              arr2.push(data[i].count2)
+              arr2.push(data[i].count3)
+            }else if(data[i].type==3){
+              arr3.push(data[i].count1)
+              arr3.push(data[i].count2)
+              arr3.push(data[i].count3)
+            }
+            
+          }
+          this.equipActive = arr1
+          this.equipSleep = arr2
+          this.equipWatch = arr3
+          
+        }
+        
+      })
+    },
+    
     drawChart() {
                 let chartKeyPerson = echarts.init(document.getElementById('chartKeyPerson'));
                 let chartManPerson = echarts.init(document.getElementById('chartManPerson'));
@@ -125,7 +282,7 @@ export default {
                     },
                     series: [
                         {
-                            name: '访问来源',
+                            name: '患者等级',
                             type: 'pie',
                             radius: '45%',
                             center: ['50%', '40%'],
@@ -173,12 +330,12 @@ export default {
                         textStyle:{
                             rich:{
                                 a:{
-                                    fontSize:12,
+                                    fontSize:10,
                                     verticalAlign:'top',
                                     padding:[10,0,10,0]
                                 },
                                 b:{
-                                    fontSize:12,
+                                    fontSize:10,
                                     padding:[0,0,0,0],
                                     lineHeight:0
                                 }
@@ -234,8 +391,8 @@ export default {
                         containLabel: true
                     },
                     xAxis: {
+                        interval: 1,
                         type: 'value',
-                        boundaryGap: [0, 0.01]
                     },
                     yAxis: {
                         type: 'category',
@@ -246,12 +403,12 @@ export default {
                         {
                             name: '已处理',
                             type: 'bar',
-                            data: [10, 20, 10, 50, 10, 21,15]
+                            data: [this.alert7[0], this.alert6[0], this.alert5[0], this.alert4[0], this.alert3[0], this.alert2[0],this.alert1[0]]
                         },
                         {
                             name: '未处理',
                             type: 'bar',
-                            data: [1, 2, 1, 5, 2, 3,1]
+                            data: [this.alert7[1], this.alert6[1], this.alert5[1], this.alert4[1], this.alert3[1], this.alert2[1],this.alert1[1]]
                         }
                     ]
                 });
@@ -310,9 +467,8 @@ export default {
                             containLabel: true
                         },
                         xAxis: {
-                            
+                            interval: 1,
                             type: 'value',
-                            boundaryGap: [0, 0.01]
                         },
                         yAxis: {
                           
@@ -324,17 +480,17 @@ export default {
                             {
                                 name: '在线数',
                                 type: 'bar',
-                                data: [10, 20, 10, 50, 10, 21,15]
+                                data: [this.equipWatch[0],this.equipSleep[0],this.equipActive[0]]
                             },
                             {
                                 name: '离线数',
                                 type: 'bar',
-                                data: [1, 2, 1, 5, 2, 3,1]
+                                data: [this.equipWatch[1],this.equipSleep[1],this.equipActive[1]]
                             },
                             {
                                 name: '预警数',
                                 type: 'bar',
-                                data: [1, 2, 1, 5, 2, 3,1]
+                                data: [this.equipWatch[2],this.equipSleep[2],this.equipActive[2]]
                             }
                         ]
                 });
