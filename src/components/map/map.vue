@@ -10,7 +10,8 @@ export default {
   name: 'Map',
   props:{
     pointsArr:Array,
-    enterElecArr:Array
+    enterElecArr:Array,
+    locusPorint:Array
   },
   data(){
     return{
@@ -102,6 +103,16 @@ export default {
             circle.hide()
           }
         }
+        if(this.locusPorint){
+          let point = []
+          for(let i in this.locusPorint){
+            let temp = new BMap.Point(this.locusPorint[i].longitude,this.locusPorint[i].latitude)
+            point.push(temp)
+          }
+          var polyline = new BMap.Polyline(point, {strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});   //创建折线
+          this.mainMap.addOverlay(polyline);   //增加折线
+        }
+        
         
         
       },

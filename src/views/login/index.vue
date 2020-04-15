@@ -54,15 +54,15 @@ export default {
   name: 'Login',
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('Please enter the correct user name'))
+      if (value.length < 6||value.length > 18) {
+        callback(new Error('账号长度在6到12个字符之间'))
       } else {
         callback()
       }
     }
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+      if (value.length < 6||value.length > 18) {
+        callback(new Error('密码长度在6到12个字符之间'))
       } else {
         callback()
       }
@@ -107,10 +107,6 @@ export default {
           this.$store.dispatch('user/login', this.loginForm).then((res) => {
             console.log(res)
             if(res.code=="0"){
-              this.$message({
-                message: '登录成功',
-                type: 'success'
-              });
               this.$router.push({ path: this.redirect||'/bulletinboard' })
               this.loading = false
             }else{

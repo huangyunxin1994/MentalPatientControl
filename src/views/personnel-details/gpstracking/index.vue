@@ -34,7 +34,7 @@
          
           <el-main>
               <div  class="gpstracking-map">
-                   <my-map ref="map"></my-map>
+                   <my-map ref="map" :locusPorint="locusPorint"></my-map>
               </div>
               <div class="gpstracking-map">
                 电子围栏预警记录:
@@ -98,6 +98,7 @@ export default {
       personData:{},
       beginTime:"",
       endTime:"",
+      locusPorint:[],
       tableTitle:[
             { title : "预警围栏", name : "fenceName", width : "120", type : "input" },
             { title : "进入/离开", name : "type", width : "120", type : "input"},
@@ -111,11 +112,24 @@ export default {
     }
   },
     methods: {
-      getPersonCoordinate(){
-
+      async getPersonCoordinate(){
+        let para ={}
+        console.log(this.personData)
+        para.keyUserId= this.personData.keyUserid
+        para.startTime=this.beginTime
+        para.endTime=this.endTime
+        await getPersonCoordinate(para).then(res=>{
+          if(res.code==0){
+            console.log(res)
+            this.locusPorint=res.data.data
+            
+          }
+        })
+        await this.$refs.map.getmap()
+        await this.$refs.map.movePosBypoint(this.locusPorint[0].longitude,this.locusPorint[0].latitude)
       },
       getPersonAlert(){
-        let id = this.personData.id
+        let id = this.personData.keyUserid
         getPersonAlert({keyUserid:id}).then(res=>{
           if(res.code==0){
             this.tableData=res.data.data
@@ -131,6 +145,7 @@ export default {
           this.beginTime = parseTime(val[0])
           this.endTime = parseTime(val[1])
         }
+        this.getPersonCoordinate()
       }
     },
     mounted(){

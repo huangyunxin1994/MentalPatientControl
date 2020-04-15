@@ -23,10 +23,51 @@ export default {
     myDialog
   },
   data(){
+    const validateUsername = (rule, value, callback) => {
+      if(!value){
+        callback(new Error('请输入账号'))
+      }else if (value.length <= 6||value.length > 12) {
+        callback(new Error('账号长度在6到12个字符之间'))
+      }else {
+        callback()
+      }
+    }
+    const validatePassword = (rule, value, callback) => {
+      if(!value){
+        callback(new Error('请输入密码'))
+      }else if (value.length <= 6||value.length > 12) {
+        callback(new Error('密码长度在6到12个字符之间'))
+      } else {
+        callback()
+      }
+    }
+    const validatePhone = (rule, value, callback) => {
+      console.log(value)
+      if(!value){
+        callback(new Error('请输入手机号'))
+      }else if (value.length < 11||value.length > 11) {
+        callback(new Error('手机号长度为11位'))
+      }else {
+        callback()
+      }
+    }
+    const validateIdCard = (rule, value, callback) => {
+      if(!value){
+        callback(new Error('请输入身份证'))
+      }else if (value.length < 11||value.length > 11) {
+        callback(new Error('身份证长度为18位'))
+      }else {
+        callback()
+      }
+    }
     return{
          formRule:{
-            account: [{ required: true, message: '请输入账号', trigger: 'blur' }],
-            organizationName:[{ required: true, message: '请选择组织', trigger: 'blur' }]
+            account: [{ required: true, trigger: 'blur',validator: validateUsername }],
+            password: [{ required: true, trigger: 'blur',validator: validatePassword }],
+            organizationId:[{ required: true, message: '请选择组织', trigger: 'blur' }],
+            roleId:[{ required: true, message: '请选择角色', trigger: 'blur' }],
+            phone:[{ required: true, trigger: 'blur',validator: validatePhone }],
+            //idCard:[{ required: true, trigger: 'blur',validator: validateIdCard }],
           },
          tableTitle:[
             { title : "姓名", name : "name", width : "120", type : "name" },
@@ -68,7 +109,7 @@ export default {
               { title : "所属组织", name : "organizationId", type : "cascader" },
               { title : "关联用户", name : "", type : "userbutton" },
               { title : "联系电话", name : "phone", type : "number" },
-              { title : "身份证号", name : "idCard", type : "number" },
+              { title : "身份证号", name : "idCard", type : "input" },
               
       ]
       let para = {'submitType':"insert"}

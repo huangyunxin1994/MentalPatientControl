@@ -48,7 +48,7 @@ export default {
             { title : "姓名", name : "name", width : "120", type : "link" },
             { title : "预警类型", name : "alertType", minwidth : "150", type : "input"},
             { title : "所属组织", name : "organizationName", width : "120", type : "input" },
-            { title : "预警时间", name : "alertTime", minwidth : "150", type : "input" },
+            { title : "预警时间", name : "alertTime", minwidth : "180", type : "input" },
             { title : "监护人", name : "guardian", width : "120", type : "input" },
             { title : "网格管理员", name : "networkAdministrator", minwidth : "150", type : "input" },
             { title : "责任医师", name : "responsiblePhysician", width : "120", type : "input" },

@@ -1,6 +1,6 @@
 import { requestLogin, requestLogout, login, logout, getInfo } from '@/api/user'
 import { selectCount } from '@/api/table'
-import { getToken, setToken, removeToken,getUser,setUser,removeUser,setRole,removeRole } from '@/utils/auth'
+import { getToken, setToken, removeToken,getUser,setUser,removeUser,setRole,removeRole,setMenuData,removeMenuData } from '@/utils/auth'
 import { resetRouter } from '@/router'
 import jwt from 'jwt-decode';// jwt-decode 解析token
 import { get } from '@/utils/request';
@@ -57,8 +57,9 @@ const actions = {
         console.log(data.data)
         setToken(data.data.token)
         setUser(data.data.user)
-        console.log(data.data.roleId)
+        console.log(data.data.data)
         setRole(data.data.roleId)
+        setMenuData(data.data.data)
         commit('SET_NAME', data.data.data.name)
         commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
         commit('SET_TOKEN', data.data.token)
@@ -90,6 +91,7 @@ const actions = {
         removeToken() // must remove  token  first
         removeUser() 
         removeRole()
+        removeMenuData()
         resetRouter()
         commit('RESET_STATE')
         resolve()
@@ -102,6 +104,7 @@ const actions = {
       removeToken() // must remove  token  first
       removeUser() 
       removeRole()
+      removeMenuData()
       commit('RESET_STATE')
       resolve()
     })

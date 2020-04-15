@@ -332,6 +332,7 @@ export default {
                 getRoleData().then(res=>{
                     ////console.log(res)
                     if(res.code==0){
+                        res.data.data.shift()
                     this.roleOptions=res.data.data
                     //console.log(this.roleOptions)
                     

@@ -10,19 +10,19 @@
         <span class="navbar-title">&nbsp;特殊人群辅助管理系统</span>
       </div>
       <div class="navbar-div">
-        <router-link to="/manage/organmanage" tag="span" class="navbar-tab">
+        <router-link to="/manage/organmanage" tag="span" class="navbar-tab" v-if="menuData.indexOf('3')!=-1">
             组织管理
         </router-link>
-        <router-link to="/manage/rolemanage"  tag="span" class="navbar-tab">
+        <router-link to="/manage/rolemanage"  tag="span" class="navbar-tab" v-if="menuData.indexOf('11')!=-1">
             角色管理
         </router-link>
-        <router-link to="/manage/usermanage" tag="span" class="navbar-tab">
+        <router-link to="/manage/usermanage" tag="span" class="navbar-tab" v-if="menuData.indexOf('4')!=-1">
             用户管理
         </router-link>
-        <router-link to="/manage/equipmanage" tag="span" class="navbar-tab">
+        <router-link to="/manage/equipmanage" tag="span" class="navbar-tab" v-if="menuData.indexOf('5')!=-1">
             设备管理
         </router-link>
-        <router-link to="/manage/keypersonmanage" tag="span" class="navbar-tab">
+        <router-link to="/manage/keypersonmanage" tag="span" class="navbar-tab" v-if="menuData.indexOf('6')!=-1">
             重点人员管理
         </router-link>
       </div>
@@ -58,7 +58,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-
+import { getMenuData } from "@/utils/auth"
 export default {
   computed: {
     ...mapGetters([
@@ -67,6 +67,11 @@ export default {
     ]),
     key() {
       return this.$route.path
+    }
+  },
+  data(){
+    return{
+      menuData:[]
     }
   },
   methods: {
@@ -79,7 +84,16 @@ export default {
     },
     enterBulletin(){
        this.$router.push({ path: '/bulletinboard' })
+    },
+    getMenu(){
+      let arr = JSON.parse(getMenuData())
+      for(let i in arr )
+      this.menuData.push(arr[i].menuId)
+      console.log(this.menuData)
     }
+  },
+  mounted(){
+    this.getMenu()
   }
 }
 </script>

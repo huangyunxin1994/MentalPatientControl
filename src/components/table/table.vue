@@ -36,7 +36,7 @@
 </template>
 
 <script>
-
+import "@/assets/icon/iconfont.css"
   export default {
     props:{
         tableTitle:Array,
@@ -91,7 +91,7 @@
             else if(name=='state')
              return value == 1 ? '<span style="color:#409EFF;font-weight:bold">启用</span>' : value == 0 ? '<span style="color:#E6A23C;font-weight:bold">停用</span>' : '';
             else if(name=='eqlist')
-             return value == 1 ? '<i class="el-icon-heavy-rain" />' : (value == 2 ? '<i class="el-icon-moon" />' : value == 3?'<i class="el-icon-watch" />':"");
+             return value == 1 ? '<i class="iconyangan"></i>' : (value == 2 ? '<i class="iconchuang"></i>' : value == 3?'<i class="iconshoubiao" />':"");
             else if(name == 'ifRelease')
              return value == 1 ? '已发布' : value == 0 ? '发布' : '';
             else if(name == 'type')
@@ -104,6 +104,8 @@
              return value == 1 ? '一级' : (value == 2 ? '二级' : (value == 3? '三级' :(value == 4 ? '四级' :(value == 5 ? '五级' :(value == 6 ? '六级' :(value == 7 ? '七级' :(value == 8 ? '八级' : value == 9 ? '九级' :' ')))))))
             else if(name == 'alertType')
              return value == 1 ? '活动频率异常' : (value == 2 ? '活动时间异常' : (value == 3? '心率异常' :(value == 4 ? '血压异常' :(value == 5 ? '睡眠质量异常' :(value == 6 ? '居家/离家异常' :(value == 7 ? '电子围栏触发' :' '))))))
+            else if(name == 'personnelStatus')
+             return value == 1 ? '<span style="color:#67C23A;font-weight:bold">在家</span>' : (value == 2 ? '<span style="color:#E6A23C;font-weight:bold">离家</span>' : value == 3? '<span style="color:#F56C6C;font-weight:bold">预警</span>' :"");
             else
              return value;
         },

@@ -3,6 +3,7 @@ import Cookies from 'js-cookie'
 const TokenKey = 'TokenKey'
 const User="User"
 const RoleId="roleId"
+const MenuData="menuData"
 var millisecond = new Date().getTime();
 var expiresTime = new Date(millisecond + 60 * 1000 * 1);
 export function getToken() {
@@ -35,4 +36,13 @@ export function setRole(roleId) {
 }
 export function removeRole() {
   return Cookies.remove(RoleId)
+}
+export function getMenuData() {
+  return Cookies.get(MenuData)
+}
+export function setMenuData(menuData) {
+  return Cookies.set(MenuData, menuData)
+}
+export function removeMenuData() {
+  return Cookies.remove(MenuData)
 }

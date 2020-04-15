@@ -10,16 +10,16 @@
         <span class="navbar-title">&nbsp;特殊人群辅助管理系统</span>
       </div>
       <div class="navbar-div">
-        <router-link to="/dashboard" tag="span" class="navbar-tab">
+        <router-link to="/dashboard" tag="span" class="navbar-tab" v-if="menuData.indexOf('7')!=-1">
             首页
         </router-link>
-        <router-link to="/personstate"  tag="span" class="navbar-tab">
+        <router-link to="/personstate"  tag="span" class="navbar-tab" v-if="menuData.indexOf('8')!=-1">
             人员状态
         </router-link>
-        <router-link to="/warningcenter" tag="span" class="navbar-tab">
+        <router-link to="/warningcenter" tag="span" class="navbar-tab" v-if="menuData.indexOf('9')!=-1">
             预警中心
         </router-link>
-        <router-link to="/techniquetactics" tag="span" class="navbar-tab">
+        <router-link to="/techniquetactics" tag="span" class="navbar-tab" v-if="menuData.indexOf('10')!=-1">
             技战法
         </router-link>
       </div>
@@ -66,6 +66,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { selectCount} from '@/api/table'
+import { getMenuData } from "@/utils/auth"
 export default {
   computed: {
     ...mapGetters([
@@ -79,7 +80,7 @@ export default {
   },
   data(){
     return{
-      
+      menuData:[]
     }
   },
   methods: {
@@ -98,10 +99,16 @@ export default {
         console.log(res)
         this.warnNum=res.data.eCount+res.data.pCount
       })
+    },
+    getMenu(){
+      let arr = JSON.parse(getMenuData())
+      for(let i in arr )
+      this.menuData.push(arr[i].menuId)
+      console.log(this.menuData)
     }
   },
   mounted(){
-    //this.selectCount()
+    this.getMenu()
   }
 }
 </script>

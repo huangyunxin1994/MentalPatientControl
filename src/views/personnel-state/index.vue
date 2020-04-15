@@ -27,7 +27,7 @@ export default {
             { title : "关联设备", name : "eqlist", minwidth : "150", type : "equip"},
             { title : "状态", name : "personnelStatus", width : "120", type : "input" },
             { title : "人员级别", name : "level", minwidth : "150", type : "input" },
-            { title : "住址", name : "address", width : "120", type : "input" },
+            { title : "住址", name : "address", minwidth : "500", type : "input" },
             { title : "监护人", name : "guardian", minwidth : "150", type : "input" },
             { title : "网络管理员", name : "networkAdministrator", minwidth : "150", type : "input" },
             { title : "责任医师", name : "responsiblePhysician", width : "120", type : "input" },
