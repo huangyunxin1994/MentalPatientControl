@@ -29,7 +29,7 @@ export default {
         tableTitle:[
             { title : "设备编号", name : "code", minwidth : "120", type : "name" },
             { title : "设备名称", name : "name", minwidth : "150", type : "input" },
-            { title : "关联人员", name : "keyId", width : "120", type : "input" },
+            { title : "关联人员", name : "userName", width : "120", type : "input" },
             { title : "设备类型", name : "equipmentType", minwidth : "150", type : "equipselect" },
            
             { title : "操作",width : "150", type : "handle",button:[{name:"编辑",type:"edit"},{name:"删除",type:"remove"}] }
@@ -38,6 +38,7 @@ export default {
             { title : "设备编号", name : "code", type : "input" },
             { title : "设备名称", name : "name", type : "input" },
             { title : "关联人员", name : "keyId", type : "userselect" },
+            { title : "解绑", type : "button" },
             { title : "设备类型", name : "equipmentType", type : "equipselect" },
             
         ],

@@ -7,13 +7,13 @@
               <el-row :gutter="20">
                 <el-col :span="8">姓名：{{personData.name}}</el-col>
                 <el-col :span="8">联系电话：{{personData.phone}}</el-col>
-                <el-col :span="8">网格管理员：赵枫</el-col>
+                <el-col :span="8">网格管理员：{{personData.networkAdministrator}}</el-col>
                 <el-col :span="8">人员级别：二级</el-col>
-                <el-col :span="8">住址：xxx省xxx市</el-col>
-                <el-col :span="8">责任医师：钱塘</el-col>
+                <el-col :span="8">住址：{{personData.address}}</el-col>
+                <el-col :span="8">责任医师：{{personData.responsiblePhysician}}</el-col>
                 <el-col :span="8">病情描述：活动频率异常，情绪不稳定</el-col>
-                <el-col :span="8">监护人：李四</el-col>
-                <el-col :span="8">所属组织：{{personData.phone}}</el-col>
+                <el-col :span="8">监护人：{{personData.guardian}}</el-col>
+                <el-col :span="8">所属组织：{{personData.organizationName}}</el-col>
             </el-row>
           </div>
           <div class="gpstracking-handle">

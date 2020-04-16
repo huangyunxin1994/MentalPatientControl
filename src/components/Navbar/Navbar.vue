@@ -25,8 +25,12 @@
       </div>
     </div>
     <div class="right-menu">
-      <el-tooltip class="item" effect="dark" content="去管理端" placement="bottom-start">
-        <router-link tag="i" to="/manage" class="navbar-message el-icon-s-tools" ></router-link> 
+      <el-tooltip class="item" effect="dark" content="去管理端" placement="bottom-start" v-if="menuData.indexOf('3')!=-1||menuData.indexOf('4')!=-1||menuData.indexOf('5')!=-1||menuData.indexOf('6')!=-1||menuData.indexOf('11')!=-1">
+        <router-link tag="i" to="/manage" class="navbar-message el-icon-s-tools" v-if="menuData.indexOf('3')!=-1"></router-link> 
+        <router-link tag="i" to="/manage/rolemanage" class="navbar-message el-icon-s-tools" v-else-if="menuData.indexOf('11')!=-1"></router-link> 
+        <router-link tag="i" to="/manage/usermanage" class="navbar-message el-icon-s-tools" v-else-if="menuData.indexOf('4')!=-1"></router-link> 
+        <router-link tag="i" to="/manage/equipmanage" class="navbar-message el-icon-s-tools" v-else-if="menuData.indexOf('5')!=-1"></router-link> 
+        <router-link tag="i" to="/manage/keypersonmanage" class="navbar-message el-icon-s-tools" v-else-if="menuData.indexOf('6')!=-1"></router-link> 
       </el-tooltip>
       
       <el-badge :value="warnNum" class="item" v-if="warnNum>0">

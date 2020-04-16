@@ -123,8 +123,8 @@ export default {
               arr[i].all=0
             }
             this.powerData=filterArray(arr)
+            this.powerData.reverse()
             //console.log(111)
-            //console.log( this.powerData)
             let para = {'submitType':"insert"}
             this.$refs.dialog2.form=para
             this.$refs.dialog1.formVisible = false;
@@ -169,6 +169,7 @@ export default {
                 arr[i].all=0
             }
             this.powerData=filterArray(arr)
+            this.powerData.reverse()
             //console.log(111)
             //console.log( this.powerData)
             let para = {'submitType':"update"}

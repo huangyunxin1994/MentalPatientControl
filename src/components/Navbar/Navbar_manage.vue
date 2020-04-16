@@ -28,8 +28,11 @@
       </div>
     </div>
     <div class="right-menu">
-      <el-tooltip class="item" effect="dark" content="去操作端" placement="bottom-start">
-        <router-link tag="i" to="/" class="navbar-message el-icon-s-tools" ></router-link> 
+      <el-tooltip class="item" effect="dark" content="去管理端" placement="bottom-start" v-if="menuData.indexOf('7')!=-1||menuData.indexOf('8')!=-1||menuData.indexOf('9')!=-1||menuData.indexOf('10')!=-1">
+        <router-link tag="i" to="/" class="navbar-message el-icon-s-tools" v-if="menuData.indexOf('7')!=-1"></router-link> 
+        <router-link tag="i" to="/personstate" class="navbar-message el-icon-s-tools" v-else-if="menuData.indexOf('8')!=-1"></router-link> 
+        <router-link tag="i" to="/warningcenter" class="navbar-message el-icon-s-tools" v-else-if="menuData.indexOf('9')!=-1"></router-link> 
+        <router-link tag="i" to="/techniquetactics" class="navbar-message el-icon-s-tools" v-else-if="menuData.indexOf('10')!=-1"></router-link> 
       </el-tooltip>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">

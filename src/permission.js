@@ -22,7 +22,6 @@ router.beforeEach(async(to, from, next) => {
   console.log(hasToken)
   if (hasToken) {
     const hasMenuData = JSON.parse(getMenuData())
-    console.log(hasMenuData)
     if(hasMenuData.length>0){
       if (to.path === '/login') {
         // if is logged in, redirect to the home page

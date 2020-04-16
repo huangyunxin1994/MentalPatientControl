@@ -3,10 +3,9 @@
       <my-tree @getThisOrgan="getThisOrgan" ref="tree"></my-tree>
       
       <div class="organmanage-table">
-        <!-- <div  v-show="organData.id" class="organmanage-parent">
-          <span style="color:#606266">{{organData.name}}</span>
-          <el-button size="small" round  @click="handleEdit()">编辑</el-button>
-        </div> -->
+        <div class="organmanage-parent">
+          <el-button size="small" type="primary" plain  @click="handleEdit()">地图初始经纬度</el-button>
+        </div>
           
           <el-button class="organmanage-table-button" type="primary" size="small" @click="newData">添加组织</el-button>
           <my-table :tableTitle="tableTitle" :tableData="tableData" ref="table" @changeData="changeData" @removeData="removeData" @bRemoveData="bRemoveData" @settingData="settingData"></my-table>
@@ -188,7 +187,7 @@ export default {
    .organmanage-parent{
       position: absolute;
       top:4vh;
-      right: 30vh;
+      right: 25vh;
       display: flex;
       justify-content: space-between;
       align-items: center;

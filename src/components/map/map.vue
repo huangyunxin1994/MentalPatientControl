@@ -72,7 +72,7 @@ export default {
                     // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置
                 });
                 myIcon.setName("1");
-                var content= "<p>姓名："+outHomeArr[i].name+"<p/><p style='color:blue'>状态：离家<p/><p>"+"联系电话："+outHomeArr[i].phone+"</p>";
+                var content= "<p>姓名："+outHomeArr[i].name+"<p/><p style='color:blue'>状态：离家<p/><p>"+"联系电话："+outHomeArr[i].phone+"</p><p><button>查看详情</button></p>";
                 var point = new BMap.Point(outHomeArr[i].longitude,outHomeArr[i].latitude);
                 // 创建标注对象并添加到地图 
                 var marker = new BMap.Marker(point,{icon: myIcon});

@@ -103,6 +103,7 @@ export default {
               { title : "账号", name : "account", type : "input" },
               { title : "密码", name : "password", type : "input" },
               { title : "姓名", name : "name", type : "input" },
+              { title : "是否启用", name : "status", type : "radio" },
               { title : "是否复用", name : "multiplexMark", type : "radio" },
               { title : "性别", name : "sex", type : "radio" },
               { title : "角色", name : "roleId", type : "roleselect" },
@@ -112,7 +113,7 @@ export default {
               { title : "身份证号", name : "idCard", type : "input" },
               
       ]
-      let para = {'submitType':"insert"}
+      let para = {'submitType':"insert",'multiplexMark':1,'sex':1,"status":1}
       this.$refs.dialog.form=para
       let arr = ["organ","role"]
       this.$refs.dialog.handleShow(arr);
