@@ -81,7 +81,7 @@ export default {
             // // 向地图添加标注
             console.log(this.map.getCenter().lng)
             this.marker = new BMap.Marker(point);
-            this.circle = new BMap.Circle(point,this.form.radius,{strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5}); //创建圆
+            this.circle = new BMap.Circle(point,this.form.radius,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
             this.map.addOverlay(this.marker);
             this.marker.setAnimation(BMAP_ANIMATION_BOUNCE);
             this.map.addOverlay(this.circle);
@@ -92,7 +92,7 @@ export default {
                     that.longitude = that.map.getCenter().lng
                     that.latitude = that.map.getCenter().lat
                     let point  = new BMap.Point(that.longitude,that.latitude)
-                    that.circle = new BMap.Circle(point,that.form.radius,{strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5}); //创建圆
+                    that.circle = new BMap.Circle(point,that.form.radius,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
                     that.marker.disableMassClear()
                     that.map.clearOverlays()
                     that.map.addOverlay(that.circle);
@@ -104,7 +104,7 @@ export default {
                     that.longitude = that.map.getCenter().lng
                     that.latitude = that.map.getCenter().lat
                     let point  = new BMap.Point(that.longitude,that.latitude)
-                    that.circle = new BMap.Circle(point,that.form.radius,{strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5}); //创建圆
+                    that.circle = new BMap.Circle(point,that.form.radius,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
                     that.marker.disableMassClear()
                     that.map.clearOverlays()
                     that.map.addOverlay(that.circle);
@@ -116,7 +116,7 @@ export default {
             this.longitude = this.map.getCenter().lng
             this.latitude = this.map.getCenter().lat
             let point  = new BMap.Point(this.longitude,this.latitude)
-            this.circle = new BMap.Circle(point,this.form.radius,{strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5}); //创建圆
+            this.circle = new BMap.Circle(point,this.form.radius,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
             this.marker.disableMassClear()
             this.map.clearOverlays()
             this.map.addOverlay(this.circle);
@@ -128,7 +128,10 @@ export default {
             })  
         },
         handleClose(){
-            this.form={};
+            this.form={
+                name:"",
+                radius: '100'
+            };
             this.formVisible=false
             this.loading=false
         },

@@ -8,7 +8,7 @@
                 <el-col :span="8">姓名：{{personData.name}}</el-col>
                 <el-col :span="8">联系电话：{{personData.phone}}</el-col>
                 <el-col :span="8">网格管理员：{{personData.networkAdministrator}}</el-col>
-                <el-col :span="8">人员级别：二级</el-col>
+                <el-col :span="8">人员级别：{{personData.level | fiterData}}</el-col>
                 <el-col :span="8">住址：{{personData.address}}</el-col>
                 <el-col :span="8">责任医师：{{personData.responsiblePhysician}}</el-col>
                 <el-col :span="8">病情描述：活动频率异常，情绪不稳定</el-col>
@@ -34,7 +34,7 @@
          
           <el-main>
               <div  class="gpstracking-map">
-                   <my-map ref="map" :locusPorint="locusPorint"></my-map>
+                   <my-map ref="map" :locusPorint="locusPorint" :enterElecArr="enterElecArr" :personPoint="personPoint"></my-map>
               </div>
               <div class="gpstracking-map">
                 电子围栏预警记录:
@@ -53,7 +53,7 @@
 import myMap from "@/components/map/map"
 import myTable from "@/components/table/table"
 import myDate from "@/components/date/date"
-import { getPersonAlert,getPersonCoordinate } from "@/api/table"
+import { getPersonAlert,getPersonCoordinate,selectElectronicFenceQuery,locationTracking } from "@/api/table"
 import { parseTime} from '@/utils/index'
 export default {
   name: 'Gpstracking',
@@ -61,6 +61,13 @@ export default {
       myDate,
       myTable,
       myMap
+  },
+  filters: {
+    fiterData: (value)=> {
+        if (!value) return ''
+        value = value.toString()
+        return value == 1 ? '一级' : (value == 2 ? '二级' : (value == 3? '三级' :(value == 4 ? '四级' :(value == 5 ? '五级' :(value == 6 ? '六级' :(value == 7 ? '七级' :(value == 8 ? '八级' : value == 9 ? '九级' :' ')))))))
+    }
   },
   data(){
     return{
@@ -99,6 +106,8 @@ export default {
       beginTime:"",
       endTime:"",
       locusPorint:[],
+      personPoint:{},
+      enterElecArr:[],
       tableTitle:[
             { title : "预警围栏", name : "fenceName", width : "120", type : "input" },
             { title : "进入/离开", name : "type", width : "120", type : "input"},
@@ -128,13 +137,34 @@ export default {
         await this.$refs.map.getmap()
         await this.$refs.map.movePosBypoint(this.locusPorint[0].longitude,this.locusPorint[0].latitude)
       },
-      getPersonAlert(){
+     async getPersonAlert(){
         let id = this.personData.keyUserid
-        getPersonAlert({keyUserid:id}).then(res=>{
+       await getPersonAlert({keyUserid:id}).then(res=>{
           if(res.code==0){
             this.tableData=res.data.data
           }
         })
+        await locationTracking({keyUserid:id}).then(res=>{
+          if(res.code==0){
+             console.log(res)
+            let coordinate = res.data.coordinate
+            let fanceList = res.data.Fance_list
+            // console.log(data)
+            // let arr1=[]
+            // for(let i in data){
+            //   let o = data[i].electronicFence;
+            //   o.userList = data[i].userList
+            //   arr1.push(o)
+            // }
+            // console.log(arr1)
+            this.personPoint = coordinate
+            this.enterElecArr=fanceList;
+            this.$refs.map.circleShow=true
+          }
+        }).catch(err=>{
+
+        })
+        await this.$refs.map.getmap()
       },
       changeDate(val){
         console.log(val)
@@ -151,7 +181,6 @@ export default {
     mounted(){
       this.personData=this.$route.query.row
       this.getPersonAlert()
-      this.$refs.map.getmap()
     }
 }
 </script>

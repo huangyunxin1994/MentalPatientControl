@@ -29,15 +29,12 @@
     </div>
     <div class="right-menu">
       <el-tooltip class="item" effect="dark" content="去管理端" placement="bottom-start" v-if="menuData.indexOf('7')!=-1||menuData.indexOf('8')!=-1||menuData.indexOf('9')!=-1||menuData.indexOf('10')!=-1">
-        <router-link tag="i" to="/" class="navbar-message el-icon-s-tools" v-if="menuData.indexOf('7')!=-1"></router-link> 
-        <router-link tag="i" to="/personstate" class="navbar-message el-icon-s-tools" v-else-if="menuData.indexOf('8')!=-1"></router-link> 
-        <router-link tag="i" to="/warningcenter" class="navbar-message el-icon-s-tools" v-else-if="menuData.indexOf('9')!=-1"></router-link> 
-        <router-link tag="i" to="/techniquetactics" class="navbar-message el-icon-s-tools" v-else-if="menuData.indexOf('10')!=-1"></router-link> 
+        <router-link tag="i" to="/" class="navbar-message el-icon-s-tools"></router-link> 
       </el-tooltip>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
-          
+          <span v-text="name"  class="user-name"></span>
         </div>
         
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -66,7 +63,8 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar'
+      'avatar',
+      'name'
     ]),
     key() {
       return this.$route.path
@@ -152,7 +150,7 @@ export default {
     float: left;
   }
   .left-menu{
-    width: 60%;
+    width: 70%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -173,7 +171,7 @@ export default {
     }
     
   .navbar-div{
-    width: 50%;
+    width: 60%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -191,7 +189,7 @@ export default {
   }
   
   .right-menu {
-    width: 10%;
+    width: 15%;
     height: 100%;
     display: flex;
     justify-content: space-between;
@@ -229,14 +227,21 @@ export default {
       .avatar-wrapper {
         margin-top: 0.5vh;
         position: relative;
-
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         .user-avatar {
           cursor: pointer;
           width: 2vw;
           height: 2vw;
           border-radius: 0.5vw;
         }
-
+        .user-name{
+          font-size: 0.9vw;
+          color: white;
+          font-weight: bold;
+          margin-left: 0.5vw;
+        }
         .el-icon-caret-bottom {
           cursor: pointer;
           position: absolute;

@@ -72,9 +72,9 @@ export default {
          tableTitle:[
             { title : "姓名", name : "name", width : "120", type : "name" },
             { title : "联系电话", name : "phone", minwidth : "150", type : "number" },
-            { title : "账号", name : "account", width : "120", type : "input" },
-            { title : "是否启用", name : "status", minwidth : "150", type : "radio" },
+            { title : "账号", name : "account", minwidth : "120", type : "input" },
             { title : "是否复用", name : "multiplexMark", width : "120", type : "radio" },
+            { title : "角色", name : "roleName", width : "150", type : "input" },
             { title : "所属组织", name : "organizationName", minwidth : "150", type : "input" },
             { title : "操作",width : "150", type : "handle",button:[{name:"编辑",type:"edit"},{name:"删除",type:"remove"}] }
           ],
@@ -103,7 +103,6 @@ export default {
               { title : "账号", name : "account", type : "input" },
               { title : "密码", name : "password", type : "input" },
               { title : "姓名", name : "name", type : "input" },
-              { title : "是否启用", name : "status", type : "radio" },
               { title : "是否复用", name : "multiplexMark", type : "radio" },
               { title : "性别", name : "sex", type : "radio" },
               { title : "角色", name : "roleId", type : "roleselect" },

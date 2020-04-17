@@ -86,6 +86,7 @@ export const getPerSe = params => { return get(`${base}/PersonnelStatus/Activity
 export const getPersonAlert = params => { return get(`${base}/PersonnelStatus/selectPersonnelAlert`, params); }; //电子围栏预警记录
 export const getPersonCoordinate = params => { return get(`${base}/PersonnelStatus/selectPersonnelCoordinate`, params); };  //轨迹查询
 export const getPersonStatusQuery = params => { return get(`${base}/PersonnelStatus/selectPersonnelStatusQueryByPage`, params); }; //分页查询
+export const locationTracking = params => { return get(`${base}/PersonnelStatus/locationTracking`, params); }; //获取重点用户最新的坐标
 
 /*
  * 电子围栏相关

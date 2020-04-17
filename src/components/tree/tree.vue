@@ -76,13 +76,9 @@ export default {
         let user = JSON.parse(getUser()) 
         console.log(user)
         let organizaId = user.organizationId;
-        let para
+        let userid = user.userId;
         let role = JSON.parse(getRole()) 
-        console.log(role)
-        if(role==0)
-         para= {organizaId:0,best:1}
-        else
-         para= {organizaId:organizaId}
+        let para ={organizaId:0,roleId:role,userId:userid}
         getOrganData(para).then(res=>{
           console.log(res)
           this.data=res.data.data

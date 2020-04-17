@@ -37,7 +37,7 @@ export default {
         if(arr1.length>0){
           for( var i = 0;i < arr1.length; i++){
             var point = new BMap.Point(arr1[i].longitude,arr1[i].latitude);
-            var circle = new BMap.Circle(point,arr1[i].radius,{strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});
+            var circle = new BMap.Circle(point,arr1[i].radius,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8});
             this.mainMap.addOverlay(circle); 
             
           }

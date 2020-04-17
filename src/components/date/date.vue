@@ -151,7 +151,7 @@ export default {
     right: 0;
     width: 0;
     height: 0;
-    border-top: .5em solid #F56C6C;
-    border-left: .5em solid transparent;
+    border-top: 1em solid #F56C6C;
+    border-left: 1em solid transparent;
 }
 </style>

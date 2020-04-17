@@ -8,7 +8,7 @@
                 <el-col :span="8">姓名：{{personData.name}}</el-col>
                 <el-col :span="8">联系电话：{{personData.phone}}</el-col>
                 <el-col :span="8">网格管理员：{{personData.networkAdministrator}}</el-col>
-                <el-col :span="8">人员级别：二级</el-col>
+                <el-col :span="8">人员级别：{{personData.level | fiterData}}</el-col>
                 <el-col :span="8">住址：{{personData.address}}</el-col>
                 <el-col :span="8">责任医师：{{personData.responsiblePhysician}}</el-col>
                 <el-col :span="8">病情描述：活动频率异常，情绪不稳定</el-col>
@@ -63,6 +63,13 @@ export default {
       myDate,
       dialogWarn
 
+  },
+  filters: {
+    fiterData: (value)=> {
+        if (!value) return ''
+        value = value.toString()
+        return value == 1 ? '一级' : (value == 2 ? '二级' : (value == 3? '三级' :(value == 4 ? '四级' :(value == 5 ? '五级' :(value == 6 ? '六级' :(value == 7 ? '七级' :(value == 8 ? '八级' : value == 9 ? '九级' :' ')))))))
+    }
   },
   data(){
     return{

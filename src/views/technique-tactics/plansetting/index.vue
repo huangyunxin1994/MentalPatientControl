@@ -227,6 +227,7 @@ import { getPlanQueryData,deleteReservePlan } from '@/api/table'
       &-label{
         font-weight:bold ;
         color: #606266;
+        display: inline-block;
       }
       &-name{
         font-size: 1vw;

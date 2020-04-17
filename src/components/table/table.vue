@@ -3,7 +3,7 @@
     <div style="margin-bottom:2vh;width:20vw">
        <el-input v-model="inputValue" placeholder="请输入内容"></el-input>
     </div>
-    <el-table :data="tables" border stripe highlight-current-row v-loading="listLoading" @selection-change="selsChange" height="calc(100% - 100px)">
+    <el-table :data="tables" border stripe highlight-current-row v-loading="listLoading" height="calc(100% - 100px)">
         <el-table-column type="selection" width="55">
         </el-table-column>
         <el-table-column type="index" width="60">
@@ -27,7 +27,7 @@
         </el-table-column>
     </el-table>
     <el-col :span="24" class="toolbar">
-      <el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
+      <!-- <el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button> -->
       <el-pagination background layout="prev, pager, next, jumper" @current-change="handleCurrentChange" :page-size="20" :total="0" style="float:right;">
       </el-pagination>
     </el-col>
@@ -77,10 +77,10 @@ import "@/assets/icon/iconfont.css"
                   else
                   return row[column.property]
         },
-        selsChange: function (sels) {
-          console.log(sels)
-				  this.sels = sels;
-        },
+        // selsChange: function (sels) {
+        //   console.log(sels)
+				//   this.sels = sels;
+        // },
         arrFormatter (value,name) {
             if(name=='sex')
              return value == 1 ? '男' : value == 0 ? '女' : '';
@@ -145,21 +145,21 @@ import "@/assets/icon/iconfont.css"
             });
         },
         //批量删除
-        batchRemove() {
-            var ids = this.sels.map(item => item.id).toString();
-            this.$confirm('确认删除选中记录吗？', '提示', {
-              type: 'warning'
-            }).then(() => {
-              this.listLoading = true;
-              //NProgress.start();
-              let para = this.sels;
-              console.log(para)
-              this.$emit('bRemoveData',para)
+        // batchRemove() {
+        //     var ids = this.sels.map(item => item.id).toString();
+        //     this.$confirm('确认删除选中记录吗？', '提示', {
+        //       type: 'warning'
+        //     }).then(() => {
+        //       this.listLoading = true;
+        //       //NProgress.start();
+        //       let para = this.sels;
+        //       console.log(para)
+        //       this.$emit('bRemoveData',para)
 
-            }).catch(() => {
+        //     }).catch(() => {
 
-            });
-        },
+        //     });
+        // },
     },
     computed:{
       tables:function(){

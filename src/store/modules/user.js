@@ -1,6 +1,6 @@
 import { requestLogin, requestLogout, login, logout, getInfo } from '@/api/user'
 import { selectCount } from '@/api/table'
-import { getToken, setToken, removeToken,getUser,setUser,removeUser,setRole,removeRole,setMenuData,removeMenuData } from '@/utils/auth'
+import { getToken, setToken, removeToken,getUser,setUser,removeUser,setRole,removeRole,setMenuData,removeMenuData,getRole } from '@/utils/auth'
 import { resetRouter } from '@/router'
 import jwt from 'jwt-decode';// jwt-decode 解析token
 import { get } from '@/utils/request';
@@ -37,7 +37,14 @@ const actions = {
   // get warnnum
   getWarnNum({ commit }, state){
     return new Promise((resolve, reject) => {
-      selectCount().then(response => {
+      let role = JSON.parse(getRole())
+      let user = JSON.parse(getUser())
+      let para ={}
+      para.roleId = role
+      para.organizaId = user.organizationId
+      para.userId = user.userId
+      console.log(46)
+      selectCount(para).then(response => {
         console.log(response)
         const data = response
         let totle = data.data.eCount+data.data.pCount
@@ -60,7 +67,7 @@ const actions = {
         console.log(data.data.data)
         setRole(data.data.roleId)
         setMenuData(data.data.data)
-        commit('SET_NAME', data.data.data.name)
+        commit('SET_NAME', data.data.user.name)
         commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
         commit('SET_TOKEN', data.data.token)
        
@@ -74,12 +81,10 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-        const data = getUser()
-        console.log(JSON.parse(data))
+        const data = JSON.parse(getUser())
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-        const { name, avatar } = data
         commit('SET_NAME', data.name)
         commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
         resolve(data)

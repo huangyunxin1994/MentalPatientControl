@@ -68,3 +68,41 @@ div:focus {
 .anchorBL{
   display:none;
 }
+.BMap_center{
+  background-color:#f2f2f2 !important;
+}
+.BMap_bubble_content{
+  color:#606266;
+  font-size: 16px;
+  font-weight: bold;
+}
+.mymap-item{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.mymap-button{
+  color: #FFF;
+  background-color: #409EFF;
+  border-color: #409EFF;
+  display: inline-block;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid #DCDFE6;
+  -webkit-appearance: none;
+  text-align: center;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  outline: 0;
+  margin: 0;
+  -webkit-transition: .1s;
+  transition: .1s;
+  font-weight: 500;
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 4px;
+}
+.mymap-button:hover{
+  background: rgb(102, 177, 255);
+}

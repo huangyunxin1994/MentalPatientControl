@@ -10,7 +10,7 @@
         <span class="navbar-title">&nbsp;特殊人群辅助管理系统</span>
       </div>
       <div class="navbar-div">
-        <router-link to="/dashboard" tag="span" class="navbar-tab" v-if="menuData.indexOf('7')!=-1">
+        <router-link to="/dashboard" tag="span" class="navbar-tab">
             首页
         </router-link>
         <router-link to="/personstate"  tag="span" class="navbar-tab" v-if="menuData.indexOf('8')!=-1">
@@ -40,7 +40,7 @@
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
-          
+          <span v-text="name"  class="user-name"></span>
         </div>
         
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -76,7 +76,8 @@ export default {
     ...mapGetters([
       'sidebar',
       'avatar',
-      'warnNum'
+      'warnNum',
+      'name'
     ]),
     key() {
       return this.$route.path
@@ -97,12 +98,6 @@ export default {
     },
     enterBulletin(){
        this.$router.push({ path: '/bulletinboard' })
-    },
-    selectCount(){
-      selectCount().then(res=>{
-        console.log(res)
-        this.warnNum=res.data.eCount+res.data.pCount
-      })
     },
     getMenu(){
       let arr = JSON.parse(getMenuData())
@@ -207,7 +202,7 @@ export default {
   }
   
   .right-menu {
-    width: 15%;
+    width: 20%;
     height: 100%;
     display: flex;
     justify-content: space-between;
@@ -245,6 +240,9 @@ export default {
       .avatar-wrapper {
         margin-top: 0.5vh;
         position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
 
         .user-avatar {
           cursor: pointer;
@@ -252,7 +250,12 @@ export default {
           height: 2vw;
           border-radius: 0.5vw;
         }
-
+        .user-name{
+          font-size: 0.9vw;
+          color: white;
+          font-weight: bold;
+          margin-left: 0.5vw;
+        }
         .el-icon-caret-bottom {
           cursor: pointer;
           position: absolute;

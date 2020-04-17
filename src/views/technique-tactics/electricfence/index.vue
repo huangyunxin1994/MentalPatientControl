@@ -8,7 +8,7 @@
             <el-collapse-item name="1">
                 <template slot="title">
                     <div class="electricfence-collapse">
-                        <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;进入预警围栏</span>
+                        <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;电子围栏</span>
                     </div>
                 </template>
                 <div v-for="(item,index) in filterArr" :key="index" class="electricfence-collapse-item" :class="{'collapse-item-select':enterShowIndex == index}" @click="enterShow(index)">
@@ -25,7 +25,7 @@
         <el-col :span="18" class="electricfence-map">
             <mymap ref="map"></mymap>
             <div class="electricfence-map-button">
-                <el-button type="primary" @click="openElecAddMap()">添加进入预警围栏</el-button>
+                <el-button type="primary" @click="openElecAddMap()">添加电子围栏</el-button>
             </div>
         </el-col>
       </el-row>
@@ -80,7 +80,7 @@ export default {
       },
       enterShow(i){
         this.enterShowIndex=i
-        this.$refs.map.movePosBypoint(this.enterElecArr[i].longitude,this.enterElecArr[i].latitude)   
+        this.$refs.map.movePosBypoint(this.filterArr[i].longitude,this.filterArr[i].latitude)   
       },
       setUserIn(i){
         console.log(i)
