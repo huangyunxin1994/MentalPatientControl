@@ -44,7 +44,7 @@
 </template>
 
 <script>
-  import {getWarnListData} from '@/api/table'
+  import {getWarnListData , updateKeyPnlData} from '@/api/table'
   import dialogWarnHandle from '@/components/dialog-person/dialog-warn-handle/dialog'
 
   export default{
@@ -103,9 +103,13 @@
       },
       getListData(val){
         this.tableData = val
+        if(this.tableData.length == 0){
+          console.log("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR")
+          console.log(this.tableData.length)
+        }
       },
       compile(index, row){
-        console.log(this.tableData[index])
+        // console.log(this.tableData[index])
         this.$refs.showHandle.getDandleShow(this.tableData[index])
       }
     },

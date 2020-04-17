@@ -47,12 +47,11 @@ export default {
     }
   },
   created() {
-    
+
   },
   methods: {
      // 父组件获取数据
     handleChange (val) {
-      console.log(val)
       this.$emit("getData",val);
     },
     // 请求接口
@@ -67,8 +66,10 @@ export default {
         year,
         month
       }
+
       console.log(params)
       let a = this.queryDateOfMonth(params) // 请求接口
+
       console.log(a)
       return await a
     },
@@ -100,7 +101,7 @@ export default {
       console.log(self.currentYear,self.currentMonth,self.currentDay)
 
       domList.forEach(function(dom, i) {
-        if(self.showYear > self.currentYear || (self.showYear == self.currentYear && self.showMonth > self.currentMonth) 
+        if(self.showYear > self.currentYear || (self.showYear == self.currentYear && self.showMonth > self.currentMonth)
           || (self.showYear == self.currentYear && self.showMonth == self.currentMonth && i > self.currentDay -1))
         {
           dom.className.match(/warn-icon/i) && (dom.className = 'available')

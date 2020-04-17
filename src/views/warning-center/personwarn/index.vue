@@ -24,7 +24,7 @@
             >
           </el-date-picker>
         </div>
-          
+
           <my-table :tableTitle="tableTitle" :tableData="tableData" @changeData="changeData" ref="table"></my-table>
           <dialog-warn-handle ref="sendData" @sendState='getSendData'></dialog-warn-handle>
     </el-container>
@@ -114,7 +114,6 @@ export default {
     getPerWarnlData(){
       let role = JSON.parse(getRole())
       let user = JSON.parse(getUser());
-      console.log(user)
       let param ={}
       param.roleId=role
       param.userId=user.userId
@@ -122,12 +121,12 @@ export default {
       param.processingResult = this.value
       param.beginTime = this.beginTime
       param.endTime = this.endTime
-      this.$refs.table.listLoading = true 
+      this.$refs.table.listLoading = true
       getPerWarnlData(param).then(res=>{
         if(res.code==0){
           console.log(res)
           this.tableData= res.data.data
-          this.$refs.table.listLoading = false 
+          this.$refs.table.listLoading = false
         }
       }).catch(err=>{
 
@@ -153,7 +152,7 @@ export default {
         this.beginTime = parseTime(val[0])
         this.endTime = parseTime(val[1])
       }
-      
+
       this.getPerWarnlData()
     }
   },
