@@ -4,8 +4,6 @@
        <el-input v-model="inputValue" placeholder="请输入内容"></el-input>
     </div>
     <el-table :data="tables" border stripe highlight-current-row v-loading="listLoading" height="calc(100% - 100px)">
-        <el-table-column type="selection" width="55">
-        </el-table-column>
         <el-table-column type="index" width="60">
         </el-table-column>
         <el-table-column v-for="(item,index) in tableTitle" :key="index" :prop="item.name" :label="item.title" :width="item.width" :min-width="item.minwidth" :sortable="item.type!='button'&&item.type!='handle'?true:false">
@@ -17,6 +15,16 @@
                       <el-button v-if="item.type=='edit'&&scope.row['processingResult']!=3" type="primary" icon="el-icon-edit" size="small" circle @click="handleEdit(scope.$index, scope.row)"></el-button>
                        <el-button v-else-if="item.type=='remove'" type="danger" icon="el-icon-delete" size="small" circle @click="handleRemove(scope.$index, scope.row)"></el-button>
                     </el-tooltip>
+                </div>
+                <div v-else-if="item.type=='tooltip'">
+                      <el-popover
+                        placement="top"
+                        width="200"
+                        trigger="click"
+                        :content="'联系电话:'+phoneNumber"
+                        @show="loadData(scope.row,item.name)">
+                        <el-link slot="reference" :formatter="formatSex" v-html="arrFormatter(scope.row[item.name],item.name)"></el-link>
+                      </el-popover>
                 </div>
                 <el-button v-else-if="item.type=='button'"  icon="el-icon-setting" type="info" size="small" circle @click="handleSetting(scope.$index, scope.row,item.name)"></el-button>
                 <div v-else-if="item.type=='equip'">
@@ -36,6 +44,7 @@
 </template>
 
 <script>
+import { getThisUser } from "@/api/table"
 import "@/assets/icon/iconfont.css"
   export default {
     props:{
@@ -65,7 +74,8 @@ import "@/assets/icon/iconfont.css"
           value: '选项5',
           label: '北京烤鸭'
         }],
-        value: ''
+        value: '',
+        phoneNumber:""
       }
     },
     methods:{
@@ -82,7 +92,7 @@ import "@/assets/icon/iconfont.css"
 				//   this.sels = sels;
         // },
         arrFormatter (value,name) {
-            if(name=='sex')
+             if(name=='sex')
              return value == 1 ? '男' : value == 0 ? '女' : '';
             else if(name=='multiplexMark')
              return value == 1 ? '是' : value == 0 ? '否' : '';
@@ -102,12 +112,15 @@ import "@/assets/icon/iconfont.css"
              return value == 1 ? '活动监测器' : (value == 2 ? '睡眠监测器' : value == 3? '智能手表' :"");
             else if(name == 'level')
              return value == 1 ? '一级' : (value == 2 ? '二级' : (value == 3? '三级' :(value == 4 ? '四级' :(value == 5 ? '五级' :(value == 6 ? '六级' :(value == 7 ? '七级' :(value == 8 ? '八级' : value == 9 ? '九级' :' ')))))))
+            else if(name == 'equipAlertType')
+             return value == 1 ? 'SOS' : (value == 2 ? '低电' : (value == 3? '脱落报警' :(value == 4 ? '佩戴提醒' :(value == 5 ? '剪断报警' :(value == 6 ? '跌倒报警' :(value == 7 ? '心率异常' :(value == 8 ? '心率过高' :(value == 9 ? '心率过低' :(value == 10 ? '收缩压过高' :(value == 11 ? '收缩压过低' :(value == 12 ? '舒张压过高' :(value == 13 ? '舒张压过低' :(value == 14 ? '温度过高' :(value == 7 ? '烟雾浓度过高' :' '))))))))))))))
             else if(name == 'alertType')
              return value == 1 ? '活动频率异常' : (value == 2 ? '活动时间异常' : (value == 3? '心率异常' :(value == 4 ? '血压异常' :(value == 5 ? '睡眠质量异常' :(value == 6 ? '居家/离家异常' :(value == 7 ? '电子围栏触发' :' '))))))
             else if(name == 'personnelStatus')
              return value == 1 ? '<span style="color:#67C23A;font-weight:bold">在家</span>' : (value == 2 ? '<span style="color:#E6A23C;font-weight:bold">离家</span>' : value == 3? '<span style="color:#F56C6C;font-weight:bold">预警</span>' :"");
             else
              return value;
+           
         },
         handleCurrentChange(val){
             console.log(val)
@@ -143,6 +156,30 @@ import "@/assets/icon/iconfont.css"
             }).catch(() => {
 
             });
+        },
+        //查询单个用户获得电话号码
+        loadData(row,name){
+          console.log(row)
+         console.log(name)
+         let para ={};
+        
+         if(name=="guardian"){
+            para.userId=row.guardianId
+           
+         }else if(name=="networkAdministrator"){
+            para.userId=row.networkAdministratorId
+         }else if(name=="responsiblePhysician"){
+            para.userId=row.responsiblePhysicianId
+         }
+          getThisUser(para).then(res=>{
+            if(res.code==0){
+              console.log(res)
+              this.phoneNumber=res.data.data.phone
+            }
+          }).catch(err=>{
+            
+          })
+         // phoneNumber
         },
         //批量删除
         // batchRemove() {

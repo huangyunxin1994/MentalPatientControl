@@ -5,22 +5,24 @@
             <div class="activestate-header">
               <div class="activestate-title">人员详情</div>
               <el-row :gutter="20">
-                <el-col :span="8">姓名：{{personData.name}}</el-col>
-                <el-col :span="8">联系电话：{{personData.phone}}</el-col>
-                <el-col :span="8">网格管理员：{{personData.networkAdministrator}}</el-col>
-                <el-col :span="8">人员级别：{{personData.level | fiterData}}</el-col>
-                <el-col :span="8">住址：{{personData.address}}</el-col>
-                <el-col :span="8">责任医师：{{personData.responsiblePhysician}}</el-col>
-                <el-col :span="8">病情描述：活动频率异常，情绪不稳定</el-col>
-                <el-col :span="8">监护人：{{personData.guardian}}</el-col>
-                <el-col :span="8">所属组织：{{personData.organizationName}}</el-col>
+                <el-col :span="6">姓名：{{personData.name}}</el-col>
+                <el-col :span="6">联系电话：{{personData.phone}}</el-col>
+                <el-col :span="6">网格管理员：{{personData.networkAdministrator}}-{{personData.networkAdministratorP}}</el-col>
+                <el-col :span="6">人员级别：{{personData.level | fiterData}}</el-col>
+                <el-col :span="12">住址：{{personData.address}}</el-col>
+                <el-col :span="6">责任医师：{{personData.responsiblePhysician}}-{{personData.responsiblePhysicianP}}</el-col>
+               
+                <el-col :span="6">所属组织：{{personData.organizationName}}</el-col>
+                <el-col :span="12">病情描述：活动频率异常，情绪不稳定</el-col>
+                 <el-col :span="6">监护人：{{personData.guardian}}-{{personData.guardianP}}</el-col>
+                <el-col :span="6">是否限制外出：{{personData.restrictions | filterRestr}}</el-col>
                 <!-- <el-col :span="8">是否限制外出：{{personData.personnelStatus}}</el-col> -->
             </el-row>
           </div>
           <div class="activestate-handle">
 
                 <div class="active-handle">
-                  <my-date @getData="setDateTime"></my-date>
+                  <my-date @getData="setDateTime" :warnTableData="warnTableData"></my-date>
                   <el-button type="primary" class="sureBtn" @click="sureBtn">确定</el-button>
                 </div>
                 <el-badge :value="warnNum" class="item">
@@ -30,16 +32,16 @@
         </el-header>
           <el-main>
             <div class="activestate-chart">
-                <div id="activerate" style="width:50%; height:40vh;background:#fff;padding:20px;"/>
-                <div id="activetime" style="width:50%; height:40vh;background:#fff;padding:20px;"/>
+                <div id="activerate" class="activestate-chart-item" :class="{'activestate-chart-item-alert':activerate==1}"/>
+                <div id="activetime" class="activestate-chart-item" :class="{'activestate-chart-item-alert':activetime==1}"/>
             </div>
             <div class="activestate-chart">
-                <div id="heartrate" style="width:50%; height:40vh;background:#fff;padding:20px;"/>
-                <div id="bloodpress" style="width:50%; height:40vh;background:#fff;padding:20px;"/>
+                <div id="heartrate" class="activestate-chart-item" :class="{'activestate-chart-item-alert':heartrate==1}"/>
+                <div id="bloodpress" class="activestate-chart-item" :class="{'activestate-chart-item-alert':bloodpress==1}"/>
             </div>
             <div class="activestate-chart">
-                <div id="sleepquality" style="width:50%; height:40vh;background:#fff;padding:20px;"/>
-                <div id="inouthome" style="width:50%; height:40vh;background:#fff;padding:20px;"/>
+                <div id="sleepquality" class="activestate-chart-item" :class="{'activestate-chart-item-alert':sleepquality==1}"/>
+                <div id="inouthome" class="activestate-chart-item" :class="{'activestate-chart-item-alert':inouthome==1}"/>
             </div>
         </el-main>
          </el-scrollbar>
@@ -69,6 +71,11 @@ export default {
         if (!value) return ''
         value = value.toString()
         return value == 1 ? '一级' : (value == 2 ? '二级' : (value == 3? '三级' :(value == 4 ? '四级' :(value == 5 ? '五级' :(value == 6 ? '六级' :(value == 7 ? '七级' :(value == 8 ? '八级' : value == 9 ? '九级' :' ')))))))
+    },
+    filterRestr: (value)=> {
+        if (!value) return ''
+        value = value.toString()
+        return value == 1 ? '不限制外出' : value == 2 ? '限制外出' : ""
     }
   },
   data(){
@@ -79,7 +86,7 @@ export default {
       personData:{},
       dialoWarn:false,
       dialogTableVisible:false,
-      warnTableData: 'aaa',
+      warnTableData: [],
       warnActive: false,
       warnNum:0,
       time:[],
@@ -89,7 +96,14 @@ export default {
       activityTimeT:[],
       activityTimeA:[],
       minData:'',
-      maxData:''
+      maxData:'',
+      phoneList:[],
+      activerate:"",
+      activetime:"",
+      heartrate:"1",
+      bloodpress:"1",
+      sleepquality:"",
+      inouthome:""
     }
   },
     methods: {
@@ -99,9 +113,11 @@ export default {
       },
       sureBtn(){
           this.getEchartData()
+          this.getData2()
           this.drawChart()
       },
       getData(){
+         this.time=[]
          let now = new Date();
          // this.minData = new Date(curDate.getTime() - 24*60*60*1000);
          this.maxData = now;
@@ -120,57 +136,90 @@ export default {
            }
          }
        },
-      getEchartData(){
+       getData2(){
+         this.time=[]
+        let now = new Date(this.dateTime);
+         // this.minData = new Date(curDate.getTime() - 24*60*60*1000);
+         this.maxData = now;
+         let len = 24;
+         while (len--) {
+           now = new Date(now - 1000 * 60 * 60);
+           console.log(now)
+           this.time.unshift(now.getHours() + 1);
+         }
+         console.log(this.time)
+         for(let i in this.time){
+           if(this.time[i]<10){
+             this.time[i] = '0'+ this.time[i] + ':00'
+           }else if(this.time[i] == 24){
+             this.time[i] = '00:00'
+           }else{
+             this.time[i] = this.time[i] + ':00'
+           }
+         }
+       },
+       getEchartData(){
+        console.log("127")
           let time=this.dateTime;
           if(time==""){
               time=new Date(new Date().toLocaleDateString()).getTime()
           }
           let para ={}
-          console.log(this.personData.keyUserid)
           para.keyUserId  = this.personData.keyUserid
           para.time = parseTime(time,'{y}-{m}-{d}')
-          console.log(para)
           getPerSe(para).then(res=>{
-              console.log(res)
               if(res.code==0){
                   this.warnNum = res.data.alertNum
                   this.warnTableData = res.data.alert_list
+                  let phoneList = res.data.phone_list
+                  this.personData.networkAdministratorP = phoneList[0].NetworkAdministrator
+                  this.personData.responsiblePhysicianP = phoneList[0].ResponsiblePhysician
+                  this.personData.guardianP = phoneList[0].Guardian
                   this.$refs.senda.getListData(this.warnTableData)
                   this.warnActive = false
 
                   let arr1=[],arr2=[],arr3=[],arr4=[],arr5=[],arr6=[],arr7=[]
-                  for(let i in res.data.frequency_today){
-                      let para=[],para2=[]
-                      para.push(res.data.frequency_today[i].hours+":00")
-                      para.push(res.data.frequency_today[i].activityFrequency)
-                      para2.push(res.data.frequency_today[i].hours+":00")
-                      para2.push(res.data.frequency_today[i].activityTime)
-                      arr1.push(para)
-                      arr2.push(para2)
+                  if(res.data.frequency_today.length>0){
+                    for(let i in this.time){
+                        let para=[],para2=[]
+                        para.push(this.time[i])
+                        para2.push(this.time[i])
+                        let arr = res.data.frequency_today.filter(item=>{
+                          return item.hours+":00" ==this.time[i]
+                        })
+                        para.push(arr[0].activityFrequency)
+                        para2.push(arr[0].activityTime)
+                        arr1.push(para)
+                        arr2.push(para2)
+                    }
                   }
-                  for(let i in this.time){
-                      let para=[],para2=[]
-                      para.push(this.time[i])
-                      para2.push(this.time[i])
-                      let arr = res.data.frequency_lastday.filter(item=>{
-                        return item.hours+":00" ==this.time[i]
-                      })
-                      para.push(arr[0].activityFrequency)
-                      para2.push(arr[0].activityTime)
-                      arr3.push(para)
-                      arr4.push(para2)
+                  if(res.data.frequency_lastday.length>0){
+                    for(let i in this.time){
+                        let para=[],para2=[]
+                        para.push(this.time[i])
+                        para2.push(this.time[i])
+                        let arr = res.data.frequency_lastday.filter(item=>{
+                          return item.hours+":00" ==this.time[i]
+                        })
+                        para.push(arr[0].activityFrequency)
+                        para2.push(arr[0].activityTime)
+                        arr3.push(para)
+                        arr4.push(para2)
+                    }
                   }
-                  for(let i in res.data.Blood_today){
-                      let para=[],para2=[],para3=[]
-                      para.push(res.data.Blood_today[i].hours+":00")
-                      para.push(res.data.Blood_today[i].heartRate)
-                      para2.push(res.data.Blood_today[i].hours+":00")
-                      para2.push(res.data.Blood_today[i].diastolicPressure)
-                      para3.push(res.data.Blood_today[i].hours+":00")
-                      para3.push(res.data.Blood_today[i].systolicPressure)
-                      arr5.push(para)
-                      arr6.push(para2)
-                      arr7.push(para3)
+                  if(res.data.Blood_today.length>0){
+                    for(let i in res.data.Blood_today){
+                        let para=[],para2=[],para3=[]
+                        para.push(res.data.Blood_today[i].hours+":00")
+                        para.push(res.data.Blood_today[i].heartRate)
+                        para2.push(res.data.Blood_today[i].hours+":00")
+                        para2.push(res.data.Blood_today[i].diastolicPressure)
+                        para3.push(res.data.Blood_today[i].hours+":00")
+                        para3.push(res.data.Blood_today[i].systolicPressure)
+                        arr5.push(para)
+                        arr6.push(para2)
+                        arr7.push(para3)
+                    }
                   }
                   this.activityFrequencyT = arr1
                   this.activityTimeT = arr2
@@ -179,7 +228,7 @@ export default {
                   this.heartRateT = arr5
                   this.diastolicPressureT = arr6
                   this.systolicPressureT = arr7
-                  this.drawChart();
+                  this.drawChart()
               }else{
                 this.warnActive = true
               }
@@ -232,6 +281,7 @@ export default {
       },
 
       drawChart() {
+        console.log(224)
         let activerate = echarts.init(document.getElementById('activerate'));
         let activetime = echarts.init(document.getElementById('activetime'));
         let heartrate = echarts.init(document.getElementById('heartrate'));
@@ -327,7 +377,12 @@ export default {
         let option3={
             title: {text: '心率'},
             tooltip:{trigger: 'axis',},
-            backgroundColor:'#fadfe2',
+            legend: {
+              orient: 'vertical',
+              left: 'center',
+              bottom:'bottom',
+              data:['今日'],
+            },
             xAxis: {
                  type: 'category',
               boundaryGap: false,
@@ -563,13 +618,11 @@ export default {
         })
       }
     },
-    async mounted(){
-        this.personData=await this.$route.query.row
-
+     mounted(){
+        this.personData= this.$route.query.row
         this.getData()
-
-       await this.getEchartData()
-       // await this.getWarnList()
+        this.getEchartData()
+      
     }
 }
 </script>
@@ -584,6 +637,17 @@ export default {
    .activestate-chart{
        display: flex;
        justify-content: space-between;
+       &-item{
+         width:50%; 
+         height:40vh;
+         padding:20px;
+         margin:20px;
+         border-radius: 0.8vw;
+         
+         &-alert{
+           background: rgb(254, 240, 240)
+         }
+       }
    }
   }
   &-header{

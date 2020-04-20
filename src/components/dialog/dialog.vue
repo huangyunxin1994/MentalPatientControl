@@ -22,7 +22,7 @@
                             <el-select v-model="form[item.name]" filterable placeholder="请选择"  @change="userChange">
                                 <el-option
                                 v-for="item in userOptions"
-                                :key="item.name"
+                                :key="item.id"
                                 :label="item.name"
                                 :value="item.id">
                                 </el-option>
@@ -33,7 +33,7 @@
                             <el-select v-model="form[item.name]" filterable placeholder="请选择">
                                 <el-option
                                 v-for="item in roleOptions"
-                                :key="item.name"
+                                :key="item.id"
                                 :label="item.name"
                                 :value="item.id">
                                 </el-option>
@@ -44,7 +44,7 @@
                             <el-select v-model="form[item.name]" filterable placeholder="请选择" @change="personChange(item.name,form[item.name])">
                                 <el-option
                                 v-for="item in personOptions"
-                                :key="item.name"
+                                :key="item.userId"
                                 :label="item.name"
                                 :value="item.userId">
                                 </el-option>
@@ -66,7 +66,7 @@
                             <el-select v-model="form[item.name]" filterable placeholder="请选择">
                                 <el-option
                                 v-for="item in cascaderselectOptions"
-                                :key="item.name"
+                                :key="item.id"
                                 :label="item.name"
                                 :value="item.id">
                                 </el-option>
@@ -77,7 +77,7 @@
                             <el-select v-model="form[item.name]" filterable placeholder="请选择"  @change="organChange">
                                 <el-option
                                 v-for="item in organOptions"
-                                :key="item.name"
+                                :key="item.id"
                                 :label="item.name"
                                 :value="item.id"
                                >
@@ -123,10 +123,10 @@
                             <el-input v-model="form[item.name]" type="number"></el-input>
                         </el-form-item>
                          <el-form-item :label="item.title" :prop="item.name" v-else-if="item.type==='equipselect'">
-                            <el-radio-group v-model="form[item.name]">
-                                <el-radio-button v-model="form[item.name]" label="1">活动监测器</el-radio-button>
-                                <el-radio-button v-model="form[item.name]" label="2">睡眠监测器</el-radio-button>
-                                <el-radio-button v-model="form[item.name]" label="3">智能手表</el-radio-button>
+                            <el-radio-group v-model="equipmentType">
+                                <el-radio-button v-model="equipmentType" label="1">活动监测器</el-radio-button>
+                                <el-radio-button v-model="equipmentType" label="2">睡眠监测器</el-radio-button>
+                                <el-radio-button v-model="equipmentType" label="3">智能手表</el-radio-button>
                             </el-radio-group>
                         </el-form-item>
                         
@@ -134,8 +134,14 @@
                             <el-input v-model="form[item.name]"></el-input>
                         </el-form-item>
                         </div>
-                        <el-form-item label="上传频率" v-if="form['equipmentType']==='3'">
+                        <el-form-item label="上传频率" v-if="equipmentType=='3'">
                             <el-input v-model="form['uploadInterval']"></el-input>
+                        </el-form-item>
+                        <el-form-item label="设备位置" v-if="equipmentType=='1'">
+                            <div class="equip-map">
+                                <i class="equip-map-icon iconicon-test-copy"></i>
+                                <my-map ref="map"></my-map>
+                            </div>
                         </el-form-item>
                     </el-form>
                     <div slot="footer" class="dialog-footer">
@@ -146,6 +152,9 @@
 </template>
 <script>
 import { getOrganData,getRoleData,getKeyPnlData,getUserData,getEquipData } from "@/api/table"
+import { getUser, getRole } from '@/utils/auth'
+import myMap from "@/components/map/map"
+import "@/assets/icon/iconfont.css"
 function filterArray(data) {
     data.forEach(function (item) {
     delete item.children;
@@ -170,6 +179,9 @@ export default {
         tableTitle:Array,
         formRule:Object
     },
+    components:{
+        myMap
+    },
     data(){
         return {
             radio1:"1",
@@ -192,18 +204,36 @@ export default {
             personOptions:[],
             equipOptions:[],
             cascaderselectOptions:[],
-            title:""
+            title:"",
+            equipmentType:""
             
         }
     },
     methods:{
             
         //显示界面
-			handleShow(arr) {
-                if(this.form.submitType=="update")
+			async handleShow(arr) {
+                console.log(this.form)
+                if(this.form.submitType=="update"){
                     this.title="修改"
-                else if(this.form.submitType=="insert")
-                    this.title="新增"
+                    this.equipmentType=this.form['equipmentType']
+                    console.log(this.equipmentType)
+                    if(this.equipmentType=="1"){
+                        setTimeout(()=>{
+                            this.showMap()
+                        },0)
+                    }
+                }  
+                else if(this.form.submitType=="insert"){
+                     this.title="新增"
+                     this.equipmentType=this.form['equipmentType']
+                    console.log(this.equipmentType)
+                    if(this.equipmentType=="1"){
+                        setTimeout(()=>{
+                            this.showMap()
+                        },0)
+                    }
+                } 
                 for(let i in arr){
                     if(arr[i]=="organ")
                       this.getOrganData()
@@ -217,7 +247,9 @@ export default {
                       this.getEquipData()
                 }
                 
-                this.formVisible = true;	
+                this.formVisible = true;
+                
+                
 			},
 			addSubmit() {
                 this.$refs.form.validate((valid) => {
@@ -247,10 +279,13 @@ export default {
                 this.loading=false
             },
              getOrganData(){
-                let params={}
-                params.organizaId=1;
-                params.best=1
-                getOrganData(params).then((res)=>{
+                let user = JSON.parse(getUser()) 
+                console.log(user)
+                let organizaId = user.organizationId;
+                let userid = user.userId;
+                let role = JSON.parse(getRole()) 
+                let para ={organizaId:0,roleId:role,userId:userid}
+                getOrganData(para).then((res)=>{
                 //console.log(res)
                 if(res.code==0){
                     let data = res.data.data;
@@ -356,8 +391,41 @@ export default {
             },
             handleChooseUser(){
 
+            },
+            showMap(){
+                this.$nextTick(()=>{
+                     console.log(1)
+                 this.$refs.map.getmap()
+                }
+                   
+                )
+                
             }
               
+    },
+    watch:{
+        equipmentType(val){
+            if(val==="1"){
+                this.showMap()
+            }
+               
+            this.form["equipmentType"]=val
+        }
     }
 }
 </script>
+<style lang="scss" scoped>
+.equip-map{
+    width:100%;
+    height:40vh;
+    position: relative;
+    &-icon{
+        position:absolute;
+        top:calc(50% - 40px);
+        left:calc(50% - 20px);
+        z-index: 2;
+        color: #409EFF;
+        font-size: 40px;
+    }
+}
+</style>

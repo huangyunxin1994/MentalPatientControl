@@ -25,7 +25,7 @@
         <el-col :span="18" class="electricfence-map">
             <mymap ref="map"></mymap>
             <div class="electricfence-map-button">
-                <el-button type="primary" @click="openElecAddMap()">添加电子围栏</el-button>
+                <el-button type="danger" @click="openElecAddMap()">添加电子围栏</el-button>
             </div>
         </el-col>
       </el-row>

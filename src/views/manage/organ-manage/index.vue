@@ -40,18 +40,17 @@ export default {
             tableTitle:[
             { title : "组织名称", name : "name", minwidth : "120", type : "name" },
             { title : "描述", name : "organization", minwidth : "120", type : "input" },
-            { title : "关联管理员", name : "user", width : "100", type : "button" },
-            { title : "关联用户", name : "person", width : "100", type : "button" },
+            { title : "关联管理用户", name : "user", width : "120", type : "button" },
+            { title : "关联重点人员", name : "person", width : "120", type : "button" },
             { title : "操作",width : "100", type : "handle",button:[{name:"编辑",type:"edit"},{name:"删除",type:"remove"}] }
             ],
             handleTitle:[
               { title : "组织名称", name : "name", type : "input" },
               { title : "上级组织", name : "parentId", type : "cascader" },
-              { title : "描述", name : "organization", type : "input" },
-              { title : "关联管理员", name : "user", width : "100", type : "organuser" },
-              { title : "关联用户", name : "person", width : "100", type : "organperson" },
+              { title : "描述", name : "organization", type : "input" }
               
             ],
+            organId:"",
             tableData:[]
         }
     },
@@ -63,6 +62,7 @@ export default {
         this.$refs.dialog.handleShow();
       },
       getThisOrgan(data){
+        this.organId= data.id
         if(data.children)
         delete data.children
         this.organData=data
@@ -79,7 +79,8 @@ export default {
 
       },
       newData(){
-        let para = {'submitType':"insert"}
+        console.log(this.organId)
+        let para = {'submitType':"insert",parentId:this.organId}
         this.$refs.dialog.form=para
         let arr = ["organ"]
         this.$refs.dialog.handleShow(arr);

@@ -20,6 +20,7 @@ export const insertUserData = params => { return post(`${base}/user/addRoleUser`
 export const updateUserData = params => { return post(`${base}/user/updateUser`, params, {emulateJSON: true}); };
 export const removeUserData = params => { return post(`${base}/user/deleteUser`, params, {emulateJSON: true}); };
 export const bRemoveUserData = params => { return post(`${base}/user/deleteBatchUser`, params, {emulateJSON: true}); };
+export const getThisUser = params => { return get(`${base}/user/getUser`, params); };
 /*
  * 角色增删查改
  */

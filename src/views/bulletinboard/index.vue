@@ -44,7 +44,7 @@
 <script>
 import echarts from 'echarts'
 import  mymap  from '@/components/map/map'
-import {equipmentStatistics,keyPersonnelEarly,keyPersonnelStatistics,selectCount,selectWlCount,userRoleStatistics,getPerWarnlData,getOrganData } from "@/api/table"
+import {equipmentStatistics,keyPersonnelEarly,keyPersonnelStatistics,selectWlCount,userRoleStatistics,getPerWarnlData,getOrganData } from "@/api/table"
 import { getRole,getUser } from '@/utils/auth'
 export default {
   name: 'Login',
@@ -103,7 +103,6 @@ export default {
       await this.keyPersonnelStatistics()
       await this.keyPersonnelEarly()
       await this.userRoleStatistics()
-      await this.selectCount()
       await this.getPerWarnlData()
       await this.equipmentStatistics()
       await this.drawChart();
@@ -178,17 +177,6 @@ export default {
             this.alert6=arr6
             this.alert7=arr7
           }
-          
-        }
-        
-      })
-    },
-    async selectCount(){
-      await selectCount().then(res=>{
-        if(res.code==0){
-          let data = res.data.data
-          let para ={}
-          console.log(data)
           
         }
         

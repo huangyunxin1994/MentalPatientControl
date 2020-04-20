@@ -43,12 +43,15 @@ const actions = {
       para.roleId = role
       para.organizaId = user.organizationId
       para.userId = user.userId
-      console.log(46)
       selectCount(para).then(response => {
         console.log(response)
         const data = response
         let totle = data.data.eCount+data.data.pCount
-        commit('SET_WARNNUM', totle)
+        let para ={}
+        para.totle=totle;
+        para.eCount=data.data.eCount;
+        para.pCount=data.data.pCount;
+        commit('SET_WARNNUM', para)
         resolve(data)
       }).catch(error => {
         reject(error)

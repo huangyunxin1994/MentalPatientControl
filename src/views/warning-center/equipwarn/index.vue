@@ -43,7 +43,7 @@ export default {
   data(){
     return{
       tableTitle:[
-            { title : "报警类型", name : "alertType", width : "120", type : "name" },
+            { title : "报警类型", name : "equipAlertType", width : "120", type : "input" },
             { title : "设备名", name : "equipmentName", width : "120", type : "input"},
             { title : "设备号", name : "equipmentCode", minwidth : "180", type : "input" },
             { title : "设备类型", name : "equipmentType", width : "120", type : "input" },
@@ -109,7 +109,7 @@ export default {
   },
   methods: {
     getEquWarnlData(){
-       let role = JSON.parse(getRole())
+      let role = JSON.parse(getRole())
       let user = JSON.parse(getUser());
       console.log(user)
       let param ={}
@@ -122,7 +122,9 @@ export default {
       this.$refs.table.listLoading = true 
       getEquWarnlData(param).then(res=>{
         if(res.code==0){
-          console.log(res.data.data)
+          for(let i in res.data.data){
+          res.data.data[i].equipAlertType = res.data.data[i].alertType
+          }
           this.tableData= res.data.data
           this.$refs.table.listLoading = false 
         }

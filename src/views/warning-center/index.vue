@@ -13,7 +13,7 @@
                         <router-link to="/warningcenter/personwarn">
 
                           <el-menu-item index="1"  class="warningcenter-level1">
-                            <el-badge :value="pCount" class="item" v-if="pCount>0">
+                            <el-badge :value="warnNum.pCount" class="item" v-if="warnNum.pCount>0">
                               人员预警
                               </el-badge>
                               <span v-else class="item">
@@ -27,7 +27,7 @@
                         <router-link to="/warningcenter/equipwarn">
 
                           <el-menu-item index="2"  class="warningcenter-level1">
-                            <el-badge :value="eCount" class="item" v-if="eCount>0">
+                            <el-badge :value="warnNum.eCount" class="item" v-if="warnNum.eCount>0">
                               设备预警
                               </el-badge>
                               <span v-else class="item">
@@ -50,9 +50,14 @@
 </template>
 
 <script>
-import { selectCount } from "@/api/table"
+import { mapGetters } from 'vuex'
 export default {
   name: 'techniquetactics',
+  computed: {
+    ...mapGetters([
+      'warnNum',
+    ])
+  },
   data(){
     return{
       pCount:0,
@@ -65,16 +70,9 @@ export default {
       },
       handleClose(key, keyPath) {
         console.log(key, keyPath);
-      },
-      selectCount(){
-        selectCount().then(res=>{
-          this.eCount=res.data.eCount
-          this.pCount=res.data.pCount
-        })
       }
     },
     mounted(){
-      this.selectCount()
     }
 }
 </script>

@@ -70,12 +70,13 @@ export default {
             //idCard:[{ required: true, trigger: 'blur',validator: validateIdCard }],
           },
          tableTitle:[
+            { title : "账号", name : "account", minwidth : "120", type : "input" },
             { title : "姓名", name : "name", width : "120", type : "name" },
             { title : "联系电话", name : "phone", minwidth : "150", type : "number" },
-            { title : "账号", name : "account", minwidth : "120", type : "input" },
             { title : "是否复用", name : "multiplexMark", width : "120", type : "radio" },
             { title : "角色", name : "roleName", width : "150", type : "input" },
             { title : "所属组织", name : "organizationName", minwidth : "150", type : "input" },
+           { title : "关联重点人员", name : "person", width : "120", type : "button" },
             { title : "操作",width : "150", type : "handle",button:[{name:"编辑",type:"edit"},{name:"删除",type:"remove"}] }
           ],
          handleTitle:[],
@@ -107,7 +108,6 @@ export default {
               { title : "性别", name : "sex", type : "radio" },
               { title : "角色", name : "roleId", type : "roleselect" },
               { title : "所属组织", name : "organizationId", type : "cascader" },
-              { title : "关联用户", name : "", type : "userbutton" },
               { title : "联系电话", name : "phone", type : "number" },
               { title : "身份证号", name : "idCard", type : "input" },
               
@@ -126,7 +126,6 @@ export default {
               { title : "性别", name : "sex", type : "radio" },
               { title : "角色", name : "roleId", type : "roleselect" },
               { title : "所属组织", name : "organizationId", type : "cascader" },
-              { title : "关联用户", name : "", type : "userbutton" },
               { title : "联系电话", name : "phone", type : "number" },
               { title : "身份证号", name : "idCard", type : "number" },
               

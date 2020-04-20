@@ -216,6 +216,7 @@ export default {
     bottom: 0;
     right: 0;
     width: 15%;
+    min-width: 180px;
     height: 85%;
     margin: 1%;
     display: flex;
