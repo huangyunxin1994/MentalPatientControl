@@ -12,6 +12,8 @@ export const relationKeyPersonnel = params => { return post(`${base}/organizatio
 export const relationAdmin = params => { return post(`${base}/organization/relationAdmin`, params, {emulateJSON: true}); };
 export const findPresent = params => { return post(`${base}/organization/findPresent`, params, {emulateJSON: true}); };
 export const selectPresent = params => { return get(`${base}/organization/selectPresent`, params); };
+export const selectPosition = params => { return get(`${base}/organization/selectPosition`, params); };
+
 /*
  * 用户增删查改
  */
@@ -21,6 +23,7 @@ export const updateUserData = params => { return post(`${base}/user/updateUser`,
 export const removeUserData = params => { return post(`${base}/user/deleteUser`, params, {emulateJSON: true}); };
 export const bRemoveUserData = params => { return post(`${base}/user/deleteBatchUser`, params, {emulateJSON: true}); };
 export const getThisUser = params => { return get(`${base}/user/getUser`, params); };
+export const relationKyeUser = params => { return post(`${base}/user/relationKyeUser`, params, {emulateJSON: true}); };
 /*
  * 角色增删查改
  */
@@ -44,6 +47,7 @@ export const getEquipData = params => { return get(`${base}/equipment/selectByPa
 export const insertEquipData = params => { return post(`${base}/equipment/insert`, params, {emulateJSON: true}); };
 export const updateEquipData = params => { return post(`${base}/equipment/update`, params, {emulateJSON: true}); };
 export const removeEquipData = params => { return post(`${base}/equipment/deleteEquipment`, params, {emulateJSON: true}); };
+export const untying = params => { return post(`${base}/equipment/untying`, params, {emulateJSON: true}); };
 /*
  * 重点人员增删查改
  */
@@ -97,8 +101,8 @@ export const deleteElectronicFence = params => { return post(`${base}/Electronic
 export const deleteElectronicFenceBatch = params => { return post(`${base}/ElectronicFence/deleteElectronicFenceBatch`, params, {emulateJSON: true}); }; //批量删除电子围栏
 export const getElectronicFence = params => { return get(`${base}/ElectronicFence/getElectronicFence`, params); };//根据id查询电子围栏
 export const selectElectronicFenceQuery = params => { return get(`${base}/ElectronicFence/selectElectronicFenceQueryByPage`, params); };//分页查询
-export const updateElectronicFence = params => { return post(`${base}/ElectronicFence/fenceRelationKyeUser`, params, {emulateJSON: true}); };//更新电子围栏
-
+export const updateElectronicFence = params => { return post(`${base}/ElectronicFence/fenceRelationKyeUser`, params, {emulateJSON: true}); };//配置重点人员
+export const updateElectronicFenceMsg = params => { return post(`${base}/ElectronicFence/updateElectronicFence`, params, {emulateJSON: true}); };//更新电子围栏
 /*
  * 看板相关
  */

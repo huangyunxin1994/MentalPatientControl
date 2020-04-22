@@ -622,7 +622,18 @@ export default {
         this.personData= this.$route.query.row
         this.getData()
         this.getEchartData()
-      
+        window.addEventListener('load', () => {
+         let type = this.$route.query.type
+          if(type==1)
+           this.$router.push({ path: '/personstate' })
+          else if(type==2)
+           this.$router.push({ path: '/warningcenter' })
+        })
+        //  
+        // window.onbeforeunload = e => {      //刷新时弹出提示
+        //   this.$router.push({ path: '/personstate' })
+        //   return  ''
+        // };
     }
 }
 </script>

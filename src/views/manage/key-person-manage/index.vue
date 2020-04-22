@@ -41,7 +41,7 @@ export default {
             { title : "监护人", name : "guardian", width : "120", type : "input" },
             { title : "网络管理员", name : "networkAdministrator", minwidth : "150", type : "input" },
             { title : "责任医师", name : "responsiblePhysician", minwidth : "150", type : "input" },
-            { title : "关联设备", name : "equipmentid", width : "120", type : "input" },
+            { title : "关联设备", name : "eqlist", minwidth : "150", type : "equip"},
             { title : "操作",width : "150", type : "handle",button:[{name:"编辑",type:"edit"},{name:"删除",type:"remove"}] }
         ],
         handleTitle:[
@@ -52,8 +52,7 @@ export default {
             { title : "所属组织", name : "organizationId", type : "cascader" },
             { title : "监护人", name : "guardianId", type : "personselect" },
             { title : "网格管理员", name : "networkAdministratorId", type : "personselect" },
-            { title : "责任医师", name : "responsiblePhysicianId", type : "personselect" },
-            { title : "关联设备", name : "equipmentid", type : "equipselects" },
+            { title : "责任医师", name : "responsiblePhysicianId", type : "personselect" }
         ],
         tableData:[]
     }
@@ -71,8 +70,17 @@ export default {
           getKeyPnlData(param).then(res=>{
             console.log(res)
             if(res.code==0){
-              this.tableData=res.data.data
-              console.log(this.tableData)
+              let personlist = res.data.data
+              let equiplist = res.data.equipment
+              personlist.forEach((i)=>{
+                console.log(i)
+                console.log(equiplist)
+                let arr = equiplist.filter((item)=>{
+                  return item.key_id==i.id
+                })
+                i.eqlist=arr
+              })
+              this.tableData = personlist
               this.$refs.table.listLoading=false
             }
 

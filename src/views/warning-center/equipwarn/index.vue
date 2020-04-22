@@ -23,7 +23,7 @@
             >
           </el-date-picker>
         </div>
-          <my-table :tableTitle="tableTitle" :tableData="tableData" @changeData="changeData" ref="table"></my-table>
+          <my-table :tableTitle="tableTitle" :tableData="tableData" @changeData="changeData" @alertmessage="alertmessage" ref="table"></my-table>
         <dialog-warn-handle ref="sendData" @sendState='getSendData'></dialog-warn-handle>
     </el-container>
 </template>
@@ -51,9 +51,8 @@ export default {
             { title : "报警时间", name : "alertTime", minwidth : "180", type : "input" },
             { title : "处理完成时间", name : "handleTime", minwidth : "150", type : "input" },
             { title : "处理结果", name : "processingResult", width : "120", type : "input" },
-            { title : "处理记录", name : "handleRecord", minwidth : "300", type : "input" },
             { title : "处理人", name : "handleUsername", width : "120", type : "input" },
-            { title : "操作",width : "150", type : "handle",button:[{name:"处理",type:"edit"}] }
+            { title : "操作",width : "150", type : "handle",button:[{name:"处理",type:"edit"},{name:"查看处理记录",type:"search"}] }
         ],
       tableData:[],
       options: [
@@ -132,6 +131,15 @@ export default {
 
       })
     },
+    alertmessage(val){
+      console.log(val)
+      this.$alert(`<div style='display: flex;justify-content: space-between;align-items: center;'>
+                      <div><strong>处理时间：</strong>${val.handleTime}</div>
+                      <div><strong>处理人：</strong>${val.handleUsername}</div></div>
+                   <p><strong>处理记录：</strong></p><textarea style='width:100%;min-height:200px;padding:10px;border:1px solid #d7dae2;border-radius: 4px'>${val.handleRecord}</textarea>`, '处理记录', {
+          dangerouslyUseHTMLString: true
+        });
+    },
     changeData(val){
       console.log(val)
       this.$refs.sendData.getDandleShow(val)
@@ -175,6 +183,11 @@ export default {
         color: #606266;
       }
     }
+  }
+  &-handleRecord{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 }
 </style>

@@ -15,7 +15,7 @@
                     </div>
                     <div slot="footer" class="dialog-footer">
                         <el-button @click.native="handleClose">上一步</el-button>
-                        <el-button type="primary" @click.native="addSubmit" :loading="loading">下一步</el-button>
+                        <el-button type="primary" @click.native="addSubmit" :loading="loading">完成</el-button>
                     </div>
                 </el-dialog>
 </template>

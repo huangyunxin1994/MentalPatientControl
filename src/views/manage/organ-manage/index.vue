@@ -4,13 +4,14 @@
       
       <div class="organmanage-table">
         <div class="organmanage-parent">
-          <el-button size="small" type="primary" plain  @click="handleEdit()">地图初始经纬度</el-button>
+          <el-button size="small" type="primary" plain  @click="handlesetPos()">地图初始经纬度</el-button>
         </div>
           
           <el-button class="organmanage-table-button" type="primary" size="small" @click="newData">添加组织</el-button>
           <my-table :tableTitle="tableTitle" :tableData="tableData" ref="table" @changeData="changeData" @removeData="removeData" @bRemoveData="bRemoveData" @settingData="settingData"></my-table>
           <my-dialog :tableTitle="handleTitle" :formRule="formRule" ref="dialog" @insertData="insertData" @updateData="updateData"></my-dialog>
           <my-transfer ref="transfer"></my-transfer>
+          <dialog-map ref="dialogmap"></dialog-map>
       </div>
         
     </el-container>
@@ -21,6 +22,7 @@ import  myTable from '@/components/table/table'
 import  myTree from '@/components/tree/tree'
 import  myDialog from '@/components/dialog/dialog'
 import  myTransfer from '@/components/dialog-organ/dialog-user'
+import  dialogMap  from '@/components/dialog-organ/dialog-map'
 import { getChildOrganData,insertOrganData,updateOrganData,removeOrganData } from '@/api/table'
 export default {
     name: 'Organmanage',
@@ -28,7 +30,8 @@ export default {
         myTable,
         myTree,
         myDialog,
-        myTransfer
+        myTransfer,
+        dialogMap
     },
     data(){
         return{
@@ -60,6 +63,9 @@ export default {
         row.submitType="update"
         this.$refs.dialog.form=Object.assign({}, row)
         this.$refs.dialog.handleShow();
+      },
+      handlesetPos(){
+        this.$refs.dialogmap.handleShow()
       },
       getThisOrgan(data){
         this.organId= data.id

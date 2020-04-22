@@ -9,7 +9,7 @@ import warning from "@/icons/png/yujing.png"
 import endMarker from "@/icons/png/endMarker.png"
 import startMarker from "@/icons/png/startMarker.png"
 import person from "@/icons/png/person.png"
-import { getPersonStatusQuery } from "@/api/table"
+import { getPersonStatusQuery,selectPosition } from "@/api/table"
 export default {
   name: 'Map',
   props:{
@@ -17,18 +17,31 @@ export default {
     bulletArr:Array,
     enterElecArr:Array,
     locusPorint:Array,
-    personPoint:Object
+    personPoint:Object,
+    centerR:Boolean,
+    Elongitude:String,
+    Elatitude:String
   },
   data(){
     return{
       mainMap:"",
       infoWindowArr:[],
       pointTemp:[],
-      circleShow:false
+      circleShow:false,
+      longitude:"",
+      latitude:"",
+
     }
   },
   methods:{
       async getmap () {
+        await this.selectPosition()
+        if(this.centerR){
+          if(this.Elongitude&&this.Elatitude&&this.Elongitude!=""&&this.Elatitude!=""){
+            this.longitude = this.Elongitude
+            this.latitude = this.Elatitude
+          }
+        }
         console.log(this.bulletArr)
         BMap.Icon.prototype.name = "";
         BMap.Icon.prototype.setName = function(name){
@@ -36,7 +49,7 @@ export default {
         }
         this.mainMap = new BMap.Map(this.$refs.allmap, {enableMapClick:false}) // 创建Map实例
         
-        this.mainMap.centerAndZoom(new BMap.Point(108.386207,22.830839), 16) // 初始化地图,设置中心点坐标和地图级别
+        this.mainMap.centerAndZoom(new BMap.Point(this.longitude,this.latitude), 16) // 初始化地图,设置中心点坐标和地图级别
         this.mainMap.addControl(new BMap.MapTypeControl({ // 添加地图类型控件
           mapTypes: [
             window.BMAP_NORMAL_MAP,
@@ -46,6 +59,18 @@ export default {
         this.mainMap.setCurrentCity('北京') // 设置地图显示的城市 此项是必须设置的
         
         this.mainMap.enableScrollWheelZoom(true)// 开启鼠标滚轮缩放
+        if(this.centerR){
+            let that = this
+            this.mainMap.addEventListener("moveend",function(){
+                    that.longitude = that.mainMap.getCenter().lng
+                    that.latitude = that.mainMap.getCenter().lat
+            });
+            this.mainMap.addEventListener("zoomend",function(){
+                    that.longitude = that.mainMap.getCenter().lng
+                    that.latitude = that.mainMap.getCenter().lat
+            });
+
+        }
         console.log(this.personPoint)
         if(this.personPoint){
             let points=[]
@@ -290,6 +315,17 @@ export default {
         
         
         
+      },
+      async selectPosition(){
+        await selectPosition().then(res=>{
+                if(res.code==0){
+                  console.log(301)
+                    this.longitude = res.data.data[0].longitude
+                    this.latitude = res.data.data[0].latitude
+                }
+            }).catch(err=>{
+
+            })
       },
       //绑定标注点击事件显示新窗口并平移
       addClickHandlerP(marker){

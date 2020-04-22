@@ -6,7 +6,7 @@
           <!-- <el-button type="primary">批量导入</el-button> -->
           </div>
           <my-table :tableTitle="tableTitle" :tableData="tableData" ref="table" @changeData="changeData" @removeData="removeData"></my-table>
-          <my-dialog :tableTitle="handleTitle" :formRule="formRule" ref="dialog" @insertData="insertData" @updateData="updateData"></my-dialog>
+          <my-dialog :tableTitle="handleTitle" :formRule="formRule" ref="dialog" @insertData="insertData" @updateData="updateData" @untying="untying"></my-dialog>
         
     </el-container>
 </template>
@@ -14,7 +14,7 @@
 <script>
 import  myTable from '@/components/table/table'
 import  myDialog from '@/components/dialog/dialog' 
-import { getEquipData,insertEquipData,updateEquipData,removeEquipData } from '@/api/table'
+import { getEquipData,insertEquipData,updateEquipData,removeEquipData,untying } from '@/api/table'
 import { getRole,getUser } from '@/utils/auth'
 export default {
   name: 'Equipmanage',
@@ -39,7 +39,7 @@ export default {
         handleTitle:[
             { title : "设备编号", name : "code", type : "input" },
             { title : "关联人员", name : "keyId", type : "userselect" },
-            { title : "解绑", type : "button" },
+            { title : "", type : "equipbutton" },
             { title : "设备类型", name : "equipmentType", type : "equipselect" },
             
         ],
@@ -76,6 +76,7 @@ export default {
     },
     changeData(row){
       row.submitType="update"
+      console.log(row)
       this.$refs.dialog.form=Object.assign({}, row)
       let arr = ["user"]
       this.$refs.dialog.handleShow(arr);
@@ -148,6 +149,29 @@ export default {
         }
       })
     },
+    //解绑设备
+    untying(para){
+      untying({equipmentId:para.equipmentId}).then(res=>{
+        this.$refs.dialog.loading = false;
+        this.$refs.dialog.form={};
+        this.$refs.dialog.formVisible = false;
+        if(res.code==0){
+          this.$message({
+            message: '解绑成功',
+            type: 'success'
+          });
+          this.getEquipList();
+        }else{
+          this.$message({
+            message: '解绑失败',
+            type: 'danger'
+          });
+        }
+      }).catch(err=>{
+
+      })
+
+    }
     },
     mounted(){
       this.getEquipList()

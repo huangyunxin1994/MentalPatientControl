@@ -19,7 +19,6 @@ router.beforeEach(async(to, from, next) => {
 
   // determine whether the user has logged in
   const hasToken = getToken()
-  console.log(hasToken)
   if (hasToken) {
     const hasMenuData = JSON.parse(getMenuData())
     if(hasMenuData.length>0){
@@ -29,7 +28,6 @@ router.beforeEach(async(to, from, next) => {
         NProgress.done()
       } else {
         const hasGetUserInfo = store.getters.name
-        console.log(hasGetUserInfo)
         if (hasGetUserInfo) {
           next()
         } else {

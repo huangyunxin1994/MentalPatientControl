@@ -2,7 +2,7 @@
     <el-container class="personneldetails-container">
       <my-tree @getThisOrgan="getThisOrgan"></my-tree>
       <div class="personneldetails-table">
-          <my-table :tableTitle="tableTitle" :tableData="tableData"></my-table>
+          <my-table :tableTitle="tableTitle" :tableData="tableData" @changeRouter="changeRouter"></my-table>
       </div>
       <!-- <dialog-warn-handle ref="sendData"></dialog-warn-handle> -->
     </el-container>
@@ -44,7 +44,7 @@ export default {
       let organizationId = user.organizationId;
       let userid = user.userId;
       let role = JSON.parse(getRole()) 
-      let para ={organizationId:organizationId,roleId:role,userId:userid}
+      let para ={roleId:role,userId:userid}
       getPersonStatusQuery(para).then((res)=>{
         if(res.code==0){
            console.log(res)
@@ -84,6 +84,16 @@ export default {
 
       }).catch((err)=>{
 
+      })
+    },
+    changeRouter(val){
+      this.$router.push(
+      {
+          path: '/persondetails' ,
+          query: {
+            row: val,
+            type:'1'
+          }
       })
     }
   },

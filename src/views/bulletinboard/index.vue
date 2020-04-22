@@ -90,7 +90,7 @@ export default {
         let organizaId = user.organizationId;
         let userid = user.userId;
         let role = JSON.parse(getRole()) 
-        let para ={organizaId:0,roleId:role,userId:userid}
+        let para ={organizaId:organizaId,roleId:role,userId:userid}
       await getOrganData(para).then(res=>{
         if(res.code==0){
             this.bulletArr=res.data.user;

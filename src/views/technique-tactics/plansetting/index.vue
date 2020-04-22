@@ -23,37 +23,37 @@
             </div>
             <div  v-for="(ite,index) in item.alertConditions" :key="index"> 
               <div class="planset-content" v-if="ite.alertId=='1'">
-                <span class="planset-span"><span class="planset-label">预警类型:</span>{{ite.alertId | capitalize}}</span>
-                <span class="planset-date"><span class="planset-label">时间段:</span>{{ite.startTime}}至{{ite.endTime}}</span>
-                <span class="planset-span"><span class="planset-label">行为:</span>{{ite.averageAlert}}</span>
-                <span class="planset-span"><span class="planset-label">大于:</span>{{ite.achieveAlert}}小时</span>
+                <span class="planset-span"><span class="planset-label">预警类型:</span><span class="planset-item">{{ite.alertId | capitalize}}</span></span>
+                <span class="planset-date"><span class="planset-label">时间段:</span><span class="planset-item">{{ite.startTime}}至{{ite.endTime}}</span></span>
+                <span class="planset-span"><span class="planset-label">行为:</span><span class="planset-item">{{ite.averageAlert}}</span></span>
+                <span class="planset-span"><span class="planset-label">大于等于:</span><span class="planset-item">{{ite.achieveAlert}}小时</span></span>
               </div>
               <div class="planset-content" v-else-if="ite.alertId=='2'">
-                <span class="planset-span"><span class="planset-label">预警类型:</span>{{ite.alertId | capitalize}}</span>
-                <span class="planset-date"><span class="planset-label">时间段:</span>{{ite.startTime}}至{{ite.endTime}}</span>
-                <span class="planset-span"><span class="planset-label">活动次数:</span>{{ite.achieveAlert}} 次</span>
+                <span class="planset-span"><span class="planset-label">预警类型:</span><span class="planset-item">{{ite.alertId | capitalize}}</span></span>
+                <span class="planset-date"><span class="planset-label">时间段:</span><span class="planset-item">{{ite.startTime}}至{{ite.endTime}}</span></span>
+                <span class="planset-span"><span class="planset-label">活动次数:</span><span class="planset-item">{{ite.achieveAlert}} 次</span></span>
               </div>
                 
               <div class="planset-content" v-else-if="ite.alertId=='3'">
-                <span class="planset-span"><span class="planset-label">预警类型:</span>{{ite.alertId | capitalize}}</span>
-                <span class="planset-date"><span class="planset-label">时间段:</span>{{ite.startTime}}至{{ite.endTime}}</span>
-                <span class="planset-span"><span class="planset-label">频率大于:</span>{{ite.achieveAlert}} 次</span>
+                <span class="planset-span"><span class="planset-label">预警类型:</span><span class="planset-item">{{ite.alertId | capitalize}}</span></span>
+                <span class="planset-date"><span class="planset-label">时间段:</span><span class="planset-item">{{ite.startTime}}至{{ite.endTime}}</span></span>
+                <span class="planset-span"><span class="planset-label">频率大于等于:</span><span class="planset-item">{{ite.achieveAlert}} 次</span></span>
               </div>
               <div class="planset-content" v-else-if="ite.alertId=='4'">
-                <span class="planset-span"><span class="planset-label">预警类型:</span>{{ite.alertId | capitalize}}</span>
-                <span class="planset-date"><span class="planset-label">时间段:</span>{{ite.startTime}}至{{ite.endTime}}</span>
-                <span class="planset-span"><span class="planset-label">时长大于:</span>{{ite.achieveAlert}} 分</span>
+                <span class="planset-span"><span class="planset-label">预警类型:</span><span class="planset-item">{{ite.alertId | capitalize}}</span></span>
+                <span class="planset-date"><span class="planset-label">时间段:</span><span class="planset-item">{{ite.startTime}}至{{ite.endTime}}</span></span>
+                <span class="planset-span"><span class="planset-label">时长大于等于:</span><span class="planset-item">{{ite.achieveAlert}} 分</span></span>
               </div>
               <div class="planset-content" v-else-if="ite.alertId=='5'">
-                <span class="planset-span"><span class="planset-label">预警类型:</span>{{ite.alertId | capitalize}}</span>
-                <span class="planset-date"><span class="planset-label">时间段:</span>{{ite.startTime}}至{{ite.endTime}}</span>
-                <span class="planset-span"><span class="planset-label">值:</span>{{ite.averageAlert}}</span>
-                <span class="planset-span">{{ite.achieveAlert}}<span class="planset-label">次/每分</span></span>
+                <span class="planset-span"><span class="planset-label">预警类型:</span><span class="planset-item">{{ite.alertId | capitalize}}</span></span>
+                <span class="planset-date"><span class="planset-label">时间段:</span><span class="planset-item">{{ite.startTime}}至{{ite.endTime}}</span></span>
+                <span class="planset-span"><span class="planset-label">值:</span><span class="planset-item">{{ite.averageAlert}}</span></span>
+                <span class="planset-span"><span class="planset-item">{{ite.achieveAlert}}</span><span class="planset-label">次/每分</span></span>
               </div>
               <div class="planset-content" v-else-if="ite.alertId=='6'">
-                <span class="planset-span"><span class="planset-label">预警类型:</span>{{ite.alertId | capitalize}}</span>
-                <span class="planset-date"><span class="planset-label">时间段:</span>{{ite.startTime}}至{{ite.endTime}}</span>
-                <span class="planset-span"><span class="planset-label">值:</span>{{ite.averageAlert}}</span>
+                <span class="planset-span"><span class="planset-label">预警类型:</span><span class="planset-item">{{ite.alertId | capitalize}}</span></span>
+                <span class="planset-date"><span class="planset-label">时间段:</span><span class="planset-item">{{ite.startTime}}至{{ite.endTime}}</span></span>
+                <span class="planset-span"><span class="planset-label">值:</span><span class="planset-item">{{ite.averageAlert}}</span></span>
               </div>
               
             </div>
@@ -228,23 +228,36 @@ import { getPlanQueryData,deleteReservePlan } from '@/api/table'
         font-weight:bold ;
         color: #606266;
         display: inline-block;
+        margin-right: 0.7vw;
       }
       &-name{
         font-size: 1vw;
       }
       &-content{
-        width: 90%;
+        width: 100%;
         padding: 1vh;
       }
       &-span{
         display: inline-block;
         width: 10vw;
-        min-width: 100px;
+        min-width: 150px;
+        .planset-item{
+          display: inline-block;
+          padding: 0.7vw;
+          border: 1px solid #ccc;
+          border-radius: 4px
+        }
       }
       &-date{
         display: inline-block;
          width: 12vw;
-         min-width: 150px;
+         min-width: 170px;
+         .planset-item{
+          display: inline-block;
+          padding: 0.7vw;
+          border: 1px solid #ccc;
+          border-radius: 4px
+        }
       }
     }
   }

@@ -90,6 +90,10 @@
                         <el-form-item :label="item.title" :prop="item.name" v-else-if="item.type==='userbutton'">
                             <el-button type="primary" @click="handleChooseUser()">选择</el-button>
                         </el-form-item>
+                        <el-form-item :label="item.title" :prop="item.name" v-else-if="item.type==='equipbutton'">
+                            <el-button v-if="form.submitType!='insert'&&keyId" type="primary" @click="handleRemoveUser()">解绑</el-button>
+                            <!-- <el-button v-else-if="form.keyId!='undefined'" type="primary" @click="handleChooseUser()">解绑</el-button> -->
+                        </el-form-item>
                         <el-form-item :label="item.title" :prop="item.name" v-else-if="item.type==='radio'&&item.name==='sex'">
                             <el-radio-group v-model="form[item.name]">
                                 <el-radio class="radio" :label="1">男</el-radio>
@@ -135,12 +139,12 @@
                         </el-form-item>
                         </div>
                         <el-form-item label="上传频率" v-if="equipmentType=='3'">
-                            <el-input v-model="form['uploadInterval']"></el-input>
+                            <el-input type="number" v-model="form['uploadInterval']"></el-input>
                         </el-form-item>
                         <el-form-item label="设备位置" v-if="equipmentType=='1'">
                             <div class="equip-map">
                                 <i class="equip-map-icon iconicon-test-copy"></i>
-                                <my-map ref="map"></my-map>
+                                <my-map ref="map" :centerR="centerR" :Elatitude="Elatitude" :Elongitude="Elongitude"></my-map>
                             </div>
                         </el-form-item>
                     </el-form>
@@ -205,7 +209,11 @@ export default {
             equipOptions:[],
             cascaderselectOptions:[],
             title:"",
-            equipmentType:""
+            equipmentType:"",
+            keyId:"",
+            centerR:true,
+            Elatitude:"",
+            Elongitude:""
             
         }
     },
@@ -214,8 +222,11 @@ export default {
         //显示界面
 			async handleShow(arr) {
                 console.log(this.form)
+                this.keyId = this.form.keyId
                 if(this.form.submitType=="update"){
                     this.title="修改"
+                    this.Elongitude = this.form['longitude']
+                    this.Elatitude = this.form['latitude']
                     this.equipmentType=this.form['equipmentType']
                     console.log(this.equipmentType)
                     if(this.equipmentType=="1"){
@@ -259,6 +270,10 @@ export default {
 							//NProgress.start();
                             let para = Object.assign({}, this.form);
                             //console.log(para)
+                            if(para.equipmentType==1){
+                                para.longitude = this.$refs.map.longitude
+                                para.latitude = this.$refs.map.latitude
+                             }
                             if(para.submitType=="insert"){
                                 this.$emit("insertData",para)
                             }else if(para.submitType=="update"){
@@ -284,7 +299,7 @@ export default {
                 let organizaId = user.organizationId;
                 let userid = user.userId;
                 let role = JSON.parse(getRole()) 
-                let para ={organizaId:0,roleId:role,userId:userid}
+                let para ={organizaId:organizaId,roleId:role,userId:userid}
                 getOrganData(para).then((res)=>{
                 //console.log(res)
                 if(res.code==0){
@@ -378,7 +393,14 @@ export default {
                 })
             },
             getUserData(){
-                getKeyPnlData().then(res=>{
+                let role = JSON.parse(getRole())
+                let user = JSON.parse(getUser());
+                console.log(user)
+                let param ={}
+                param.roleId=role
+                param.userId=user.userId
+                param.organizationId=user.organizationId||""
+                getKeyPnlData(param).then(res=>{
                     //console.log(res)
                     if(res.code==0){
                     this.userOptions=res.data.data
@@ -391,6 +413,21 @@ export default {
             },
             handleChooseUser(){
 
+            },
+            handleRemoveUser(){
+                this.$refs.form.validate((valid) => {
+					if (valid) {
+						this.$confirm('确认解绑用户吗？', '提示', {}).then(() => {
+							this.loading = true;
+                            //NProgress.start();
+                            let para = Object.assign({}, this.form);
+                            console.log(para)
+
+                            this.$emit("untying",para)
+                            
+						});
+					}
+				});
             },
             showMap(){
                 this.$nextTick(()=>{

@@ -14,6 +14,7 @@
                     <el-tooltip v-for="(item,index) in item.button" :key="index" :content="item.name" placement="top">
                       <el-button v-if="item.type=='edit'&&scope.row['processingResult']!=3" type="primary" icon="el-icon-edit" size="small" circle @click="handleEdit(scope.$index, scope.row)"></el-button>
                        <el-button v-else-if="item.type=='remove'" type="danger" icon="el-icon-delete" size="small" circle @click="handleRemove(scope.$index, scope.row)"></el-button>
+                       <el-button v-else-if="item.type=='search'&&scope.row['processingResult']==3" type="info" icon="el-icon-search" size="small" circle @click="handleSearch(scope.$index, scope.row)"></el-button>
                     </el-tooltip>
                 </div>
                 <div v-else-if="item.type=='tooltip'">
@@ -115,7 +116,7 @@ import "@/assets/icon/iconfont.css"
             else if(name == 'equipAlertType')
              return value == 1 ? 'SOS' : (value == 2 ? '低电' : (value == 3? '脱落报警' :(value == 4 ? '佩戴提醒' :(value == 5 ? '剪断报警' :(value == 6 ? '跌倒报警' :(value == 7 ? '心率异常' :(value == 8 ? '心率过高' :(value == 9 ? '心率过低' :(value == 10 ? '收缩压过高' :(value == 11 ? '收缩压过低' :(value == 12 ? '舒张压过高' :(value == 13 ? '舒张压过低' :(value == 14 ? '温度过高' :(value == 7 ? '烟雾浓度过高' :' '))))))))))))))
             else if(name == 'alertType')
-             return value == 1 ? '活动频率异常' : (value == 2 ? '活动时间异常' : (value == 3? '心率异常' :(value == 4 ? '血压异常' :(value == 5 ? '睡眠质量异常' :(value == 6 ? '居家/离家异常' :(value == 7 ? '电子围栏触发' :' '))))))
+             return value == 1 ? '活动频率异常' : (value == 2 ? '活动时间异常' : (value == 3? '心率异常' :(value == 4 ? '血压异常' :(value == 5 ? '睡眠质量异常' :(value == 6 ? '居家/离家异常' :(value == 7 ? '电子围栏触发' :(value == 8 ? '限制外出预警' :' ')))))))
             else if(name == 'personnelStatus')
              return value == 1 ? '<span style="color:#67C23A;font-weight:bold">在家</span>' : (value == 2 ? '<span style="color:#E6A23C;font-weight:bold">离家</span>' : value == 3? '<span style="color:#F56C6C;font-weight:bold">预警</span>' :"");
             else
@@ -126,13 +127,14 @@ import "@/assets/icon/iconfont.css"
             console.log(val)
         },
         userDetails(index,row){
-          this.$router.push(
-            {
-              path: '/persondetails' ,
-              query: {
-                row: row
-              }
-          })
+          this.$emit('changeRouter',row)
+          // this.$router.push(
+          //   {
+          //     path: '/persondetails' ,
+          //     query: {
+          //       row: row
+          //     }
+          // })
         },
         //配置
         handleSetting(index,row,name){
@@ -157,6 +159,11 @@ import "@/assets/icon/iconfont.css"
 
             });
         },
+        //查看
+        handleSearch(index,row){
+          console.log(row)
+          this.$emit('alertmessage',row)
+        },
         //查询单个用户获得电话号码
         loadData(row,name){
           console.log(row)
@@ -174,7 +181,7 @@ import "@/assets/icon/iconfont.css"
           getThisUser(para).then(res=>{
             if(res.code==0){
               console.log(res)
-              this.phoneNumber=res.data.data.phone
+              this.phoneNumber=res.data.user.phone
             }
           }).catch(err=>{
             

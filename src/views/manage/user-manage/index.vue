@@ -2,9 +2,18 @@
     <el-container class="usermanage-container">
       <my-tree></my-tree>
       <div class="usermanage-table">
+          <el-select v-model="value" filterable placeholder="请选择" @change="changeResult">
+            <el-option
+              v-for="item in options"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
           <el-button size="small" type="primary" @click.native="newData">新增用户</el-button>
-          <my-table :tableTitle="tableTitle" :tableData="tableData" ref="table" @changeData="changeData" @removeData="removeData" @bRemoveData="bRemoveData"></my-table>
+          <my-table :tableTitle="tableTitle" :tableData="tableData" ref="table" @changeData="changeData" @removeData="removeData" @bRemoveData="bRemoveData" @settingData="settingData"></my-table>
           <my-dialog :tableTitle="handleTitle" :formRule="formRule" ref="dialog" @insertData="insertData" @updateData="updateData"></my-dialog>
+          <my-transfer ref="transfer"></my-transfer>
       </div>
         
     </el-container>
@@ -14,13 +23,15 @@
 import  myTable from '@/components/table/table'
 import  myTree from '@/components/tree/tree'
 import  myDialog from '@/components/dialog/dialog' 
-import { getUserData,insertUserData,updateUserData,removeUserData,bRemoveUserData } from '@/api/table'
+import  myTransfer from '@/components/dialog-user/dialog-user'
+import { getUserData,insertUserData,updateUserData,removeUserData,bRemoveUserData,relationKyeUser,getRoleData } from '@/api/table'
 export default {
   name: 'Usermanage',
   components:{
     myTable,
     myTree,
-    myDialog
+    myDialog,
+    myTransfer
   },
   data(){
     const validateUsername = (rule, value, callback) => {
@@ -80,8 +91,9 @@ export default {
             { title : "操作",width : "150", type : "handle",button:[{name:"编辑",type:"edit"},{name:"删除",type:"remove"}] }
           ],
          handleTitle:[],
-         
-        tableData:[]
+         tableData:[],
+         options: [],
+        value: ''
     }
   },
   methods: {
@@ -214,9 +226,39 @@ export default {
         }
       })
     },
+    settingData(para,name){
+        this.$refs.transfer.handleShow(para);
+    },
+    getRoleList(){
+      getRoleData().then(res=>{
+        //console.log(res)
+        if(res.code==0){
+          this.options=res.data.data
+        }
+
+      }).catch(error => {
+        //console.log(error)
+      })
+    },
+    changeResult(val){
+      this.value=val;
+      this.$refs.table.listLoading=true
+      getUserData({roleId:val}).then(res=>{
+        console.log(res)
+        if(res.code==0){
+          this.tableData=res.data.data
+          console.log(this.tableData)
+          this.$refs.table.listLoading=false
+        }
+
+      }).catch(error => {
+        console.log(error)
+      })
+    }
   },
   mounted(){
     this.getUserList()
+    this.getRoleList()
   }
 }
 </script>
@@ -225,15 +267,22 @@ export default {
   &-container {
     width: 100%;
     height: 100%;
-    position: relative;
+   
   }
   &-table{
     width: 85%;
     height: 100%;
-    padding: 1%;
+    position: relative;
+    .el-select{
+        position: absolute;
+        top:2vh;
+        left: 25vw;
+        z-index: 1;
+        font-size: 0.7vw;
+    }
     .el-button{
         position: absolute;
-        top:4vh;
+        top:2vh;
         right: 10vh;
         z-index: 1;
         font-size: 0.7vw;

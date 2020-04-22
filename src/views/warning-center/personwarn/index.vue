@@ -1,6 +1,5 @@
 <template>
     <el-container class="personwarn-container">
-          <my-table :tableTitle="tableTitle" :tableData="tableData" @changeData="changeData"></my-table>
         <div class="personwarn-container-handle">
           <label for="" class="personwarn-container-handle-label">处理结果</label>
           <el-select v-model="value" filterable placeholder="请选择" @change="changeResult">
@@ -25,7 +24,7 @@
           </el-date-picker>
         </div>
 
-          <my-table :tableTitle="tableTitle" :tableData="tableData" @changeData="changeData" ref="table"></my-table>
+          <my-table :tableTitle="tableTitle" :tableData="tableData" @changeData="changeData" @alertmessage="alertmessage" @changeRouter="changeRouter" ref="table"></my-table>
           <dialog-warn-handle ref="sendData" @sendState='getSendData'></dialog-warn-handle>
     </el-container>
 </template>
@@ -49,13 +48,13 @@ export default {
             { title : "预警类型", name : "alertType", minwidth : "150", type : "input"},
             { title : "所属组织", name : "organizationName", width : "120", type : "input" },
             { title : "预警时间", name : "alertTime", minwidth : "180", type : "input" },
-            { title : "监护人", name : "guardian", width : "120", type : "input" },
-            { title : "网格管理员", name : "networkAdministrator", minwidth : "150", type : "input" },
-            { title : "责任医师", name : "responsiblePhysician", width : "120", type : "input" },
+            { title : "监护人", name : "guardian", width : "120", type : "tooltip" },
+            { title : "网格管理员", name : "networkAdministrator", minwidth : "150", type : "tooltip" },
+            { title : "责任医师", name : "responsiblePhysician", width : "120", type : "tooltip" },
             { title : "处理结果", name : "processingResult", minwidth : "150", type : "input" },
             { title : "处理时间", name : "handleTime", width : "120", type : "input" },
             { title : "处理人", name : "handleUsername", minwidth : "150", type : "input" },
-            { title : "操作",width : "150", type : "handle",button:[{name:"处理",type:"edit"}] }
+            { title : "操作",width : "150", type : "handle",button:[{name:"处理",type:"edit"},{name:"查看处理记录",type:"search"}] }
         ],
         tableData:[],
         options: [
@@ -132,6 +131,15 @@ export default {
 
       })
     },
+    alertmessage(val){
+      console.log(val)
+      this.$alert(`<div style='display: flex;justify-content: space-between;align-items: center;'>
+                      <div><strong>处理时间：</strong>${val.handleTime}</div>
+                      <div><strong>处理人：</strong>${val.handleUsername}</div></div>
+                   <p><strong>处理记录：</strong></p><textarea style='width:100%;min-height:200px;padding:10px;border:1px solid #d7dae2;border-radius: 4px'>${val.handleRecord}</textarea>`, '处理记录', {
+          dangerouslyUseHTMLString: true
+        });
+    },
     changeData(val){
       this.$refs.sendData.getDandleShow(val)
     },
@@ -154,6 +162,16 @@ export default {
       }
 
       this.getPerWarnlData()
+    },
+    changeRouter(val){
+      this.$router.push(
+      {
+          path: '/persondetails' ,
+          query: {
+            row: val,
+            type:'2'
+          }
+      })
     }
   },
   mounted(){
