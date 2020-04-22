@@ -23,18 +23,18 @@
                     placeholder="起始时间"
                     v-model="form.alertConditions[index].startTime"
                     :picker-options="{
-                    start: '08:30',
-                    step: '00:15',
-                    end: '18:30'
+                    start: setStart,
+                    step: setStep,
+                    end: setEnd
                     }">
                 </el-time-select>
                 <el-time-select
                     placeholder="结束时间"
                     v-model="form.alertConditions[index].endTime"
                     :picker-options="{
-                    start: '08:30',
-                    step: '00:15',
-                    end: '18:30'
+                    start: setStart,
+                    step: setStep,
+                    end: setEnd
                     }">
                 </el-time-select>
                 
@@ -47,7 +47,7 @@
                     :value="item.value">
                     </el-option>
                 </el-select>
-                 <label>大于</label>
+                 <label>大于等于</label>
                  <el-input-number v-model="form.alertConditions[index].achieveAlert" :precision="1" :max="999"></el-input-number>
                  <label>小时</label>
                  <el-button type="danger" icon="el-icon-delete" circle size="mini" class="plantset-iconb" @click="removePlan(index)"></el-button>
@@ -67,18 +67,18 @@
                     placeholder="起始时间"
                     v-model="form.alertConditions[index].startTime"
                     :picker-options="{
-                    start: '08:30',
-                    step: '00:15',
-                    end: '18:30'
+                    start: setStart,
+                    step: setStep,
+                    end: setEnd
                     }">
                 </el-time-select>
                 <el-time-select
                     placeholder="结束时间"
                     v-model="form.alertConditions[index].endTime"
                     :picker-options="{
-                    start: '08:30',
-                    step: '00:15',
-                    end: '18:30'
+                    start: setStart,
+                    step: setStep,
+                    end: setEnd
                     }">
                 </el-time-select>
                 <label>活动次数</label>
@@ -102,21 +102,21 @@
                     placeholder="起始时间"
                     v-model="form.alertConditions[index].startTime"
                     :picker-options="{
-                    start: '08:30',
-                    step: '00:15',
-                    end: '18:30'
+                    start: setStart,
+                    step: setStep,
+                    end: setEnd
                     }">
                 </el-time-select>
                 <el-time-select
                     placeholder="结束时间"
                     v-model="form.alertConditions[index].endTime"
                     :picker-options="{
-                    start: '08:30',
-                    step: '00:15',
-                    end: '18:30'
+                    start: setStart,
+                    step: setStep,
+                    end: setEnd
                     }">
                 </el-time-select>
-               <label>频率大于</label>
+               <label>频率大于等于</label>
                 <el-input-number v-model="form.alertConditions[index].achieveAlert" :max="999"></el-input-number>
                <label>次</label>
                <el-button type="danger" icon="el-icon-delete" circle size="mini" class="plantset-iconb" @click="removePlan(index)"></el-button>
@@ -136,21 +136,21 @@
                     placeholder="起始时间"
                     v-model="form.alertConditions[index].startTime"
                     :picker-options="{
-                    start: '08:30',
-                    step: '00:15',
-                    end: '18:30'
+                    start: setStart,
+                    step: setStep,
+                    end: setEnd
                     }">
                 </el-time-select>
                 <el-time-select
                     placeholder="结束时间"
                     v-model="form.alertConditions[index].endTime"
                     :picker-options="{
-                    start: '08:30',
-                    step: '00:15',
-                    end: '18:30'
+                    start: setStart,
+                    step: setStep,
+                    end: setEnd
                     }">
                 </el-time-select>
-                <label>时长大于</label>
+                <label>时长大于等于</label>
                 <el-input-number v-model="form.alertConditions[index].achieveAlert" :max="999"></el-input-number>
                 <label>分</label>
                 <el-button type="danger" icon="el-icon-delete" circle size="mini" class="plantset-iconb" @click="removePlan(index)"></el-button>
@@ -170,18 +170,18 @@
                     placeholder="起始时间"
                     v-model="form.alertConditions[index].startTime"
                     :picker-options="{
-                    start: '08:30',
-                    step: '00:15',
-                    end: '18:30'
+                   start: setStart,
+                    step: setStep,
+                    end: setEnd
                     }">
                 </el-time-select>
                 <el-time-select
                     placeholder="结束时间"
                     v-model="form.alertConditions[index].endTime"
                     :picker-options="{
-                    start: '08:30',
-                    step: '00:15',
-                    end: '18:30'
+                    start: setStart,
+                    step: setStep,
+                    end: setEnd
                     }">
                 </el-time-select>
                 <label>值</label>
@@ -212,18 +212,18 @@
                     placeholder="起始时间"
                     v-model="form.alertConditions[index].startTime"
                     :picker-options="{
-                    start: '08:30',
-                    step: '00:15',
-                    end: '18:30'
+                    start: setStart,
+                    step: setStep,
+                    end: setEnd
                     }">
                 </el-time-select>
                 <el-time-select
                     placeholder="结束时间"
                     v-model="form.alertConditions[index].endTime"
                     :picker-options="{
-                    start: '08:30',
-                    step: '00:15',
-                    end: '18:30'
+                    start: setStart,
+                    step: setStep,
+                    end: setEnd
                     }">
                 </el-time-select>
                 <label>值</label>
@@ -265,6 +265,9 @@ export default {
                 name:"",
                 alertConditions:[]
             },
+            setStart:"00:00",
+            setEnd:"23:45",
+            setStep:"00:15",
             temp:[
                 {alertId:1,startTime:"",endTime:"",averageAlert:"",achieveAlert:""},
                 {alertId:2,startTime:"",endTime:"",averageAlert:"",achieveAlert:""},
@@ -306,11 +309,11 @@ export default {
             ],
             hOption:[
                 {
-                value: '大于',
-                label: '大于'
+                value: '大于等于',
+                label: '大于等于'
                 }, {
-                value: '小于',
-                label: '小于'
+                value: '小于等于',
+                label: '小于等于'
                 }
             ],
             bOption:[

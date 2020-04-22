@@ -3,9 +3,9 @@
       <mymap class="dashboard-map" ref="map" :pointsArr="pointsArr" :enterElecArr="enterElecArr"></mymap>
       <my-tree showPerson='true' class="dashboard-tree" @getThisOrgan="getThisOrgan" @getPersonData="getPersonData"></my-tree>
       <div class="dashboard-button">
-        <el-button type="primary" @click="showThisMark('0')">在家人员数<br/><br/>{{inHomeNum}}</el-button>
-        <el-button type="primary" @click="showThisMark('1')">离家人员数<br/><br/>{{outHomeNum}}</el-button>
-        <el-button type="primary" @click="showThisMark('2')">今日预警数<br/><br/>{{warningNum}}</el-button>
+        <el-button type="primary" @click="showThisMark1('0')">在家人员数<br/><br/>{{inHomeNum}}</el-button>
+        <el-button type="primary" @click="showThisMark2('1')">离家人员数<br/><br/>{{outHomeNum}}</el-button>
+        <el-button type="primary" @click="showThisMark3('2')">预警人员数<br/><br/>{{warningNum}}</el-button>
         <el-button type="primary" @click="showThisCircle(showflag)">电子围栏数<br/><br/>{{enterElecArr.length}}</el-button>
       </div>
       <div class="dashboard-message">
@@ -16,7 +16,7 @@
           <el-scrollbar class="dashboard-scrollbar" v-if="dashboardContext.length!=0">
             <div v-for="(item,index) in dashboardContext" :key="index" class="dashboard-context">
               <span>{{item.alertTime}}</span>
-              <span>预警类型：{{item.alertType}}</span>
+              <span>预警类型：{{item.alertType | filterData}}</span>
               <span>预警人地址：{{item.address}}</span>
               <span>预警人名字：{{item.name}}</span>
               <div class="dashboard-context-handle">
@@ -37,7 +37,7 @@
 import  mymap  from '@/components/map/map'
 import  myTree from '@/components/tree/tree'
 import store from '@/store'
-import { getPerWarnlData,selectElectronicFenceQuery } from "@/api/table"
+import { getPerWarnlData,selectElectronicFenceQuery,getOrganData } from "@/api/table"
 import { getRole,getUser } from '@/utils/auth'
 export default {
   name: 'Dashboard',
@@ -45,6 +45,13 @@ export default {
     mymap,
     myTree,
     
+  },
+  filters: {
+    filterData: (value)=> {
+        if (!value) return ''
+        value = value.toString()
+        return value == 1 ? '活动频率异常' : (value == 2 ? '活动时间异常' : (value == 3? '心率异常' :(value == 4 ? '血压异常' :(value == 5 ? '睡眠质量异常' :(value == 6 ? '居家/离家异常' :(value == 7 ? '电子围栏触发' :' '))))))
+    }
   },
   computed:{
     inHomeNum(){
@@ -72,7 +79,8 @@ export default {
       showflag:true,
       dashboardContext:[],
       pointsArr:[],
-      enterElecArr:[]
+      enterElecArr:[],
+      showall1:false,
     }
   },
     methods: {
@@ -82,35 +90,53 @@ export default {
       getDetails(id){
          this.$router.push({name: 'Warningcenter'})
       },
-      showThisMark(val){
-        this.$refs.map.showMarkerOver(val)
+      showThisMark1(val){
+        this.$refs.map.showMarkerOver(val,this.showall1)
+        this.showall1=!this.showall1
+        this.showall2=false
+        this.showall3=false
+      },
+      showThisMark2(val){
+        this.$refs.map.showMarkerOver(val,this.showall2)
+        this.showall2=!this.showall2
+        this.showall1=false
+        this.showall3=false
+      },
+      showThisMark3(val){
+        this.$refs.map.showMarkerOver(val,this.showall3)
+        this.showall3=!this.showall3
+        this.showall1=false
+        this.showall2=false
+        
       },
       showThisCircle(val){
         this.$refs.map.showCircleOver(val)
         this.showflag=!this.showflag
       },
       getThisOrgan(data){
-        console.log(data)
         if(data.className=="person"){
           this.$refs.map.movePosBypoint(data.longitude,data.latitude)
+        }else{
+          getOrganData({organizaId:data.id}).then(res=>{
+            if(res.code==0){
+               this.pointsArr=res.data.user;
+               this.$refs.map.getmap();
+            }
+          })
         }
       },
       getPersonData(val){
         this.pointsArr=val
       },
       async getPerWarnlData(){
-        console.log(getRole())
-        console.log(getUser())
         let role = JSON.parse(getRole()) 
         let user = JSON.parse(getUser());
-        console.log(user)
         let param ={}
         param.roleId=role
         param.userId=user.userId
         param.organizaId=user.organizationId||""
         await getPerWarnlData(param).then(res=>{
           if(res.code==0){
-            console.log(res)
             let data = res.data.data.filter(item=>{
               return item.processingResult==2
             })
@@ -123,16 +149,13 @@ export default {
       async selectElectronicFence(){
         await selectElectronicFenceQuery().then(res=>{
           if(res.code==0){
-             console.log(res)
             let data = res.data.data
-            console.log(data)
             let arr1=[]
             for(let i in data){
               let o = data[i].electronicFence;
               o.userList = data[i].userList
               arr1.push(o)
             }
-            console.log(arr1)
             this.enterElecArr=arr1;
           }
         }).catch(err=>{
@@ -182,6 +205,7 @@ export default {
     bottom: 0;
     right: 0;
     width: 15%;
+    min-width: 180px;
     height: 85%;
     margin: 1%;
     display: flex;

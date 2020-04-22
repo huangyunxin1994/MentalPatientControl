@@ -6,8 +6,9 @@ import Qs from 'qs'
 
 // create an axios instance
 const service = axios.create({
-  baseURL: "http://47.115.89.236:8080/specialGroup", // url = base url + request url
-  //baseURL: "http://192.168.1.111:8080", // url = base url + request url
+  //baseURL: "http://47.115.89.236:8080/specialGroup", // url = base url + request url
+ // baseURL: "http://192.168.1.111:8080", // url = base url + request url
+  baseURL: "http://192.168.1.3:8080", // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000 // request timeout
 })
@@ -47,11 +48,18 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
-    switch (response.data.message) {
-      case 401:
-        response.data.msg = '未授权，请登录'
+    switch (response.data.code) {
+      
+      case '-2':
+        
         store.dispatch('user/resetToken').then(() => {
+          console.log("58")
           location.reload()
+          Message({
+            message: '登录过期，请重新登录',
+            type: 'error',
+            duration: 5 * 1000
+          })
         })
           //
           //         })

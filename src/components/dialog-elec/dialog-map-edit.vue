@@ -1,5 +1,5 @@
 <template>
-    <el-dialog title="添加电子围栏" :visible.sync="formVisible" :before-close="handleClose" :close-on-click-modal="false" top="5vh" width="70vw">
+    <el-dialog title="编辑电子围栏" :visible.sync="formVisible" :before-close="handleClose" :close-on-click-modal="false" top="5vh" width="70vw">
         <el-form :inline="true" :model="form" :rules="formRule" ref="form" class="demo-form-inline">
             <el-form-item label="电子围栏名称" prop="name" required>
                 <el-input v-model="form.name" placeholder="请输入"></el-input>
@@ -24,13 +24,14 @@
         </div>
     <div slot="footer" class="dialog-footer">
             <el-button @click.native="handleClose">取消</el-button>
-            <el-button type="primary" @click.native="addSubmit" :loading="loading">添加</el-button>
+            <el-button type="primary" @click.native="addSubmit" :loading="loading">提交</el-button>
+            <el-button type="danger" @click.native="removeSubmit" :loading="loadingD">删除</el-button>
         </div>
     </el-dialog>
 </template>
 <script>
 import { parseTime } from '@/utils/index.js'
-import { addElectronicFence,deleteElectronicFence,selectElectronicFenceQuery,updateElectronicFence,selectPosition } from  "@/api/table"
+import { addElectronicFence,deleteElectronicFence,selectElectronicFenceQuery,updateElectronicFenceMsg } from  "@/api/table"
 import "@/assets/icon/iconfont.css"
 export default {
     name: 'Map',
@@ -42,6 +43,7 @@ export default {
             },
             formVisible:false,
             loading:false,
+            loadingD:false,
             mainMap:"",
             infoWindowArr:[],
             point:"",
@@ -86,6 +88,7 @@ export default {
             this.latitude = this.map.getCenter().lat
             let point  = new BMap.Point(this.longitude,this.latitude)
             // // 向地图添加标注
+            console.log(this.map.getCenter().lng)
             this.circle = new BMap.Circle(point,this.form.radius,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8}); //创建圆
             this.map.addOverlay(this.circle);
             let that = this
@@ -117,19 +120,9 @@ export default {
         },
         handleShow(){
             this.formVisible=true
-            selectPosition().then(res=>{
-                if(res.code==0){
-                    console.log(res.data.data)
-                    this.form.longitude = res.data.data[0].longitude
-                    this.form.latitude = res.data.data[0].latitude
-                    this.$nextTick(() => {
-                        this.getmap();
-                    }) 
-                }
-            }).catch(err=>{
-
-            })
-             
+            this.$nextTick(() => {
+                this.getmap();
+            })  
         },
         handleClose(){
             this.form={
@@ -151,15 +144,16 @@ export default {
                         console.log(para)
                         let params = {}
                         params.name = para.name
-                        params.createTime = parseTime(new Date())
                         params.longitude = this.longitude
                         params.latitude = this.latitude
                         params.radius = para.radius
+                        params.id =  para.id
+                        params.cid  =  para.cid
                         console.log(params)
-                        addElectronicFence(params).then((res)=>{
+                        updateElectronicFenceMsg(params).then((res)=>{
                             if(res.code==0){
                                this.$message({
-                                    message: '添加成功',
+                                    message: '修改成功',
                                     type: 'success'
                                 });
                                 this.form={
@@ -173,19 +167,51 @@ export default {
                                 this.$emit("selectElec")
                             }else{
                                 this.$message({
-                                    message: '添加失败',
+                                    message: '修改失败',
                                     type: 'error'
                                 });
                             }
                         }).catch(err=>{
                             this.$message({
-                                message: '添加失败',
+                                message: '修改失败',
                                 type: 'error'
                             });
                         })
                     });  
                 }
             });
+        },
+        removeSubmit(){
+            let id = this.form.id
+            this.$confirm('确认删除吗？', '提示', {}).then(() => {
+                deleteElectronicFence({id:id}).then((res)=>{
+                    if(res.code==0){
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
+                        this.form={
+                            name:"",
+                            radius: '100',
+                            longitude: "108.386207",
+                            latitude: "22.830839"
+                        };
+                        this.formVisible=false
+                        this.loadingD=false
+                        this.$emit("selectElec")
+                    }else{
+                        this.$message({
+                            message: '删除成功',
+                            type: 'error'
+                        });
+                    }
+                }).catch(err=>{
+                    this.$message({
+                        message: '删除成功',
+                        type: 'error'
+                    });
+                })
+            }); 
         }
     },
     mounted(){

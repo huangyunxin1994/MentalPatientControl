@@ -17,10 +17,16 @@
 <script>
 export default {
   name: "dome",
+  props:{
+    warnTableData:Array
+  },
   data() {
     return {
       dateVale: new Date(),
       currentDayList: [], // 初始化后台请求过来的数据
+      currentSec: new Date().getSeconds(), // 初始化当前选中的秒
+      currentMin: new Date().getMinutes(), // 初始化当前选中的分
+      currentHour: new Date().getHours(), // 初始化当前选中的时
       currentDay: new Date().getDate(), // 初始化当前选中的天
       currentMonth: new Date().getMonth() + 1, // 初始化当前选中的月
       currentYear: new Date().getFullYear(), // 初始化当前选中的年
@@ -47,18 +53,16 @@ export default {
     }
   },
   created() {
-    
+
   },
   methods: {
      // 父组件获取数据
     handleChange (val) {
-      console.log(val)
       this.$emit("getData",val);
     },
     // 请求接口
     getBaseControlDays: async function() {
       let selectTimeList = document.querySelectorAll('.el-date-picker .el-date-picker__header-label')
-      console.log(selectTimeList)
       let year = parseInt(selectTimeList[0].innerHTML)
       let month = parseInt(selectTimeList[1].innerHTML)
       this.showYear = year
@@ -67,29 +71,27 @@ export default {
         year,
         month
       }
-      console.log(params)
+
       let a = this.queryDateOfMonth(params) // 请求接口
-      console.log(a)
+
+      //console.log(a)
       return await a
     },
     // 假设我调用完后台接口，已经拿到了数据
     queryDateOfMonth(params) {
-        console.log(params)
+      let data =[]
       this.currentDayList = []
-      if (params.month == "1") {
-        let data = [1580486400000,1580572800000]
-        data.forEach((item)=> {
-         return this.currentDayList.push(new Date(item).getDate())
-        })
-        console.log(this.currentDayList)
-      } else if (params.month == "3") {
-        let data = [1580486400000,1580572800000,1580659200000,1582473600000]
-        data.forEach((item)=> {
-          return  this.currentDayList.push(new Date(item).getDate())
-        })
-      } else {
-        return
+      for(let i in this.warnTableData){
+        var date = this.warnTableData[i].alertTime
+        date = date.substring(0,19);    
+        date = date.replace(/-/g,'/'); 
+        var timestamp = new Date(date).getTime();
+        data.push(timestamp)
       }
+      data.forEach((item)=> {
+        let para = {month:new Date(item).getMonth()+1,day:new Date(item).getDate()}
+         return this.currentDayList.push(new Date(item).getMonth()+1+"-"+new Date(item).getDate())
+      })
     },
 
     // 添加class
@@ -97,18 +99,16 @@ export default {
       const self = this
       await this.getBaseControlDays()
       let domList = document.querySelectorAll('.el-date-picker .el-date-table__row .available')
-      console.log(self.currentYear,self.currentMonth,self.currentDay)
 
       domList.forEach(function(dom, i) {
-        if(self.showYear > self.currentYear || (self.showYear == self.currentYear && self.showMonth > self.currentMonth) 
+        if(self.showYear > self.currentYear || (self.showYear == self.currentYear && self.showMonth > self.currentMonth)
           || (self.showYear == self.currentYear && self.showMonth == self.currentMonth && i > self.currentDay -1))
         {
           dom.className.match(/warn-icon/i) && (dom.className = 'available')
           dom.className.match(/hook-icon/i) && (dom.className = 'available')
           return false
         }
-        if (self.currentDayList.indexOf(i) != -1) {
-            console.log(dom.className)
+        if (self.currentDayList.indexOf(self.showMonth+"-"+parseInt(i+1))!=-1) {
           dom.className.match(/warn-icon/i) && (dom.className = 'available hook-icon')
           dom.className.match(/hook-icon/i) || (dom.className += ' hook-icon')
         } else {
@@ -150,7 +150,7 @@ export default {
     right: 0;
     width: 0;
     height: 0;
-    border-top: .5em solid #F56C6C;
-    border-left: .5em solid transparent;
+    border-top: 1em solid #F56C6C;
+    border-left: 1em solid transparent;
 }
 </style>

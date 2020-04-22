@@ -10,31 +10,31 @@
         <span class="navbar-title">&nbsp;特殊人群辅助管理系统</span>
       </div>
       <div class="navbar-div">
-        <router-link to="/manage/organmanage" tag="span" class="navbar-tab">
+        <router-link to="/manage/organmanage" tag="span" class="navbar-tab" v-if="menuData.indexOf('3')!=-1">
             组织管理
         </router-link>
-        <router-link to="/manage/rolemanage"  tag="span" class="navbar-tab">
+        <router-link to="/manage/rolemanage"  tag="span" class="navbar-tab" v-if="menuData.indexOf('11')!=-1">
             角色管理
         </router-link>
-        <router-link to="/manage/usermanage" tag="span" class="navbar-tab">
+        <router-link to="/manage/usermanage" tag="span" class="navbar-tab" v-if="menuData.indexOf('4')!=-1">
             用户管理
         </router-link>
-        <router-link to="/manage/equipmanage" tag="span" class="navbar-tab">
+        <router-link to="/manage/equipmanage" tag="span" class="navbar-tab" v-if="menuData.indexOf('5')!=-1">
             设备管理
         </router-link>
-        <router-link to="/manage/keypersonmanage" tag="span" class="navbar-tab">
+        <router-link to="/manage/keypersonmanage" tag="span" class="navbar-tab" v-if="menuData.indexOf('6')!=-1">
             重点人员管理
         </router-link>
       </div>
     </div>
     <div class="right-menu">
-      <el-tooltip class="item" effect="dark" content="去操作端" placement="bottom-start">
-        <router-link tag="i" to="/" class="navbar-message el-icon-s-tools" ></router-link> 
+      <el-tooltip class="item" effect="dark" content="去管理端" placement="bottom-start" v-if="menuData.indexOf('7')!=-1||menuData.indexOf('8')!=-1||menuData.indexOf('9')!=-1||menuData.indexOf('10')!=-1">
+        <router-link tag="i" to="/" class="navbar-message el-icon-s-tools"></router-link> 
       </el-tooltip>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
-          
+          <span v-text="name"  class="user-name"></span>
         </div>
         
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -58,15 +58,21 @@
 
 <script>
 import { mapGetters } from 'vuex'
-
+import { getMenuData } from "@/utils/auth"
 export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar'
+      'avatar',
+      'name'
     ]),
     key() {
       return this.$route.path
+    }
+  },
+  data(){
+    return{
+      menuData:[]
     }
   },
   methods: {
@@ -79,7 +85,16 @@ export default {
     },
     enterBulletin(){
        this.$router.push({ path: '/bulletinboard' })
+    },
+    getMenu(){
+      let arr = JSON.parse(getMenuData())
+      for(let i in arr )
+      this.menuData.push(arr[i].menuId)
+      console.log(this.menuData)
     }
+  },
+  mounted(){
+    this.getMenu()
   }
 }
 </script>
@@ -135,7 +150,7 @@ export default {
     float: left;
   }
   .left-menu{
-    width: 60%;
+    width: 70%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -156,7 +171,7 @@ export default {
     }
     
   .navbar-div{
-    width: 50%;
+    width: 60%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -174,7 +189,7 @@ export default {
   }
   
   .right-menu {
-    width: 10%;
+    width: 15%;
     height: 100%;
     display: flex;
     justify-content: space-between;
@@ -212,14 +227,21 @@ export default {
       .avatar-wrapper {
         margin-top: 0.5vh;
         position: relative;
-
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         .user-avatar {
           cursor: pointer;
           width: 2vw;
           height: 2vw;
           border-radius: 0.5vw;
         }
-
+        .user-name{
+          font-size: 0.9vw;
+          color: white;
+          font-weight: bold;
+          margin-left: 0.5vw;
+        }
         .el-icon-caret-bottom {
           cursor: pointer;
           position: absolute;

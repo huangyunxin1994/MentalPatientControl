@@ -2,9 +2,18 @@
     <el-container class="usermanage-container">
       <my-tree></my-tree>
       <div class="usermanage-table">
+          <el-select v-model="value" filterable placeholder="请选择" @change="changeResult">
+            <el-option
+              v-for="item in options"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
           <el-button size="small" type="primary" @click.native="newData">新增用户</el-button>
-          <my-table :tableTitle="tableTitle" :tableData="tableData" ref="table" @changeData="changeData" @removeData="removeData" @bRemoveData="bRemoveData"></my-table>
+          <my-table :tableTitle="tableTitle" :tableData="tableData" ref="table" @changeData="changeData" @removeData="removeData" @bRemoveData="bRemoveData" @settingData="settingData"></my-table>
           <my-dialog :tableTitle="handleTitle" :formRule="formRule" ref="dialog" @insertData="insertData" @updateData="updateData"></my-dialog>
+          <my-transfer ref="transfer"></my-transfer>
       </div>
         
     </el-container>
@@ -14,32 +23,77 @@
 import  myTable from '@/components/table/table'
 import  myTree from '@/components/tree/tree'
 import  myDialog from '@/components/dialog/dialog' 
-import { getUserData,insertUserData,updateUserData,removeUserData,bRemoveUserData } from '@/api/table'
+import  myTransfer from '@/components/dialog-user/dialog-user'
+import { getUserData,insertUserData,updateUserData,removeUserData,bRemoveUserData,relationKyeUser,getRoleData } from '@/api/table'
 export default {
   name: 'Usermanage',
   components:{
     myTable,
     myTree,
-    myDialog
+    myDialog,
+    myTransfer
   },
   data(){
+    const validateUsername = (rule, value, callback) => {
+      if(!value){
+        callback(new Error('请输入账号'))
+      }else if (value.length <= 6||value.length > 12) {
+        callback(new Error('账号长度在6到12个字符之间'))
+      }else {
+        callback()
+      }
+    }
+    const validatePassword = (rule, value, callback) => {
+      if(!value){
+        callback(new Error('请输入密码'))
+      }else if (value.length <= 6||value.length > 12) {
+        callback(new Error('密码长度在6到12个字符之间'))
+      } else {
+        callback()
+      }
+    }
+    const validatePhone = (rule, value, callback) => {
+      console.log(value)
+      if(!value){
+        callback(new Error('请输入手机号'))
+      }else if (value.length < 11||value.length > 11) {
+        callback(new Error('手机号长度为11位'))
+      }else {
+        callback()
+      }
+    }
+    const validateIdCard = (rule, value, callback) => {
+      if(!value){
+        callback(new Error('请输入身份证'))
+      }else if (value.length < 11||value.length > 11) {
+        callback(new Error('身份证长度为18位'))
+      }else {
+        callback()
+      }
+    }
     return{
          formRule:{
-            account: [{ required: true, message: '请输入账号', trigger: 'blur' }],
-            organizationName:[{ required: true, message: '请选择组织', trigger: 'blur' }]
+            account: [{ required: true, trigger: 'blur',validator: validateUsername }],
+            password: [{ required: true, trigger: 'blur',validator: validatePassword }],
+            organizationId:[{ required: true, message: '请选择组织', trigger: 'blur' }],
+            roleId:[{ required: true, message: '请选择角色', trigger: 'blur' }],
+            phone:[{ required: true, trigger: 'blur',validator: validatePhone }],
+            //idCard:[{ required: true, trigger: 'blur',validator: validateIdCard }],
           },
          tableTitle:[
+            { title : "账号", name : "account", minwidth : "120", type : "input" },
             { title : "姓名", name : "name", width : "120", type : "name" },
             { title : "联系电话", name : "phone", minwidth : "150", type : "number" },
-            { title : "账号", name : "account", width : "120", type : "input" },
-            { title : "是否启用", name : "status", minwidth : "150", type : "radio" },
             { title : "是否复用", name : "multiplexMark", width : "120", type : "radio" },
+            { title : "角色", name : "roleName", width : "150", type : "input" },
             { title : "所属组织", name : "organizationName", minwidth : "150", type : "input" },
+           { title : "关联重点人员", name : "person", width : "120", type : "button" },
             { title : "操作",width : "150", type : "handle",button:[{name:"编辑",type:"edit"},{name:"删除",type:"remove"}] }
           ],
          handleTitle:[],
-         
-        tableData:[]
+         tableData:[],
+         options: [],
+        value: ''
     }
   },
   methods: {
@@ -66,12 +120,11 @@ export default {
               { title : "性别", name : "sex", type : "radio" },
               { title : "角色", name : "roleId", type : "roleselect" },
               { title : "所属组织", name : "organizationId", type : "cascader" },
-              { title : "关联用户", name : "", type : "userbutton" },
               { title : "联系电话", name : "phone", type : "number" },
-              { title : "身份证号", name : "idCard", type : "number" },
+              { title : "身份证号", name : "idCard", type : "input" },
               
       ]
-      let para = {'submitType':"insert"}
+      let para = {'submitType':"insert",'multiplexMark':1,'sex':1,"status":1}
       this.$refs.dialog.form=para
       let arr = ["organ","role"]
       this.$refs.dialog.handleShow(arr);
@@ -85,7 +138,6 @@ export default {
               { title : "性别", name : "sex", type : "radio" },
               { title : "角色", name : "roleId", type : "roleselect" },
               { title : "所属组织", name : "organizationId", type : "cascader" },
-              { title : "关联用户", name : "", type : "userbutton" },
               { title : "联系电话", name : "phone", type : "number" },
               { title : "身份证号", name : "idCard", type : "number" },
               
@@ -174,9 +226,39 @@ export default {
         }
       })
     },
+    settingData(para,name){
+        this.$refs.transfer.handleShow(para);
+    },
+    getRoleList(){
+      getRoleData().then(res=>{
+        //console.log(res)
+        if(res.code==0){
+          this.options=res.data.data
+        }
+
+      }).catch(error => {
+        //console.log(error)
+      })
+    },
+    changeResult(val){
+      this.value=val;
+      this.$refs.table.listLoading=true
+      getUserData({roleId:val}).then(res=>{
+        console.log(res)
+        if(res.code==0){
+          this.tableData=res.data.data
+          console.log(this.tableData)
+          this.$refs.table.listLoading=false
+        }
+
+      }).catch(error => {
+        console.log(error)
+      })
+    }
   },
   mounted(){
     this.getUserList()
+    this.getRoleList()
   }
 }
 </script>
@@ -185,15 +267,22 @@ export default {
   &-container {
     width: 100%;
     height: 100%;
-    position: relative;
+   
   }
   &-table{
     width: 85%;
     height: 100%;
-    padding: 1%;
+    position: relative;
+    .el-select{
+        position: absolute;
+        top:2vh;
+        left: 25vw;
+        z-index: 1;
+        font-size: 0.7vw;
+    }
     .el-button{
         position: absolute;
-        top:4vh;
+        top:2vh;
         right: 10vh;
         z-index: 1;
         font-size: 0.7vw;

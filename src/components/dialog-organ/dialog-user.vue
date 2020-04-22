@@ -224,7 +224,7 @@ export default {
             renderFunc(h, option) {
                 console.log(option.desc)
                 let arr = option.desc.split(",")
-                return <div><span style="display:inline-block;width:50px;font-weight:bold">{ arr[0] }</span><span style="margin-left:20px;font-size:12px;color:#909399">{ arr[1] }</span></div>
+                return <div style="width:100%; display: flex;justify-content: space-between;align-items: center;"><span style="display:inline-block;font-weight:bold">{ arr[0] }</span><span style="font-size:12px;color:#909399">{ arr[1] }</span></div>
             }
             
     }
@@ -240,6 +240,9 @@ export default {
 .el-transfer-panel{
     width: 20vw;
     height:50vh;
+}
+.el-transfer-panel__item{
+    width:100%;
 }
  .el-transfer-panel__list.is-filterable{
         height: 40vh;

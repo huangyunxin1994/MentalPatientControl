@@ -8,14 +8,14 @@
                         <div v-for="(ite,index) in item.children" :label="index" :key="index" class="power-item">
                              <el-checkbox :true-label='1' :false-label='0' v-model="ite.all"  @change="checkedList(ite)">{{ite.name}}</el-checkbox>
                              <div>
-                             <el-checkbox :true-label='1' :false-label='0' v-model="ite.query" @change="checkedListForAll(ite)" >查询</el-checkbox>
-                             <el-checkbox :true-label='1' :false-label='0' v-model="ite.operation" @change="checkedListForAll(ite)">操作</el-checkbox>
+                             <el-checkbox :true-label='1' :false-label='0' v-model="ite.query" v-if="ite.menuId==9||ite.menuId==10" @change="checkedListForAll(ite)" >查询</el-checkbox>
+                             <el-checkbox :true-label='1' :false-label='0' v-model="ite.operation" v-if="ite.menuId==9||ite.menuId==10" @change="checkedListForAll(ite)">操作</el-checkbox>
                              </div>
                         </div>
                     </div>
                     <div slot="footer" class="dialog-footer">
                         <el-button @click.native="handleClose">上一步</el-button>
-                        <el-button type="primary" @click.native="addSubmit" :loading="loading">下一步</el-button>
+                        <el-button type="primary" @click.native="addSubmit" :loading="loading">完成</el-button>
                     </div>
                 </el-dialog>
 </template>
@@ -46,7 +46,7 @@ export default {
 			addSubmit() {
                 //NProgress.start();
                 let para = Object.assign({}, this.form);
-                //console.log(this.powerData)
+                console.log(this.powerData)
                 para.step=1
                 if(para.submitType=="insert"){
                     this.$emit("insertData",para)

@@ -6,7 +6,7 @@
           <!-- <el-button type="primary">批量导入</el-button> -->
           </div>
           <my-table :tableTitle="tableTitle" :tableData="tableData" ref="table" @changeData="changeData" @removeData="removeData"></my-table>
-          <my-dialog :tableTitle="handleTitle" :formRule="formRule" ref="dialog" @insertData="insertData" @updateData="updateData"></my-dialog>
+          <my-dialog :tableTitle="handleTitle" :formRule="formRule" ref="dialog" @insertData="insertData" @updateData="updateData" @untying="untying"></my-dialog>
         
     </el-container>
 </template>
@@ -14,7 +14,8 @@
 <script>
 import  myTable from '@/components/table/table'
 import  myDialog from '@/components/dialog/dialog' 
-import { getEquipData,insertEquipData,updateEquipData,removeEquipData } from '@/api/table'
+import { getEquipData,insertEquipData,updateEquipData,removeEquipData,untying } from '@/api/table'
+import { getRole,getUser } from '@/utils/auth'
 export default {
   name: 'Equipmanage',
   components:{
@@ -27,17 +28,18 @@ export default {
             
         },
         tableTitle:[
-            { title : "设备编号", name : "code", minwidth : "120", type : "name" },
-            { title : "设备名称", name : "name", minwidth : "150", type : "input" },
-            { title : "关联人员", name : "keyId", width : "120", type : "input" },
+            { title : "编号", name : "code", minwidth : "120", type : "name" },
+            { title : "设备状态", name : "equipment_state", width : "120", type : "input" },
+            { title : "关联人员", name : "userName", width : "120", type : "input" },
             { title : "设备类型", name : "equipmentType", minwidth : "150", type : "equipselect" },
-           
+            { title : "温度", name : "temperature", minwidth : "150", type : "input" },
+            { title : "电压", name : "voltage", minwidth : "150", type : "input" },
             { title : "操作",width : "150", type : "handle",button:[{name:"编辑",type:"edit"},{name:"删除",type:"remove"}] }
         ],
         handleTitle:[
             { title : "设备编号", name : "code", type : "input" },
-            { title : "设备名称", name : "name", type : "input" },
             { title : "关联人员", name : "keyId", type : "userselect" },
+            { title : "", type : "equipbutton" },
             { title : "设备类型", name : "equipmentType", type : "equipselect" },
             
         ],
@@ -47,8 +49,14 @@ export default {
     methods: {
       getEquipList(){
         this.$refs.table.listLoading=true
-        let para ={currentPage:1,pageSize:100}
-        getEquipData(para).then(res=>{
+        let role = JSON.parse(getRole())
+        let user = JSON.parse(getUser());
+        console.log(user)
+        let param ={}
+        param.roleId=role
+        param.userId=user.userId
+        param.organizationId=user.organizationId||""
+        getEquipData(param).then(res=>{
           console.log(res)
           if(res.code==0){
             this.tableData=res.data.data
@@ -61,13 +69,14 @@ export default {
       })
     },
     newData(){
-      let para = {'submitType':"insert"}
+      let para = {'submitType':"insert",equipmentType:1}
       this.$refs.dialog.form=para
       let arr = ["user"]
       this.$refs.dialog.handleShow(arr);
     },
     changeData(row){
       row.submitType="update"
+      console.log(row)
       this.$refs.dialog.form=Object.assign({}, row)
       let arr = ["user"]
       this.$refs.dialog.handleShow(arr);
@@ -140,6 +149,29 @@ export default {
         }
       })
     },
+    //解绑设备
+    untying(para){
+      untying({equipmentId:para.equipmentId}).then(res=>{
+        this.$refs.dialog.loading = false;
+        this.$refs.dialog.form={};
+        this.$refs.dialog.formVisible = false;
+        if(res.code==0){
+          this.$message({
+            message: '解绑成功',
+            type: 'success'
+          });
+          this.getEquipList();
+        }else{
+          this.$message({
+            message: '解绑失败',
+            type: 'danger'
+          });
+        }
+      }).catch(err=>{
+
+      })
+
+    }
     },
     mounted(){
       this.getEquipList()

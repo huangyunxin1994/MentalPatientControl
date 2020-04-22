@@ -23,7 +23,7 @@
             >
           </el-date-picker>
         </div>
-          <my-table :tableTitle="tableTitle" :tableData="tableData" @changeData="changeData" ref="table"></my-table>
+          <my-table :tableTitle="tableTitle" :tableData="tableData" @changeData="changeData" @alertmessage="alertmessage" ref="table"></my-table>
         <dialog-warn-handle ref="sendData" @sendState='getSendData'></dialog-warn-handle>
     </el-container>
 </template>
@@ -43,7 +43,7 @@ export default {
   data(){
     return{
       tableTitle:[
-            { title : "报警类型", name : "alertType", width : "120", type : "name" },
+            { title : "报警类型", name : "equipAlertType", width : "120", type : "input" },
             { title : "设备名", name : "equipmentName", width : "120", type : "input"},
             { title : "设备号", name : "equipmentCode", minwidth : "180", type : "input" },
             { title : "设备类型", name : "equipmentType", width : "120", type : "input" },
@@ -51,9 +51,8 @@ export default {
             { title : "报警时间", name : "alertTime", minwidth : "180", type : "input" },
             { title : "处理完成时间", name : "handleTime", minwidth : "150", type : "input" },
             { title : "处理结果", name : "processingResult", width : "120", type : "input" },
-            { title : "处理记录", name : "handleRecord", minwidth : "300", type : "input" },
             { title : "处理人", name : "handleUsername", width : "120", type : "input" },
-            { title : "操作",width : "150", type : "handle",button:[{name:"处理",type:"edit"}] }
+            { title : "操作",width : "150", type : "handle",button:[{name:"处理",type:"edit"},{name:"查看处理记录",type:"search"}] }
         ],
       tableData:[],
       options: [
@@ -109,7 +108,7 @@ export default {
   },
   methods: {
     getEquWarnlData(){
-       let role = JSON.parse(getRole())
+      let role = JSON.parse(getRole())
       let user = JSON.parse(getUser());
       console.log(user)
       let param ={}
@@ -122,13 +121,24 @@ export default {
       this.$refs.table.listLoading = true 
       getEquWarnlData(param).then(res=>{
         if(res.code==0){
-          console.log(res.data.data)
+          for(let i in res.data.data){
+          res.data.data[i].equipAlertType = res.data.data[i].alertType
+          }
           this.tableData= res.data.data
           this.$refs.table.listLoading = false 
         }
       }).catch(err=>{
 
       })
+    },
+    alertmessage(val){
+      console.log(val)
+      this.$alert(`<div style='display: flex;justify-content: space-between;align-items: center;'>
+                      <div><strong>处理时间：</strong>${val.handleTime}</div>
+                      <div><strong>处理人：</strong>${val.handleUsername}</div></div>
+                   <p><strong>处理记录：</strong></p><textarea style='width:100%;min-height:200px;padding:10px;border:1px solid #d7dae2;border-radius: 4px'>${val.handleRecord}</textarea>`, '处理记录', {
+          dangerouslyUseHTMLString: true
+        });
     },
     changeData(val){
       console.log(val)
@@ -173,6 +183,11 @@ export default {
         color: #606266;
       }
     }
+  }
+  &-handleRecord{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 }
 </style>

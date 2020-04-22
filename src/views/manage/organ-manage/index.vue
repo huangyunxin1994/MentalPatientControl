@@ -3,15 +3,15 @@
       <my-tree @getThisOrgan="getThisOrgan" ref="tree"></my-tree>
       
       <div class="organmanage-table">
-        <!-- <div  v-show="organData.id" class="organmanage-parent">
-          <span style="color:#606266">{{organData.name}}</span>
-          <el-button size="small" round  @click="handleEdit()">编辑</el-button>
-        </div> -->
+        <div class="organmanage-parent">
+          <el-button size="small" type="primary" plain  @click="handlesetPos()">地图初始经纬度</el-button>
+        </div>
           
           <el-button class="organmanage-table-button" type="primary" size="small" @click="newData">添加组织</el-button>
           <my-table :tableTitle="tableTitle" :tableData="tableData" ref="table" @changeData="changeData" @removeData="removeData" @bRemoveData="bRemoveData" @settingData="settingData"></my-table>
           <my-dialog :tableTitle="handleTitle" :formRule="formRule" ref="dialog" @insertData="insertData" @updateData="updateData"></my-dialog>
           <my-transfer ref="transfer"></my-transfer>
+          <dialog-map ref="dialogmap"></dialog-map>
       </div>
         
     </el-container>
@@ -22,6 +22,7 @@ import  myTable from '@/components/table/table'
 import  myTree from '@/components/tree/tree'
 import  myDialog from '@/components/dialog/dialog'
 import  myTransfer from '@/components/dialog-organ/dialog-user'
+import  dialogMap  from '@/components/dialog-organ/dialog-map'
 import { getChildOrganData,insertOrganData,updateOrganData,removeOrganData } from '@/api/table'
 export default {
     name: 'Organmanage',
@@ -29,7 +30,8 @@ export default {
         myTable,
         myTree,
         myDialog,
-        myTransfer
+        myTransfer,
+        dialogMap
     },
     data(){
         return{
@@ -41,18 +43,17 @@ export default {
             tableTitle:[
             { title : "组织名称", name : "name", minwidth : "120", type : "name" },
             { title : "描述", name : "organization", minwidth : "120", type : "input" },
-            { title : "关联管理员", name : "user", width : "100", type : "button" },
-            { title : "关联用户", name : "person", width : "100", type : "button" },
+            { title : "关联管理用户", name : "user", width : "120", type : "button" },
+            { title : "关联重点人员", name : "person", width : "120", type : "button" },
             { title : "操作",width : "100", type : "handle",button:[{name:"编辑",type:"edit"},{name:"删除",type:"remove"}] }
             ],
             handleTitle:[
               { title : "组织名称", name : "name", type : "input" },
               { title : "上级组织", name : "parentId", type : "cascader" },
-              { title : "描述", name : "organization", type : "input" },
-              { title : "关联管理员", name : "user", width : "100", type : "organuser" },
-              { title : "关联用户", name : "person", width : "100", type : "organperson" },
+              { title : "描述", name : "organization", type : "input" }
               
             ],
+            organId:"",
             tableData:[]
         }
     },
@@ -63,7 +64,11 @@ export default {
         this.$refs.dialog.form=Object.assign({}, row)
         this.$refs.dialog.handleShow();
       },
+      handlesetPos(){
+        this.$refs.dialogmap.handleShow()
+      },
       getThisOrgan(data){
+        this.organId= data.id
         if(data.children)
         delete data.children
         this.organData=data
@@ -80,7 +85,8 @@ export default {
 
       },
       newData(){
-        let para = {'submitType':"insert"}
+        console.log(this.organId)
+        let para = {'submitType':"insert",parentId:this.organId}
         this.$refs.dialog.form=para
         let arr = ["organ"]
         this.$refs.dialog.handleShow(arr);
@@ -188,7 +194,7 @@ export default {
    .organmanage-parent{
       position: absolute;
       top:4vh;
-      right: 30vh;
+      right: 25vh;
       display: flex;
       justify-content: space-between;
       align-items: center;

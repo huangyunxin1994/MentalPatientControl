@@ -59,7 +59,8 @@ export default {
   data(){
     return{
           formRule:{
-            name: [{ required: true, message: '请输入角色', trigger: 'blur' }]
+            name: [{ required: true, message: '请输入角色', trigger: 'blur' }],
+            state: [{ required: true, message: '请选择状态', trigger: 'blur' }]
           },
          tableTitle:[
             { title : "角色名称", name : "name", minwidth : "120", type : "input" },
@@ -123,8 +124,8 @@ export default {
               arr[i].all=0
             }
             this.powerData=filterArray(arr)
+            this.powerData.reverse()
             //console.log(111)
-            //console.log( this.powerData)
             let para = {'submitType':"insert"}
             this.$refs.dialog2.form=para
             this.$refs.dialog1.formVisible = false;
@@ -144,10 +145,11 @@ export default {
         }
         
       }else if(para.step==1){
-        let para = {'submitType':"insert"}
-        this.$refs.dialog3.form=para
+        // let para = {'submitType':"insert"}
+        // this.$refs.dialog3.form=para
         this.$refs.dialog2.formVisible = false;
-        this.$refs.dialog3.handleShow();
+       // this.$refs.dialog3.handleShow();
+        this.insertRoleData("11")
       }
       
     },
@@ -169,6 +171,7 @@ export default {
                 arr[i].all=0
             }
             this.powerData=filterArray(arr)
+            this.powerData.reverse()
             //console.log(111)
             //console.log( this.powerData)
             let para = {'submitType':"update"}
@@ -190,10 +193,11 @@ export default {
         }
         
       }else if(para.step==1){
-        let para = {'submitType':"update",'roleId':this.roleid}
-        this.$refs.dialog3.form=para
+        // let para = {'submitType':"update",'roleId':this.roleid}
+        // this.$refs.dialog3.form=para
         this.$refs.dialog2.formVisible = false;
-        this.$refs.dialog3.handleShow();
+        //this.$refs.dialog3.handleShow();
+        this.updateRoleData("11")
       }
       
     },
@@ -339,7 +343,13 @@ export default {
     addRoleRelationMenu(value,arr,roleid){
       addRoleRelationMenu(arr).then((res)=>{
         if(res.code==0){
-          this.settingUser(value,roleid)
+          //this.settingUser(value,roleid)
+          this.$message({
+              message: '保存成功',
+              type: 'success'
+            });
+            this.handleClosed()
+            this.getRoleList();
         }else{
           this.$message({
               message: '配置角色权限失败',

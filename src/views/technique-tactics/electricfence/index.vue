@@ -5,31 +5,34 @@
             <el-input placeholder="请输入内容" suffix-icon="el-icon-search" v-model="inputVal" @input="filterData"></el-input>
             <el-divider></el-divider>
             <el-collapse v-model="activeNames" :accordion="true" @change="collapseChange">
-            <el-collapse-item name="1">
+            <el-collapse-item name="1" >
                 <template slot="title">
                     <div class="electricfence-collapse">
-                        <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;进入预警围栏</span>
+                        <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;电子围栏</span>
                     </div>
                 </template>
-                <div v-for="(item,index) in filterArr" :key="index" class="electricfence-collapse-item" :class="{'collapse-item-select':enterShowIndex == index}" @click="enterShow(index)">
+                 <el-scrollbar id="elec-main" class="electricfence-scrollbar">
+                <div :id="'elec-'+index" v-for="(item,index) in filterArr" :key="index" class="electricfence-collapse-item" :class="{'collapse-item-select':enterShowIndex == index}" @click="enterShow(index)">
                     <el-link :underline="false">{{item.name}}</el-link>
                     <div class="electricfence-collapse-item-button">
-                        <el-button type="primary" icon="el-icon-s-custom" circle size="mini" @click.stop="setUserIn(index)"></el-button>
-                        <el-button type="danger" icon="el-icon-delete" circle size="mini" @click.stop="deleteElec(index)"></el-button>
+                        <el-button type="info" icon="el-icon-s-custom" circle size="mini" @click.stop="setUserIn(index)"></el-button>
+                        <el-button type="primary" icon="el-icon-edit" circle size="mini" @click.stop="editElec(index)"></el-button>
                     </div>
                 </div>
+                 </el-scrollbar>
             </el-collapse-item>
             
             </el-collapse>
         </el-col>
         <el-col :span="18" class="electricfence-map">
-            <mymap ref="map"></mymap>
+            <mymap @getElec="getElec" ref="map"></mymap>
             <div class="electricfence-map-button">
-                <el-button type="primary" @click="openElecAddMap()">添加进入预警围栏</el-button>
+                <el-button type="danger" @click="openElecAddMap()">添加电子围栏</el-button>
             </div>
         </el-col>
       </el-row>
       <dialog-map ref="dialogmap" @selectElec="selectElec"></dialog-map>
+      <dialog-map-e ref="dialogmape" @selectElec="selectElec"></dialog-map-e>
       <my-transfer ref="transfer" @selectElec="selectElec"></my-transfer>
     </el-container>
     
@@ -38,6 +41,7 @@
 <script>
 import  mymap  from '@/components/map-elec/map'
 import  dialogMap  from '@/components/dialog-elec/dialog-map'
+import  dialogMapE  from '@/components/dialog-elec/dialog-map-edit'
 import  myTransfer from '@/components/dialog-elec/dialog-user'
 import { deleteElectronicFence,selectElectronicFenceQuery} from  "@/api/table"
 export default {
@@ -45,6 +49,7 @@ export default {
   components:{
     mymap,
     dialogMap,
+    dialogMapE,
     myTransfer
   },
   data(){
@@ -80,36 +85,39 @@ export default {
       },
       enterShow(i){
         this.enterShowIndex=i
-        this.$refs.map.movePosBypoint(this.enterElecArr[i].longitude,this.enterElecArr[i].latitude)   
+        this.$refs.map.movePosBypoint(this.filterArr[i].longitude,this.filterArr[i].latitude)   
       },
       setUserIn(i){
         console.log(i)
         let row = this.enterElecArr[i]
         this.$refs.transfer.handleShow(row)
       },
-      deleteElec(i){
+      editElec(i){
         let id = this.enterElecArr[i].id
-        this.$confirm('确认删除吗？', '提示', {}).then(() => {
-            deleteElectronicFence({id:id}).then((res)=>{
-                if(res.code==0){
-                    this.$message({
-                        message: '删除成功',
-                        type: 'success'
-                    });
-                    this.selectElec()
-                }else{
-                    this.$message({
-                        message: '删除成功',
-                        type: 'error'
-                    });
-                }
-            }).catch(err=>{
-                this.$message({
-                    message: '删除成功',
-                    type: 'error'
-                });
-            })
-        }); 
+        let para = JSON.parse(JSON.stringify(this.enterElecArr[i]))
+        this.$refs.dialogmape.form = para
+        this.$refs.dialogmape.handleShow()
+        // this.$confirm('确认删除吗？', '提示', {}).then(() => {
+        //     deleteElectronicFence({id:id}).then((res)=>{
+        //         if(res.code==0){
+        //             this.$message({
+        //                 message: '删除成功',
+        //                 type: 'success'
+        //             });
+        //             this.selectElec()
+        //         }else{
+        //             this.$message({
+        //                 message: '删除成功',
+        //                 type: 'error'
+        //             });
+        //         }
+        //     }).catch(err=>{
+        //         this.$message({
+        //             message: '删除成功',
+        //             type: 'error'
+        //         });
+        //     })
+        // }); 
       },
       selectElec(){
         selectElectronicFenceQuery().then(res=>{
@@ -133,6 +141,12 @@ export default {
 
         })
       },
+      getElec(i){
+        this.enterShowIndex=i
+        let selector = "#elec-"+i
+        console.log(selector)
+       this.$el.querySelector(selector).scrollIntoView()
+      },
       filterData(val){
         let arr = this.enterElecArr.filter(item=>{
           if (!val) return true;
@@ -146,6 +160,15 @@ export default {
     }
 }
 </script>
+<style lang="scss" >
+.el-collapse-item__wrap{
+       height: calc(100% - 48px);  
+       .el-collapse-item__content{
+         height: 100%;
+         padding-bottom: 0;
+       }         
+}
+</style>
 <style lang="scss" scoped>
 .electricfence {
   &-container {
@@ -169,7 +192,16 @@ export default {
             box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
         }
         .el-collapse{
-            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
+           height: calc(99% - 88px) ;
+            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+            .el-collapse-item{
+               height: 100%;
+               
+              .electricfence-scrollbar{
+              height: 100%;
+            }
+            }
+            
         }
         .collapse-item-select{
             border-left:5px solid #409EFF;

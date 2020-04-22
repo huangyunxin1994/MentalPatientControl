@@ -26,7 +26,7 @@
        
         <el-col :span="12">
             <div style="width:100%;height:100%">
-              <mymap ref="map"></mymap>
+              <mymap ref="map" :bulletArr="bulletArr"></mymap>
             </div>
         </el-col>
         <el-col :span="6">
@@ -44,7 +44,7 @@
 <script>
 import echarts from 'echarts'
 import  mymap  from '@/components/map/map'
-import {equipmentStatistics,keyPersonnelEarly,keyPersonnelStatistics,selectCount,selectWlCount,userRoleStatistics,getPerWarnlData } from "@/api/table"
+import {equipmentStatistics,keyPersonnelEarly,keyPersonnelStatistics,selectWlCount,userRoleStatistics,getPerWarnlData,getOrganData } from "@/api/table"
 import { getRole,getUser } from '@/utils/auth'
 export default {
   name: 'Login',
@@ -70,24 +70,39 @@ export default {
       equipSleep:[],
       equipActive:[],
       alert1:[],alert2:[],alert3:[],alert4:[],alert5:[],alert6:[],alert7:[],
-      warnData:[]
+      warnData:[],
+      bulletArr:[]
 
     }
   },
   mounted(){
     this.getDrawData()
-    this.$refs.map.getmap()
+    this.getOrganData()
     
   },
   methods: {
     enterSys(){
       this.$router.push({ path: '/' })
     },
+    async getOrganData(){
+       let user = JSON.parse(getUser()) 
+        console.log(user)
+        let organizaId = user.organizationId;
+        let userid = user.userId;
+        let role = JSON.parse(getRole()) 
+        let para ={organizaId:organizaId,roleId:role,userId:userid}
+      await getOrganData(para).then(res=>{
+        if(res.code==0){
+            this.bulletArr=res.data.user;
+            this.$refs.map.getmap();
+        }
+      })
+      await this.$refs.map.getmap();
+    },
     async getDrawData(){
       await this.keyPersonnelStatistics()
       await this.keyPersonnelEarly()
       await this.userRoleStatistics()
-      await this.selectCount()
       await this.getPerWarnlData()
       await this.equipmentStatistics()
       await this.drawChart();
@@ -162,17 +177,6 @@ export default {
             this.alert6=arr6
             this.alert7=arr7
           }
-          
-        }
-        
-      })
-    },
-    async selectCount(){
-      await selectCount().then(res=>{
-        if(res.code==0){
-          let data = res.data.data
-          let para ={}
-          console.log(data)
           
         }
         

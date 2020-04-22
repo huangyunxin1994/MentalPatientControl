@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog title="警告列表" :visible.sync="dialogTableVisible" center :append-to-body='true' :lock-scroll="false" width="30%">
+    <el-dialog title="警告列表" :visible.sync="dialogTableVisible" center :append-to-body='true' :lock-scroll="false" width="50vw">
       <div class="warnList">
         <el-table
             :data="tableData"
@@ -26,7 +26,7 @@
               label= '操作'
               width="100">
               <template scope='scope'>
-                <el-button type="text" size="small" @click="compile(scope.$index, scope.row)">{{isCompile}}</el-button>
+                <el-button type="danger" size="mini" @click="compile(scope.$index, scope.row)">{{isCompile}}</el-button>
               </template>
             </el-table-column>
         </el-table>
@@ -34,7 +34,7 @@
         <el-row class="cancelSwrap">
           <div class="cancel">
             <!-- <el-button type="primary" @change.native="cancel">取消</el-button> -->
-            <button @click="cancel" class="cancelBtn">取消</button>
+            <el-button type="primary" @click="cancel" class="cancelBtn">取消</el-button>
           </div>
         </el-row>
       </div>
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-  import {getWarnListData} from '@/api/table'
+  import {getWarnListData , updateKeyPnlData} from '@/api/table'
   import dialogWarnHandle from '@/components/dialog-person/dialog-warn-handle/dialog'
 
   export default{
@@ -103,9 +103,13 @@
       },
       getListData(val){
         this.tableData = val
+        if(this.tableData.length == 0){
+          console.log("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR")
+          console.log(this.tableData.length)
+        }
       },
       compile(index, row){
-        console.log(this.tableData[index])
+        // console.log(this.tableData[index])
         this.$refs.showHandle.getDandleShow(this.tableData[index])
       }
     },
@@ -126,14 +130,5 @@
   .cancel{
     width: 140px;
     margin: 20px auto 0px;
-  }
-  .cancelBtn{
-    background: rgba(0, 153, 255, 1);
-    color: white;
-    width: 140px;
-    height: 40px;
-    border-radius: 3px;
-    border: 1px solid transparent;
-    outline: none;
   }
 </style>

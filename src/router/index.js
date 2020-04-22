@@ -56,31 +56,31 @@ const constantRoutes=[
         path: '/manage/organmanage',
         name: 'organmanage',
         component: () => import('@/views/manage/organ-manage/index'),
-        meta: { title: 'organmanage', icon: 'organmanage' }
+        meta: { title: 'organmanage', icon: 'organmanage',id:3 }
       },
       {
         path: '/manage/rolemanage',
         name: 'rolemanage',
         component: () => import('@/views/manage/role-manage/index'),
-        meta: { title: 'rolemanage', icon: 'rolemanage' }
+        meta: { title: 'rolemanage', icon: 'rolemanage',id:11 }
       },
       {
         path: '/manage/usermanage',
         name: 'usermanage',
         component: () => import('@/views/manage/user-manage/index'),
-        meta: { title: 'usermanage', icon: 'usermanage' }
+        meta: { title: 'usermanage', icon: 'usermanage',id:4 }
       },
       {
         path: '/manage/equipmanage',
         name: 'equipmanage',
         component: () => import('@/views/manage/equip-manage/index'),
-        meta: { title: 'equipmanage', icon: 'equipmanage' }
+        meta: { title: 'equipmanage', icon: 'equipmanage',id:5 }
       },
       {
         path: '/manage/keypersonmanage',
         name: 'keypersonmanage',
         component: () => import('@/views/manage/key-person-manage/index'),
-        meta: { title: 'keypersonmanage', icon: 'keypersonmanage' }
+        meta: { title: 'keypersonmanage', icon: 'keypersonmanage',id:6 }
       }
       ]
     },
@@ -92,20 +92,20 @@ const constantRoutes=[
         path: '/dashboard',
         name: 'Dashboard',
         component: () => import('@/views/dashboard/index'),
-        meta: { title: 'Dashboard', icon: 'dashboard' }
+        meta: { title: 'Dashboard', icon: 'dashboard',id:7}
       },
       {
         path: '/personstate',
         name: 'Personstate',
         component: () => import('@/views/personnel-state/index'),
-        meta: { title: 'personstate', icon: 'personstate' } 
+        meta: { title: 'personstate', icon: 'personstate',id:8 } 
       },
       {
         path: '/persondetails',
         name: 'Persondetails',
         redirect: '/persondetails/activestate',
         component: () => import('@/views/personnel-details/index'),
-        meta: { title: 'persondetails', icon: 'persondetails' },
+        meta: { title: 'persondetails', icon: 'persondetails', },
         children:[
           {
             path: '/persondetails/activestate',
@@ -125,7 +125,7 @@ const constantRoutes=[
         name: 'Warningcenter',
         redirect: '/warningcenter/personwarn',
         component: () => import('@/views/warning-center/index'),
-        meta: { title: 'warningcenter', icon: 'warningcenter' },
+        meta: { title: 'warningcenter', icon: 'warningcenter',id:9 },
         children:[
           {
             path: '/warningcenter/personwarn',
@@ -145,7 +145,7 @@ const constantRoutes=[
         name: 'Techniquetactics',
         redirect: '/techniquetactics/electricfence',
         component: () => import('@/views/technique-tactics/index'),
-        meta: { title: '技战法', icon: 'techniquetactics' },
+        meta: { title: '技战法', icon: 'techniquetactics',id:10 },
         children: [{
           path: '/techniquetactics/electricfence',
           name: 'Electricfence',
