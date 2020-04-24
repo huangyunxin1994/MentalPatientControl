@@ -50,25 +50,25 @@ export default {
     filterData: (value)=> {
         if (!value) return ''
         value = value.toString()
-        return value == 1 ? '活动频率异常' : (value == 2 ? '活动时间异常' : (value == 3? '心率异常' :(value == 4 ? '血压异常' :(value == 5 ? '睡眠质量异常' :(value == 6 ? '居家/离家异常' :(value == 7 ? '电子围栏触发' :' '))))))
+        return value == 1 ? '活动频率异常' : (value == 2 ? '活动时间异常' : (value == 3? '心率异常' :(value == 4 ? '血压异常' :(value == 5 ? '睡眠质量异常' :(value == 6 ? '居家/离家异常' :(value == 7 ? '电子围栏触发' :(value == 8 ? '限制外出预警' :' ')))))))
     }
   },
   computed:{
     inHomeNum(){
       var inHomeArr = this.pointsArr.filter((item) => {
-            return item.personnelStatus === "1"
+            return item.personnelStatus === "1"&&item.warning != 2
       })
       return inHomeArr.length
     },
     outHomeNum(){
       var outHomeArr = this.pointsArr.filter((item) => {
-            return item.personnelStatus === "2"
+            return item.personnelStatus === "2"&&item.warning != 2
       })
       return outHomeArr.length
     },
     warningNum(){
       var warningArr = this.pointsArr.filter((item) => {
-            return item.personnelStatus === "3"
+            return item.warning == 2
       })
       return warningArr.length
     }
@@ -117,16 +117,28 @@ export default {
         if(data.className=="person"){
           this.$refs.map.movePosBypoint(data.longitude,data.latitude)
         }else{
-          getOrganData({organizaId:data.id}).then(res=>{
+          let role = JSON.parse(getRole())
+          let user = JSON.parse(getUser());
+          console.log(user)
+          let param ={}
+          param.roleId=role
+          param.userId=user.userId
+          param.organizaId=data.id
+          getOrganData(param).then(res=>{
             if(res.code==0){
                this.pointsArr=res.data.user;
+               console.log("pointsArr")
+               console.log(this.pointsArr)
                this.$refs.map.getmap();
             }
           })
         }
       },
       getPersonData(val){
+
         this.pointsArr=val
+        console.log("pointsArr")
+               console.log(this.pointsArr)
       },
       async getPerWarnlData(){
         let role = JSON.parse(getRole()) 

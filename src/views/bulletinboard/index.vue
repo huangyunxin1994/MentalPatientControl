@@ -386,7 +386,7 @@ export default {
                     },
                     legend: {
                       bottom:0,
-                        data: ['已处理', '未处理']
+                        data: ['未处理','已处理' ]
                     },
                     grid: {
                         left: '3%',
@@ -404,16 +404,17 @@ export default {
                     },
                     series: [
                       
-                        {
-                            name: '已处理',
-                            type: 'bar',
-                            data: [this.alert7[0], this.alert6[0], this.alert5[0], this.alert4[0], this.alert3[0], this.alert2[0],this.alert1[0]]
-                        },
+                       
                         {
                             name: '未处理',
                             type: 'bar',
                             data: [this.alert7[1], this.alert6[1], this.alert5[1], this.alert4[1], this.alert3[1], this.alert2[1],this.alert1[1]]
-                        }
+                        },
+                         {
+                            name: '已处理',
+                            type: 'bar',
+                            data: [this.alert7[0], this.alert6[0], this.alert5[0], this.alert4[0], this.alert3[0], this.alert2[0],this.alert1[0]]
+                        },
                     ]
                 });
                 chartWarnDone.setOption({
@@ -462,7 +463,7 @@ export default {
                         },
                         legend: {
                           bottom:0,
-                            data: ['在线数','离线数',"预警数"]
+                            data: ["预警数",'在线数','离线数',]
                         },
                         grid: {
                             left: '3%',
@@ -480,22 +481,23 @@ export default {
                             data: ['智能手表','睡眠监测器','活动监测器']
                         },
                         series: [
-                          
                             {
-                                name: '在线数',
+                                name: '预警数',
                                 type: 'bar',
-                                data: [this.equipWatch[0],this.equipSleep[0],this.equipActive[0]]
+                                data: [this.equipWatch[2],this.equipSleep[2],this.equipActive[2]]
                             },
+                            
                             {
                                 name: '离线数',
                                 type: 'bar',
                                 data: [this.equipWatch[1],this.equipSleep[1],this.equipActive[1]]
                             },
+                            
                             {
-                                name: '预警数',
+                                name: '在线数',
                                 type: 'bar',
-                                data: [this.equipWatch[2],this.equipSleep[2],this.equipActive[2]]
-                            }
+                                data: [this.equipWatch[0],this.equipSleep[0],this.equipActive[0]]
+                            },
                         ]
                 });
                 window.onresize =function(){

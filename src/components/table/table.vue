@@ -22,7 +22,7 @@
                         placement="top"
                         width="200"
                         trigger="click"
-                        :content="'联系电话:'+phoneNumber"
+                        :content="phoneNumber!='undefined'&&phoneNumber.length>0 ? '联系电话:'+phoneNumber:'联系电话:无'"
                         @show="loadData(scope.row,item.name)">
                         <el-link slot="reference" :formatter="formatSex" v-html="arrFormatter(scope.row[item.name],item.name)"></el-link>
                       </el-popover>
@@ -117,8 +117,12 @@ import "@/assets/icon/iconfont.css"
              return value == 1 ? 'SOS' : (value == 2 ? '低电' : (value == 3? '脱落报警' :(value == 4 ? '佩戴提醒' :(value == 5 ? '剪断报警' :(value == 6 ? '跌倒报警' :(value == 7 ? '心率异常' :(value == 8 ? '心率过高' :(value == 9 ? '心率过低' :(value == 10 ? '收缩压过高' :(value == 11 ? '收缩压过低' :(value == 12 ? '舒张压过高' :(value == 13 ? '舒张压过低' :(value == 14 ? '温度过高' :(value == 7 ? '烟雾浓度过高' :' '))))))))))))))
             else if(name == 'alertType')
              return value == 1 ? '活动频率异常' : (value == 2 ? '活动时间异常' : (value == 3? '心率异常' :(value == 4 ? '血压异常' :(value == 5 ? '睡眠质量异常' :(value == 6 ? '居家/离家异常' :(value == 7 ? '电子围栏触发' :(value == 8 ? '限制外出预警' :' ')))))))
-            else if(name == 'personnelStatus')
+            else if(name == 'thisState')
              return value == 1 ? '<span style="color:#67C23A;font-weight:bold">在家</span>' : (value == 2 ? '<span style="color:#E6A23C;font-weight:bold">离家</span>' : value == 3? '<span style="color:#F56C6C;font-weight:bold">预警</span>' :"");
+            else if(name == 'equipmentState'){
+             return value == 1 ? '<span style="color:#67C23A;font-weight:bold">在线</span>' : (value == 2 ? '<span style="color:#E6A23C;font-weight:bold">离线</span>' : value == 3? '<span style="color:#F56C6C;font-weight:bold">预警</span>' :"");
+
+            }
             else
              return value;
            
@@ -181,7 +185,10 @@ import "@/assets/icon/iconfont.css"
           getThisUser(para).then(res=>{
             if(res.code==0){
               console.log(res)
+              if(res.data.user.phone)
               this.phoneNumber=res.data.user.phone
+              else
+              this.phoneNumber=''
             }
           }).catch(err=>{
             

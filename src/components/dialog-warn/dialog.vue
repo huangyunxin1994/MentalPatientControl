@@ -90,8 +90,10 @@
           return '睡眠质量异常'
         }else if(num == '6'){
           return '居家/离家异常'
-        }else{
+        }else if(num == '7'){
           return '电子围栏触发'
+        }else if(num == '8'){
+          return '限制外出预警'
         }
       },
       cancel(){

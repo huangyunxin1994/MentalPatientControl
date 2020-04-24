@@ -24,7 +24,7 @@ export default {
        tableTitle:[
             { title : "姓名", name : "name", width : "120", type : "link" },
             { title : "关联设备", name : "eqlist", minwidth : "150", type : "equip"},
-            { title : "状态", name : "personnelStatus", width : "120", type : "input" },
+            { title : "状态", name : "thisState", width : "120", type : "input" },
             { title : "人员级别", name : "level", minwidth : "150", type : "input" },
             { title : "住址", name : "address", minwidth : "500", type : "input" },
             { title : "监护人", name : "guardian", minwidth : "150", type : "tooltip" },
@@ -51,6 +51,11 @@ export default {
           console.log(res.data.data)
           var obj=[];
           for(let i in res.data.data){
+            if(res.data.data[i].personnelStatus.warning==2){
+              res.data.data[i].personnelStatus.thisState = 3
+            }else{
+              res.data.data[i].personnelStatus.thisState = res.data.data[i].personnelStatus.personnelStatus
+            }
             res.data.data[i].personnelStatus.eqlist=res.data.data[i].eqlist
             obj.push(res.data.data[i].personnelStatus)
           }
@@ -75,6 +80,11 @@ export default {
           console.log(res.data.data)
           var obj=[];
           for(let i in res.data.data){
+            if(res.data.data[i].personnelStatus.warning==2){
+              res.data.data[i].personnelStatus.thisState = 3
+            }else{
+              res.data.data[i].personnelStatus.thisState = res.data.data[i].personnelStatus.personnelStatus
+            }
             res.data.data[i].personnelStatus.eqlist=res.data.data[i].eqlist
             obj.push(res.data.data[i].personnelStatus)
           }

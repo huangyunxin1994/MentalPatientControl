@@ -89,12 +89,12 @@ export default {
       },
       setUserIn(i){
         console.log(i)
-        let row = this.enterElecArr[i]
+        let row = this.filterArr[i]
         this.$refs.transfer.handleShow(row)
       },
       editElec(i){
-        let id = this.enterElecArr[i].id
-        let para = JSON.parse(JSON.stringify(this.enterElecArr[i]))
+        let id = this.filterArr[i].id
+        let para = JSON.parse(JSON.stringify(this.filterArr[i]))
         this.$refs.dialogmape.form = para
         this.$refs.dialogmape.handleShow()
         // this.$confirm('确认删除吗？', '提示', {}).then(() => {
@@ -144,8 +144,12 @@ export default {
       getElec(i){
         this.enterShowIndex=i
         let selector = "#elec-"+i
-        console.log(selector)
-       this.$el.querySelector(selector).scrollIntoView()
+        this.inputVal=""
+        this.filterArr=JSON.parse(JSON.stringify(this.enterElecArr))
+        setTimeout(()=>{
+          this.$el.querySelector(selector).scrollIntoView()
+        },0)
+        
       },
       filterData(val){
         let arr = this.enterElecArr.filter(item=>{

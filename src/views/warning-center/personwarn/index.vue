@@ -1,6 +1,15 @@
 <template>
     <el-container class="personwarn-container">
         <div class="personwarn-container-handle">
+          <label for="" class="personwarn-container-handle-label">预警类型</label>
+          <el-select v-model="valueW" filterable placeholder="请选择" @change="changeResultW">
+            <el-option
+              v-for="item in optionsW"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value" style="width:10vw">
+            </el-option>
+          </el-select>
           <label for="" class="personwarn-container-handle-label">处理结果</label>
           <el-select v-model="value" filterable placeholder="请选择" @change="changeResult">
             <el-option
@@ -13,7 +22,7 @@
           <label for="" class="personwarn-container-handle-label">预警日期范围</label>
           <el-date-picker
             v-model="value2"
-            type="datetimerange"
+            type="daterange"
             :picker-options="pickerOptions"
             range-separator="至"
             start-placeholder="开始日期"
@@ -32,7 +41,7 @@
 <script>
 import  myTable  from '@/components/table/table'
 import  dialogWarnHandle from '@/components/dialog-person/dialog-warn-handle/dialog'
-import { getPerWarnlData } from "@/api/table"
+import { getPerWarnlData,getByPrimaryKey,updateKeyPnlData } from "@/api/table"
 import { getRole,getUser } from '@/utils/auth'
 import { parseTime} from '@/utils/index'
 export default {
@@ -52,11 +61,42 @@ export default {
             { title : "网格管理员", name : "networkAdministrator", minwidth : "150", type : "tooltip" },
             { title : "责任医师", name : "responsiblePhysician", width : "120", type : "tooltip" },
             { title : "处理结果", name : "processingResult", minwidth : "150", type : "input" },
-            { title : "处理时间", name : "handleTime", width : "120", type : "input" },
+            { title : "处理时间", name : "handleTime", minwidth : "180", type : "input" },
             { title : "处理人", name : "handleUsername", minwidth : "150", type : "input" },
             { title : "操作",width : "150", type : "handle",button:[{name:"处理",type:"edit"},{name:"查看处理记录",type:"search"}] }
         ],
         tableData:[],
+        optionsW: [
+        {
+          value: '',
+          label: '全部'
+        },
+        {
+          value: '1',
+          label: '活动频率异常'
+        }, {
+          value: '2',
+          label: '活动时间异常'
+        }, {
+          value: '3',
+          label: '心率异常'
+        }, {
+          value: '4',
+          label: '血压异常'
+        },
+        {
+          value: '5',
+          label: '睡眠质量异常'
+        }, {
+          value: '6',
+          label: '居家/离家异常'
+        }, {
+          value: '7',
+          label: '电子围栏触发'
+        }, {
+          value: '8',
+          label: '限制外出预警'
+        }],
         options: [
         {
           value: '',
@@ -76,6 +116,7 @@ export default {
           label: '忽略'
         }],
         value: '2',
+        valueW: '',
         pickerOptions: {
           shortcuts: [{
             text: '最近一周',
@@ -118,6 +159,7 @@ export default {
       param.userId=user.userId
       param.organizaId=user.organizationId||""
       param.processingResult = this.value
+      param.alertType = this.valueW
       param.beginTime = this.beginTime
       param.endTime = this.endTime
       this.$refs.table.listLoading = true
@@ -144,6 +186,22 @@ export default {
       this.$refs.sendData.getDandleShow(val)
     },
     getSendData(val){
+      console.log(val)
+      getByPrimaryKey({id:val,processingResult:"2"}).then(res=>{
+        if(res.code==0){
+           console.log("getByPrimaryKey")
+          console.log(res)
+          if(res.data.data.length==0){
+            updateKeyPnlData({id:val,warning:1}).then(res=>{
+              if(res.code==0){
+                
+              }
+            }).catch(err=>{
+
+            })
+          }
+        }
+      })
       this.getPerWarnlData()
     },
     changeResult(val){
@@ -151,14 +209,18 @@ export default {
       this.getPerWarnlData()
 
     },
+    changeResultW(val){
+      this.valueW=val;
+      this.getPerWarnlData()
+    },
     changeDate(val){
       console.log(val)
       if(val==null){
         this.beginTime = ""
         this.endTime = ""
       }else{
-        this.beginTime = parseTime(val[0])
-        this.endTime = parseTime(val[1])
+        this.beginTime = parseTime(val[0],`{y}-{m}-{d}`)+" 00:00:00"
+        this.endTime = parseTime(val[1],`{y}-{m}-{d}`)+" 23:59:59"
       }
 
       this.getPerWarnlData()

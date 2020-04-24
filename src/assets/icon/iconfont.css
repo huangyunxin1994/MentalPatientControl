@@ -23,6 +23,15 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.iconshoubiao{
+  color: #409EFF;
+}
+.iconchuang{
+  color: #67C23A;
+}
+.iconyangan{
+  color: #E6A23C;
+}
 .iconicon-test-copy:before {
   content: "\e60c";
 }

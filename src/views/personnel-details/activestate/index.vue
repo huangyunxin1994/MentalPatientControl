@@ -7,14 +7,14 @@
               <el-row :gutter="20">
                 <el-col :span="6">姓名：{{personData.name}}</el-col>
                 <el-col :span="6">联系电话：{{personData.phone}}</el-col>
-                <el-col :span="6">网格管理员：{{personData.networkAdministrator}}-{{personData.networkAdministratorP}}</el-col>
+                <el-col :span="6">网格管理员：{{personData.networkAdministrator}}&nbsp;{{personData.networkAdministratorP}}</el-col>
                 <el-col :span="6">人员级别：{{personData.level | fiterData}}</el-col>
                 <el-col :span="12">住址：{{personData.address}}</el-col>
-                <el-col :span="6">责任医师：{{personData.responsiblePhysician}}-{{personData.responsiblePhysicianP}}</el-col>
+                <el-col :span="6">责任医师：{{personData.responsiblePhysician}}&nbsp;{{personData.responsiblePhysicianP}}</el-col>
                
                 <el-col :span="6">所属组织：{{personData.organizationName}}</el-col>
                 <el-col :span="12">病情描述：活动频率异常，情绪不稳定</el-col>
-                 <el-col :span="6">监护人：{{personData.guardian}}-{{personData.guardianP}}</el-col>
+                 <el-col :span="6">监护人：{{personData.guardian}}&nbsp;{{personData.guardianP}}</el-col>
                 <el-col :span="6">是否限制外出：{{personData.restrictions | filterRestr}}</el-col>
                 <!-- <el-col :span="8">是否限制外出：{{personData.personnelStatus}}</el-col> -->
             </el-row>
@@ -90,6 +90,7 @@ export default {
       warnActive: false,
       warnNum:0,
       time:[],
+      bhTime:[],
       // time:["15:00","17:00","19:00","21:00","23:00","1:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"],
       activityFrequencyT:[],
       activityFrequencyA:[],
@@ -100,8 +101,8 @@ export default {
       phoneList:[],
       activerate:"",
       activetime:"",
-      heartrate:"1",
-      bloodpress:"1",
+      heartrate:"",
+      bloodpress:"",
       sleepquality:"",
       inouthome:""
     }
@@ -112,9 +113,14 @@ export default {
 
       },
       sureBtn(){
+        if(this.dateTime!=""){
           this.getEchartData()
           this.getData2()
           this.drawChart()
+        }else{
+
+        }
+          
       },
       getData(){
          this.time=[]
@@ -135,6 +141,7 @@ export default {
              this.time[i] = this.time[i] + ':00'
            }
          }
+         console.log(this.time)
        },
        getData2(){
          this.time=[]
@@ -161,12 +168,12 @@ export default {
        getEchartData(){
         console.log("127")
           let time=this.dateTime;
-          if(time==""){
-              time=new Date(new Date().toLocaleDateString()).getTime()
-          }
           let para ={}
           para.keyUserId  = this.personData.keyUserid
-          para.time = parseTime(time,'{y}-{m}-{d}')
+          if(time!=""){
+             para.time = parseTime(time,'{y}-{m}-{d}')
+          }
+         
           getPerSe(para).then(res=>{
               if(res.code==0){
                   this.warnNum = res.data.alertNum
@@ -177,44 +184,51 @@ export default {
                   this.personData.guardianP = phoneList[0].Guardian
                   this.$refs.senda.getListData(this.warnTableData)
                   this.warnActive = false
-
                   let arr1=[],arr2=[],arr3=[],arr4=[],arr5=[],arr6=[],arr7=[]
                   if(res.data.frequency_today.length>0){
-                    for(let i in this.time){
+                    for(let i=0;i < this.time.length;i++){
                         let para=[],para2=[]
-                        para.push(this.time[i])
-                        para2.push(this.time[i])
                         let arr = res.data.frequency_today.filter(item=>{
                           return item.hours+":00" ==this.time[i]
                         })
-                        para.push(arr[0].activityFrequency)
-                        para2.push(arr[0].activityTime)
-                        arr1.push(para)
-                        arr2.push(para2)
+                        if(arr.length>0){
+                          para.push(this.time[i])
+                          para2.push(this.time[i])
+                          para.push(arr[0].activityFrequency)
+                          para2.push(arr[0].activityTime)
+                          arr1.push(para)
+                          arr2.push(para2)
+                        }
                     }
                   }
+                  console.log(196)
                   if(res.data.frequency_lastday.length>0){
                     for(let i in this.time){
                         let para=[],para2=[]
-                        para.push(this.time[i])
-                        para2.push(this.time[i])
+                       
                         let arr = res.data.frequency_lastday.filter(item=>{
                           return item.hours+":00" ==this.time[i]
                         })
-                        para.push(arr[0].activityFrequency)
-                        para2.push(arr[0].activityTime)
-                        arr3.push(para)
-                        arr4.push(para2)
+                        if(arr.length>0){
+                           para.push(this.time[i])
+                           para2.push(this.time[i])
+                           para.push(arr[0].activityFrequency)
+                            para2.push(arr[0].activityTime)
+                            arr3.push(para)
+                            arr4.push(para2)
+                        }
+                       
                     }
                   }
                   if(res.data.Blood_today.length>0){
                     for(let i in res.data.Blood_today){
                         let para=[],para2=[],para3=[]
-                        para.push(res.data.Blood_today[i].hours+":00")
+                        this.bhTime.push(res.data.Blood_today[i].hours)
+                        para.push(res.data.Blood_today[i].hours)
                         para.push(res.data.Blood_today[i].heartRate)
-                        para2.push(res.data.Blood_today[i].hours+":00")
+                        para2.push(res.data.Blood_today[i].hours)
                         para2.push(res.data.Blood_today[i].diastolicPressure)
-                        para3.push(res.data.Blood_today[i].hours+":00")
+                        para3.push(res.data.Blood_today[i].hours)
                         para3.push(res.data.Blood_today[i].systolicPressure)
                         arr5.push(para)
                         arr6.push(para2)
@@ -242,7 +256,6 @@ export default {
           if(time==""){
               time=new Date(new Date().toLocaleDateString()).getTime()
           }
-          getPerSe
           let data=[];
           for(let i = 0; i < 25; i ++){
               let para=[]
@@ -259,7 +272,6 @@ export default {
           if(time==""){
               time=new Date(new Date().toLocaleDateString()).getTime()
           }
-          getPerSe
           let data=[];
           for(let i = 0; i < 25; i ++){
               let para=[]
@@ -388,7 +400,7 @@ export default {
               boundaryGap: false,
               name:"单位:小时",
               interval:4,
-              data: this.time
+              data: this.bhTime
             },
             yAxis: {
                 type: 'value',
@@ -419,7 +431,7 @@ export default {
               boundaryGap: false,
               name:"单位:小时",
               interval:4,
-              data: this.time
+              data: this.bhTime
             },
             yAxis: {
                 type: 'value',

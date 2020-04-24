@@ -22,7 +22,7 @@
   import { getPerSe , getWarnListData , changeWarnData } from '@/api/table'
   import store from "@/store"
   import dialogWarnHandleResult from '@/components/dialog-person/dialog-warn-handle-result/dialog'
-
+  import { parseTime } from '@/utils/index.js'
   import {getUser} from '@/utils/auth'
 
   export default{
@@ -43,7 +43,7 @@
       cancel(){
         // this.$emit('dialog','1')
         this.dialogHandleVisible = false
-        this.$emit('sendState',1)
+        this.$emit('sendState',this.changeData.keyUserid)
       },
       getDandleShow(val){
         this.changeData = val
@@ -59,9 +59,12 @@
         this.$confirm('确认忽略该预警吗？', '提示', {}).then(() => {
           this.btnNum = 1
           this.changeData.processingResult = 4
+          let nowData = parseTime(new Date())
           changeWarnData({
             id:this.changeData.id,
-            processingResult:this.changeData.processingResult
+            processingResult:this.changeData.processingResult,
+            handleUsername:this.operationer,
+            handleTime:nowData
           }).then(res =>{
             if(res.code==0){
               this.$message({
@@ -89,7 +92,7 @@
         this.$confirm('确认开始处理该预警吗？', '提示', {}).then(() => {
           this.btnNum = 2
           this.changeData.processingResult = 1
-          let nowData = this.getTime()
+          let nowData = parseTime(new Date())
           changeWarnData({
             id:this.changeData.id,
             processingResult:this.changeData.processingResult,
@@ -124,29 +127,10 @@
       },
       getWarnData(val){
         this.dialogHandleVisible = true
-      },
-      //获取当前时间
-      getTime(){
-        let nowTime = new Date();
-        let nowYear = nowTime.getFullYear();
-        let nowMon = nowTime.getMonth() + 1;
-        if(nowMon < 10){
-          nowMon = '0'+nowMon
-        }
-        let nowDay = nowTime.getDate()
-        if(nowDay < 10){
-          nowDay = '0'+ nowDay
-        }
-        let nowDate = nowYear + '-' + nowMon + '-' + nowDay
-        return nowDate
       }
     },
     created() {
       // getWarnListData()
-    },
-    mounted(){
-      // console.log(this.warnData)
-      this.getTime()
     }
   }
 

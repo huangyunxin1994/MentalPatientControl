@@ -5,15 +5,17 @@
             <div class="gpstracking-header">
               <div class="gpstracking-title">人员详情</div>
               <el-row :gutter="20">
-                <el-col :span="8">姓名：{{personData.name}}</el-col>
-                <el-col :span="8">联系电话：{{personData.phone}}</el-col>
-                <el-col :span="8">网格管理员：{{personData.networkAdministrator}}</el-col>
-                <el-col :span="8">人员级别：{{personData.level | fiterData}}</el-col>
-                <el-col :span="8">住址：{{personData.address}}</el-col>
-                <el-col :span="8">责任医师：{{personData.responsiblePhysician}}</el-col>
-                <el-col :span="8">病情描述：活动频率异常，情绪不稳定</el-col>
-                <el-col :span="8">监护人：{{personData.guardian}}</el-col>
-                <el-col :span="8">所属组织：{{personData.organizationName}}</el-col>
+                <el-col :span="6">姓名：{{personData.name}}</el-col>
+                <el-col :span="6">联系电话：{{personData.phone}}</el-col>
+                <el-col :span="6">网格管理员：{{personData.networkAdministrator}}&nbsp;{{personData.networkAdministratorP}}</el-col>
+                <el-col :span="6">人员级别：{{personData.level | fiterData}}</el-col>
+                <el-col :span="12">住址：{{personData.address}}</el-col>
+                <el-col :span="6">责任医师：{{personData.responsiblePhysician}}&nbsp;{{personData.responsiblePhysicianP}}</el-col>
+               
+                <el-col :span="6">所属组织：{{personData.organizationName}}</el-col>
+                <el-col :span="12">病情描述：活动频率异常，情绪不稳定</el-col>
+                <el-col :span="6">监护人：{{personData.guardian}}&nbsp;{{personData.guardianP}}</el-col>
+                <el-col :span="6">是否限制外出：{{personData.restrictions | filterRestr}}</el-col>
             </el-row>
           </div>
           <div class="gpstracking-handle">
@@ -67,6 +69,11 @@ export default {
         if (!value) return ''
         value = value.toString()
         return value == 1 ? '一级' : (value == 2 ? '二级' : (value == 3? '三级' :(value == 4 ? '四级' :(value == 5 ? '五级' :(value == 6 ? '六级' :(value == 7 ? '七级' :(value == 8 ? '八级' : value == 9 ? '九级' :' ')))))))
+    },
+    filterRestr: (value)=> {
+        if (!value) return ''
+        value = value.toString()
+        return value == 1 ? '不限制外出' : value == 2 ? '限制外出' : ""
     }
   },
   data(){
@@ -135,6 +142,7 @@ export default {
           }
         })
         await this.$refs.map.getmap()
+        if(this.locusPorint.length>0)
         await this.$refs.map.movePosBypoint(this.locusPorint[0].longitude,this.locusPorint[0].latitude)
       },
      async getPersonAlert(){
@@ -183,11 +191,10 @@ export default {
       this.getPersonAlert()
       window.addEventListener('load', () => {
           let type = this.$route.query.type
-          console.log(type)
-          // if(type==1)
-          //  this.$router.push({ path: '/personstate' })
-          // else if(type==2)
-          //  this.$router.push({ path: '/warningcenter' })
+          if(type==1)
+           this.$router.push({ path: '/personstate' })
+          else if(type==2)
+           this.$router.push({ path: '/warningcenter' })
         })
     }
 }

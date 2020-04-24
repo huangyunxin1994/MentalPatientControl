@@ -29,7 +29,7 @@ export default {
         },
         tableTitle:[
             { title : "编号", name : "code", minwidth : "120", type : "name" },
-            { title : "设备状态", name : "equipment_state", width : "120", type : "input" },
+            { title : "设备状态", name : "equipmentState", width : "120", type : "input" },
             { title : "关联人员", name : "userName", width : "120", type : "input" },
             { title : "设备类型", name : "equipmentType", minwidth : "150", type : "equipselect" },
             { title : "温度", name : "temperature", minwidth : "150", type : "input" },

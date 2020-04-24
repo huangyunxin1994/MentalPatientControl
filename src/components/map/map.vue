@@ -77,35 +77,30 @@ export default {
             let temp = new BMap.Point(this.personPoint.longitude,this.personPoint.latitude)
             points.push(temp)
             let that = this
-            let convertor = new BMap.Convertor();
-            convertor.translate(points, 1, 5, function (data){
-              if(data.status===0){
                  let myIcon = new BMap.Icon(person, new BMap.Size(86, 48), {
                   // 指定定位位置
                   offset: new BMap.Size(48, 48),
                   // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置
                 });
-                for(let i in data.points){
+                for(let i in points){
                   // 创建标注对象并添加到地图 
-                  let marker = new BMap.Marker(data.points[i],{icon: myIcon});
+                  let marker = new BMap.Marker(points[i],{icon: myIcon});
                   that.mainMap.addOverlay(marker);
                   that.addClickHandlerP(marker);
                 }
                 
-              }
-            })
         }
         if(this.bulletArr&&this.bulletArr.length>0){
           console.log(this.bulletArr)
           // 向地图添加标注
           var inHomeArr = this.bulletArr.filter((item) => {
-            return item.personnelStatus === "1"
+            return item.personnelStatus === "1"&&item.warning != 2
           })
            var outHomeArr = this.bulletArr.filter((item) => {
-            return item.personnelStatus === "2"
+            return item.personnelStatus === "2"&&item.warning != 2
           })
           var warningArr = this.bulletArr.filter((item) => {
-            return item.personnelStatus === "3"
+            return item.warning == 2
           })
           if(inHomeArr.length>0){
             let that = this
@@ -114,26 +109,20 @@ export default {
               let temp = new BMap.Point(inHomeArr[i].longitude,inHomeArr[i].latitude)
               points.push(temp)
             }
-            var convertor = new BMap.Convertor();
-            convertor.translate(points, 1, 5, function (data){
-              if(data.status===0){
                  var myIcon = new BMap.Icon(inhome, new BMap.Size(48, 48), {
                   // 指定定位位置
                   offset: new BMap.Size(24, 48),
                   // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置
                 });
                 myIcon.setName("0");
-                for(var i in data.points){
+                for(var i in points){
                   // 创建标注对象并添加到地图 
-                  var marker = new BMap.Marker(data.points[i],{icon: myIcon});
+                  var marker = new BMap.Marker(points[i],{icon: myIcon});
                   var content= "<p class='mymap-item'><span>姓名："+inHomeArr[i].name+"</span><p/><p>状态：<span style='color:#409EFF'>在家</span><p/><p>"+"联系电话："+inHomeArr[i].phone+"</p></input>";
                   that.mainMap.addOverlay(marker);
                   that.addClickHandlerBull(content,marker);
                 
                 }
-                
-              }
-            })
           }
           if(outHomeArr.length>0){
             let that = this
@@ -142,25 +131,20 @@ export default {
               let temp = new BMap.Point(outHomeArr[i].longitude,outHomeArr[i].latitude)
               points.push(temp)
             }
-            var convertor = new BMap.Convertor();
-            convertor.translate(points, 1, 5, function (data){
-              if(data.status===0){
+            
                  var myIcon = new BMap.Icon(outhome, new BMap.Size(48, 48), {
                   // 指定定位位置
                   offset: new BMap.Size(24, 48),
                   // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置
                 });
                 myIcon.setName("1");
-                for(var i in data.points){
+                for(var i in points){
                   // 创建标注对象并添加到地图 
-                  var marker = new BMap.Marker(data.points[i],{icon: myIcon});
+                  var marker = new BMap.Marker(points[i],{icon: myIcon});
                   var content= "<p class='mymap-item'><span>姓名："+outHomeArr[i].name+"</span><p/><p>状态：<span style='color:#909399'>离家</span><p/><p>"+"联系电话："+outHomeArr[i].phone+"</p></input>";
                   that.mainMap.addOverlay(marker);
                   that.addClickHandlerBull(content,marker);
                 }
-                
-              }
-            })
           }
           if(warningArr.length>0){
             let that = this
@@ -169,37 +153,32 @@ export default {
               let temp = new BMap.Point(warningArr[i].longitude,warningArr[i].latitude)
               points.push(temp)
             }
-            var convertor = new BMap.Convertor();
-            convertor.translate(points, 1, 5, function (data){
-              if(data.status===0){
                  var myIcon = new BMap.Icon(warning, new BMap.Size(48, 48), {
                   // 指定定位位置
                   offset: new BMap.Size(24, 48),
                   // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置
                 });
                 myIcon.setName("2");
-                for(var i in data.points){
+                for(var i in points){
                   // 创建标注对象并添加到地图 
-                  var marker = new BMap.Marker(data.points[i],{icon: myIcon});
+                  var marker = new BMap.Marker(points[i],{icon: myIcon});
                   var content= "<p class='mymap-item'><span>姓名："+warningArr[i].name+"</span><p/><p>状态：<span style='color:#F56C6C'>预警</span><p/><p>"+"联系电话："+warningArr[i].phone+"</p></input>";
                   that.mainMap.addOverlay(marker);
                   that.addClickHandlerBull(content,marker);
                 }
                 
-              }
-            })
           }
         }
         if(this.pointsArr&&this.pointsArr.length>0){
           // 向地图添加标注
           var inHomeArr = this.pointsArr.filter((item) => {
-            return item.personnelStatus === "1"
+            return item.personnelStatus === "1"&&item.warning != 2
           })
            var outHomeArr = this.pointsArr.filter((item) => {
-            return item.personnelStatus === "2"
+            return item.personnelStatus === "2"&&item.warning != 2
           })
           var warningArr = this.pointsArr.filter((item) => {
-            return item.personnelStatus === "3"
+            return item.warning == 2
           })
           if(inHomeArr.length>0){
             let that = this
@@ -208,27 +187,21 @@ export default {
               let temp = new BMap.Point(inHomeArr[i].longitude,inHomeArr[i].latitude)
               points.push(temp)
             }
-            var convertor = new BMap.Convertor();
-            convertor.translate(points, 1, 5, function (data){
-              if(data.status===0){
-                 var myIcon = new BMap.Icon(inhome, new BMap.Size(48, 48), {
-                  // 指定定位位置
-                  offset: new BMap.Size(24, 48),
-                  // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置
-                });
-                myIcon.setName("0");
-                for(var i in data.points){
-                  // 创建标注对象并添加到地图 
-                  var content= "<p class='mymap-item'><span>姓名："+inHomeArr[i].name+"</span><input class='mymap-button' type='button' value='查看详情' id='btn_name'><p/><p>状态：<span style='color:#409EFF'>在家</span><p/><p>"+"联系电话："+inHomeArr[i].phone+"</p></input>";
-                  console.log(data.points[i])
-                  var marker = new BMap.Marker(data.points[i],{icon: myIcon});
-                  that.mainMap.addOverlay(marker);
-                  that.addClickHandler(content,marker,inHomeArr[i]);
-                
-                }
-                
-              }
-            })
+            var myIcon = new BMap.Icon(inhome, new BMap.Size(48, 48), {
+            // 指定定位位置
+            offset: new BMap.Size(24, 48),
+            // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置
+          });
+          myIcon.setName("0");
+          for(var i in points){
+            // 创建标注对象并添加到地图 
+            var content= "<p class='mymap-item'><span>姓名："+inHomeArr[i].name+"</span><input class='mymap-button' type='button' value='查看详情' id='btn_name'><p/><p>状态：<span style='color:#409EFF'>在家</span><p/><p>"+"联系电话："+inHomeArr[i].phone+"</p></input>";
+            console.log(points[i])
+            var marker = new BMap.Marker(points[i],{icon: myIcon});
+            that.mainMap.addOverlay(marker);
+            that.addClickHandler(content,marker,inHomeArr[i]);
+          
+          }
           }
           if(outHomeArr.length>0){
             let that = this
@@ -237,26 +210,20 @@ export default {
               let temp = new BMap.Point(outHomeArr[i].longitude,outHomeArr[i].latitude)
               points.push(temp)
             }
-            var convertor = new BMap.Convertor();
-            convertor.translate(points, 1, 5, function (data){
-              if(data.status===0){
-                 var myIcon = new BMap.Icon(outhome, new BMap.Size(48, 48), {
-                  // 指定定位位置
-                  offset: new BMap.Size(24, 48),
-                  // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置
-                });
-                myIcon.setName("1");
-                for(var i in data.points){
-                  // 创建标注对象并添加到地图 
-                  var content= "<p class='mymap-item'><span>姓名："+outHomeArr[i].name+"</span><input class='mymap-button' type='button' value='查看详情' id='btn_name'><p/><p>状态：<span style='color:#909399'>离家</span><p/><p>"+"联系电话："+outHomeArr[i].phone+"</p></input>";
-                  console.log(data.points[i])
-                  var marker = new BMap.Marker(data.points[i],{icon: myIcon});
-                  that.mainMap.addOverlay(marker);
-                  that.addClickHandler(content,marker,outHomeArr[i]);
-                }
-                
-              }
-            })
+            var myIcon = new BMap.Icon(outhome, new BMap.Size(48, 48), {
+              // 指定定位位置
+              offset: new BMap.Size(24, 48),
+              // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置
+            });
+            myIcon.setName("1");
+            for(var i in points){
+              // 创建标注对象并添加到地图 
+              var content= "<p class='mymap-item'><span>姓名："+outHomeArr[i].name+"</span><input class='mymap-button' type='button' value='查看详情' id='btn_name'><p/><p>状态：<span style='color:#909399'>离家</span><p/><p>"+"联系电话："+outHomeArr[i].phone+"</p></input>";
+              console.log(points[i])
+              var marker = new BMap.Marker(points[i],{icon: myIcon});
+              that.mainMap.addOverlay(marker);
+              that.addClickHandler(content,marker,outHomeArr[i]);
+            }
           }
           if(warningArr.length>0){
             let that = this
@@ -265,26 +232,21 @@ export default {
               let temp = new BMap.Point(warningArr[i].longitude,warningArr[i].latitude)
               points.push(temp)
             }
-            var convertor = new BMap.Convertor();
-            convertor.translate(points, 1, 5, function (data){
-              if(data.status===0){
-                 var myIcon = new BMap.Icon(warning, new BMap.Size(48, 48), {
-                  // 指定定位位置
-                  offset: new BMap.Size(24, 48),
-                  // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置
-                });
-                myIcon.setName("2");
-                for(var i in data.points){
-                  // 创建标注对象并添加到地图 
-                  var content= "<p class='mymap-item'><span>姓名："+warningArr[i].name+"</span><input class='mymap-button' type='button' value='查看详情' id='btn_name'><p/><p>状态：<span style='color:#F56C6C'>预警</span><p/><p>"+"联系电话："+warningArr[i].phone+"</p></input>";
-                  console.log(data.points[i])
-                  var marker = new BMap.Marker(data.points[i],{icon: myIcon});
-                  that.mainMap.addOverlay(marker);
-                  that.addClickHandler(content,marker,warningArr[i]);
-                }
+            var myIcon = new BMap.Icon(warning, new BMap.Size(48, 48), {
+              // 指定定位位置
+              offset: new BMap.Size(24, 48),
+              // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置
+            });
+            myIcon.setName("2");
+            for(var i in points){
+              // 创建标注对象并添加到地图 
+              var content= "<p class='mymap-item'><span>姓名："+warningArr[i].name+"</span><input class='mymap-button' type='button' value='查看详情' id='btn_name'><p/><p>状态：<span style='color:#F56C6C'>预警</span><p/><p>"+"联系电话："+warningArr[i].phone+"</p></input>";
+              console.log(points[i])
+              var marker = new BMap.Marker(points[i],{icon: myIcon});
+              that.mainMap.addOverlay(marker);
+              that.addClickHandler(content,marker,warningArr[i]);
+            }
                 
-              }
-            })
           }
           }
           console.log(this.enterElecArr)
@@ -297,8 +259,10 @@ export default {
               circle.hide()
             }
           }
-        
+        console.log(112)
         if(this.locusPorint&&this.locusPorint.length>0){
+          console.log(111)
+          console.log(this.locusPorint)
           let that = this
           let point = []
           let pointM = []
@@ -308,6 +272,7 @@ export default {
           }
           pointM.push(new BMap.Point(this.locusPorint[0].longitude,this.locusPorint[0].latitude))
           pointM.push(new BMap.Point(this.locusPorint[this.locusPorint.length-1].longitude,this.locusPorint[this.locusPorint.length-1].latitude))
+           console.log(point)
           this.markerChange(pointM)
           this.polylineChange(point)
             
@@ -319,7 +284,6 @@ export default {
       async selectPosition(){
         await selectPosition().then(res=>{
                 if(res.code==0){
-                  console.log(301)
                     this.longitude = res.data.data[0].longitude
                     this.latitude = res.data.data[0].latitude
                 }
@@ -443,9 +407,6 @@ export default {
       },
       markerChange1(point){
         let that = this
-        var convertor = new BMap.Convertor();
-        convertor.translate(point, 1, 5, function (data){
-          if(data.status === 0) {
             var myIcon = new BMap.Icon(startMarker, new BMap.Size(32, 32), {
                     // 指定定位位置
                     offset: new BMap.Size(16, 32),
@@ -456,26 +417,21 @@ export default {
                     offset: new BMap.Size(24, 32),
                     // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置
             });
-            for( var i = 0;i < data.points.length; i++){
+            for( var i = 0;i < point.length; i++){
                
                 // 创建标注对象并添加到地图
                 var marker; 
                 if(i==0){
-                  marker = new BMap.Marker(data.points[i],{icon: myIcon});
+                  marker = new BMap.Marker(point[i],{icon: myIcon});
                 }else{
-                  marker = new BMap.Marker(data.points[i],{icon: myIcon2}); 
+                  marker = new BMap.Marker(point[i],{icon: myIcon2}); 
                 }
                 that.mainMap.addOverlay(marker);
             };
-          }
-        })
         
       },
       markerChange(point){
         let that = this
-        var convertor = new BMap.Convertor();
-        convertor.translate(point, 1, 5, function (data){
-          if(data.status === 0) {
             var myIcon = new BMap.Icon(startMarker, new BMap.Size(32, 32), {
                     // 指定定位位置
                     offset: new BMap.Size(16, 32),
@@ -486,43 +442,38 @@ export default {
                     offset: new BMap.Size(24, 32),
                     // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置
             });
-            for( var i = 0;i < data.points.length; i++){
+            for( var i = 0;i < point.length; i++){
                
                 // 创建标注对象并添加到地图
                 var marker; 
                 if(i==0){
-                  marker = new BMap.Marker(data.points[i],{icon: myIcon});
+                  marker = new BMap.Marker(point[i],{icon: myIcon});
                 }else{
-                  marker = new BMap.Marker(data.points[i],{icon: myIcon2}); 
+                  marker = new BMap.Marker(point[i],{icon: myIcon2}); 
                 }
                 that.mainMap.addOverlay(marker);
             };
-          }
-        })
         
       },
       polylineChange(point){
         let that = this
-        var convertor = new BMap.Convertor();
-          convertor.translate(point, 1, 5, function (data){
-            if(data.status === 0) {
-              var sy = new BMap.Symbol(BMap_Symbol_SHAPE_BACKWARD_OPEN_ARROW, {
-              scale: 0.6,//图标缩放大小
-              strokeColor:'#fff',//设置矢量图标的线填充颜色
-              strokeWeight: '2',//设置线宽
-              });
-              var icons = new BMap.IconSequence(sy, '10', '30');
-              var polyline = new BMap.Polyline(data.points, {
-                enableEditing: false,//是否启用线编辑，默认为false
-                enableClicking: true,//是否响应点击事件，默认为true
-                icon:[icons],
-                strokeWeight:'8',//折线的宽度，以像素为单位
-                strokeOpacity: 0.8,//折线的透明度，取值范围0 - 1
-                strokeColor:"#18a45b" //折线颜色
-              });   //创建折线
-              that.mainMap.addOverlay(polyline);   //增加折线
-            }
-          })
+        var sy = new BMap.Symbol(BMap_Symbol_SHAPE_BACKWARD_OPEN_ARROW, {
+        scale: 0.6,//图标缩放大小
+        strokeColor:'#fff',//设置矢量图标的线填充颜色
+        strokeWeight: '2',//设置线宽
+        });
+        console.log(point)
+        var icons = new BMap.IconSequence(sy, '10', '30');
+        var polyline = new BMap.Polyline(point, {
+          enableEditing: false,//是否启用线编辑，默认为false
+          enableClicking: true,//是否响应点击事件，默认为true
+          icon:[icons],
+          strokeWeight:'8',//折线的宽度，以像素为单位
+          strokeOpacity: 0.8,//折线的透明度，取值范围0 - 1
+          strokeColor:"#18a45b" //折线颜色
+        });   //创建折线
+        that.mainMap.addOverlay(polyline);   //增加折线
+          
       },
       movePosition(e){
         let that = this
@@ -536,16 +487,9 @@ export default {
       movePosBypoint(x,y){
         let that = this
         let point = new BMap.Point(x,y); 
-        let arr = []
-        arr.push(point)
-        var convertor = new BMap.Convertor();
-        convertor.translate(arr, 1, 5, function (data){
-          if(data.status === 0) {
-            that.mainMap.setZoom(16); 
-            that.mainMap.panTo(data.points[0]);
+        that.mainMap.setZoom(16); 
+        that.mainMap.panTo(point);
            
-          }
-        })
         
       },
       showMarkerOver(val,flag){
