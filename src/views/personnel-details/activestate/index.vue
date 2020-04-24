@@ -11,7 +11,7 @@
                 <el-col :span="6">人员级别：{{personData.level | fiterData}}</el-col>
                 <el-col :span="12">住址：{{personData.address}}</el-col>
                 <el-col :span="6">责任医师：{{personData.responsiblePhysician}}&nbsp;{{personData.responsiblePhysicianP}}</el-col>
-               
+
                 <el-col :span="6">所属组织：{{personData.organizationName}}</el-col>
                 <el-col :span="12">病情描述：活动频率异常，情绪不稳定</el-col>
                  <el-col :span="6">监护人：{{personData.guardian}}&nbsp;{{personData.guardianP}}</el-col>
@@ -75,7 +75,7 @@ export default {
     filterRestr: (value)=> {
         if (!value) return ''
         value = value.toString()
-        return value == 1 ? '不限制外出' : value == 2 ? '限制外出' : ""
+        return value == 1 ? '否' : value == 2 ? '是' : ""
     }
   },
   data(){
@@ -120,7 +120,7 @@ export default {
         }else{
 
         }
-          
+
       },
       getData(){
          this.time=[]
@@ -169,16 +169,17 @@ export default {
         console.log("127")
           let time=this.dateTime;
           let para ={}
-          para.keyUserId  = this.personData.keyUserid
+          para.keyUserId  = this.personData.id
           if(time!=""){
              para.time = parseTime(time,'{y}-{m}-{d}')
           }
-         
+
           getPerSe(para).then(res=>{
               if(res.code==0){
                   this.warnNum = res.data.alertNum
                   this.warnTableData = res.data.alert_list
                   let phoneList = res.data.phone_list
+                  this.personData = res.data.keyUser
                   this.personData.networkAdministratorP = phoneList[0].NetworkAdministrator
                   this.personData.responsiblePhysicianP = phoneList[0].ResponsiblePhysician
                   this.personData.guardianP = phoneList[0].Guardian
@@ -201,11 +202,10 @@ export default {
                         }
                     }
                   }
-                  console.log(196)
                   if(res.data.frequency_lastday.length>0){
                     for(let i in this.time){
                         let para=[],para2=[]
-                       
+
                         let arr = res.data.frequency_lastday.filter(item=>{
                           return item.hours+":00" ==this.time[i]
                         })
@@ -217,7 +217,7 @@ export default {
                             arr3.push(para)
                             arr4.push(para2)
                         }
-                       
+
                     }
                   }
                   if(res.data.Blood_today.length>0){
@@ -631,7 +631,7 @@ export default {
       }
     },
      mounted(){
-        this.personData= this.$route.query.row
+        this.personData.id= this.$route.query.id //通过路由传参，将从人员状态出拿到的数据传递过来，保存在personDate
         this.getData()
         this.getEchartData()
         window.addEventListener('load', () => {
@@ -641,7 +641,7 @@ export default {
           else if(type==2)
            this.$router.push({ path: '/warningcenter' })
         })
-        //  
+        //
         // window.onbeforeunload = e => {      //刷新时弹出提示
         //   this.$router.push({ path: '/personstate' })
         //   return  ''
@@ -661,12 +661,12 @@ export default {
        display: flex;
        justify-content: space-between;
        &-item{
-         width:50%; 
+         width:50%;
          height:40vh;
          padding:20px;
          margin:20px;
          border-radius: 0.8vw;
-         
+
          &-alert{
            background: rgb(254, 240, 240)
          }

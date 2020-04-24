@@ -73,7 +73,7 @@ export default {
     filterRestr: (value)=> {
         if (!value) return ''
         value = value.toString()
-        return value == 1 ? '不限制外出' : value == 2 ? '限制外出' : ""
+        return value == 1 ? '否' : value == 2 ? '是' : ""
     }
   },
   data(){

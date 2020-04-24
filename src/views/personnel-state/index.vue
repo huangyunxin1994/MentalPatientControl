@@ -39,11 +39,11 @@ export default {
   },
   methods: {
     getPersonStatusQuery(){
-      let user = JSON.parse(getUser()) 
+      let user = JSON.parse(getUser())
       console.log(user)
       let organizationId = user.organizationId;
       let userid = user.userId;
-      let role = JSON.parse(getRole()) 
+      let role = JSON.parse(getRole())
       let para ={roleId:role,userId:userid}
       getPersonStatusQuery(para).then((res)=>{
         if(res.code==0){
@@ -68,11 +68,11 @@ export default {
       })
     },
     getThisOrgan(data){
-     let user = JSON.parse(getUser()) 
+     let user = JSON.parse(getUser())
       console.log(user)
       let organizationId = data.id;
       let userid = user.userId;
-      let role = JSON.parse(getRole()) 
+      let role = JSON.parse(getRole())
       let para ={organizationId:organizationId,roleId:role,userId:userid}
       getPersonStatusQuery(para).then((res)=>{
         if(res.code==0){
@@ -101,7 +101,7 @@ export default {
       {
           path: '/persondetails' ,
           query: {
-            row: val,
+            id: val.keyUserid,
             type:'1'
           }
       })

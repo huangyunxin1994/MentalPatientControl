@@ -21,7 +21,7 @@
               <span>预警人名字：{{item.name}}</span>
               <div class="dashboard-context-handle">
                  <el-button type="danger" size="mini" @click="getLocation(item.longitude,item.latitude)">定位</el-button>
-                 <el-button type="danger" size="mini" @click="getDetails(item.id)" plain>详情</el-button>
+                 <el-button type="danger" size="mini" @click="getDetails(item)" plain>详情</el-button>
               </div>
             </div>
           </el-scrollbar>
@@ -44,7 +44,7 @@ export default {
   components:{
     mymap,
     myTree,
-    
+
   },
   filters: {
     filterData: (value)=> {
@@ -72,7 +72,7 @@ export default {
       })
       return warningArr.length
     }
-    
+
   },
   data(){
     return{
@@ -88,7 +88,16 @@ export default {
         this.$refs.map.movePosBypoint(x,y)
       },
       getDetails(id){
-         this.$router.push({name: 'Warningcenter'})
+         // console.log("*****************************")
+         // console.log(id)
+         this.$router.push({
+           // path: 'Warningcenter',
+           path:'/persondetails',
+           query:{
+             id:id.keyUserid
+             // row:id
+           },
+         })
       },
       showThisMark1(val){
         this.$refs.map.showMarkerOver(val,this.showall1)
@@ -107,7 +116,7 @@ export default {
         this.showall3=!this.showall3
         this.showall1=false
         this.showall2=false
-        
+
       },
       showThisCircle(val){
         this.$refs.map.showCircleOver(val)
@@ -141,7 +150,7 @@ export default {
                console.log(this.pointsArr)
       },
       async getPerWarnlData(){
-        let role = JSON.parse(getRole()) 
+        let role = JSON.parse(getRole())
         let user = JSON.parse(getUser());
         let param ={}
         param.roleId=role

@@ -12,9 +12,10 @@
                 <!-- <el-link :type="scope.row[item.name] == 1 ? 'success' : value == 0 ? 'primary' : ''" v-else-if="item.type=='button'" @click="changeNoticeSates(scope.$index, scope.row)" v-html="arrFormatter(scope.row[item.name],item.name)"></el-link> -->
                 <div v-else-if="item.type=='handle'">
                     <el-tooltip v-for="(item,index) in item.button" :key="index" :content="item.name" placement="top">
-                      <el-button v-if="item.type=='edit'&&scope.row['processingResult']!=3" type="primary" icon="el-icon-edit" size="small" circle @click="handleEdit(scope.$index, scope.row)"></el-button>
+                       <el-button v-if="item.type=='edit'&&scope.row['processingResult']!=3" type="primary" icon="el-icon-edit" size="small" circle @click="handleEdit(scope.$index, scope.row)"></el-button>
                        <el-button v-else-if="item.type=='remove'" type="danger" icon="el-icon-delete" size="small" circle @click="handleRemove(scope.$index, scope.row)"></el-button>
                        <el-button v-else-if="item.type=='search'&&scope.row['processingResult']==3" type="info" icon="el-icon-search" size="small" circle @click="handleSearch(scope.$index, scope.row)"></el-button>
+                       <el-button v-else-if="item.type=='relevance'&&scope.row['processingResult']!=3" type="info" icon="el-icon-setting" size="small" circle @click="handleRelevance(scope.$index, scope.row)"></el-button>
                     </el-tooltip>
                 </div>
                 <div v-else-if="item.type=='tooltip'">
@@ -125,7 +126,7 @@ import "@/assets/icon/iconfont.css"
             }
             else
              return value;
-           
+
         },
         handleCurrentChange(val){
             console.log(val)
@@ -168,15 +169,19 @@ import "@/assets/icon/iconfont.css"
           console.log(row)
           this.$emit('alertmessage',row)
         },
+        //关联
+        handleRelevance(index,row){
+          this.$emit('relevancePerson',row)
+        },
         //查询单个用户获得电话号码
         loadData(row,name){
           console.log(row)
          console.log(name)
          let para ={};
-        
+
          if(name=="guardian"){
             para.userId=row.guardianId
-           
+
          }else if(name=="networkAdministrator"){
             para.userId=row.networkAdministratorId
          }else if(name=="responsiblePhysician"){
@@ -191,7 +196,7 @@ import "@/assets/icon/iconfont.css"
               this.phoneNumber=''
             }
           }).catch(err=>{
-            
+
           })
          // phoneNumber
         },

@@ -230,7 +230,7 @@ export default {
       {
           path: '/persondetails' ,
           query: {
-            row: val,
+            id: val.keyUserid,
             type:'2'
           }
       })
