@@ -104,7 +104,9 @@ export default {
       heartrate:"",
       bloodpress:"",
       sleepquality:"",
-      inouthome:""
+      inouthome:"",
+      alertConditions:"",
+      home:[],sleep:[],frequency:[],activeTime:[],blood:[],heartRate:[]
     }
   },
     methods: {
@@ -141,7 +143,6 @@ export default {
              this.time[i] = this.time[i] + ':00'
            }
          }
-         console.log(this.time)
        },
        getData2(){
          this.time=[]
@@ -154,7 +155,6 @@ export default {
            console.log(now)
            this.time.unshift(now.getHours() + 1);
          }
-         console.log(this.time)
          for(let i in this.time){
            if(this.time[i]<10){
              this.time[i] = '0'+ this.time[i] + ':00'
@@ -166,7 +166,6 @@ export default {
          }
        },
        getEchartData(){
-        console.log("127")
           let time=this.dateTime;
           let para ={}
           para.keyUserId  = this.personData.id
@@ -175,7 +174,10 @@ export default {
           }
 
           getPerSe(para).then(res=>{
+            console.log("*************************************************")
+            console.log(res)
               if(res.code==0){
+                  //预警条数
                   this.warnNum = res.data.alertNum
                   this.warnTableData = res.data.alert_list
                   let phoneList = res.data.phone_list
@@ -183,8 +185,48 @@ export default {
                   this.personData.networkAdministratorP = phoneList[0].NetworkAdministrator
                   this.personData.responsiblePhysicianP = phoneList[0].ResponsiblePhysician
                   this.personData.guardianP = phoneList[0].Guardian
+                  //将预警信息传递过去
                   this.$refs.senda.getListData(this.warnTableData)
                   this.warnActive = false
+
+                  //拿到警戒线信息
+                  let aHome=[],aSleep=[],aFrequency=[],aActiveTime=[],aBlood=[],aHeartRate=[]
+                  this.alertConditions = res.data.alertConditions
+                  console.log(this.alertConditions)
+                  this.alertConditions.forEach((item,index)=>{
+                    if(item.alertId == '1'){
+                      //是否在家预警线
+                      aHome.push(item)
+                    }else if(item.alertId == '2'){
+                      //睡眠质量
+                      aSleep.push(item)
+                    }else if(item.alertId == '3'){
+                      //活动频率
+                      aFrequency.push(item)
+                    }else if(item.alertId == '4'){
+                      //活动时长
+                      aActiveTime.push(item)
+                    }else if(item.alertId == '5'){
+                      //心率
+                      aBlood.push(item)
+                    }else{
+                      //血压
+                      aHeartRate.push(item)
+                    }
+                  })
+                  this.home = aHome
+                  this.sleep = aSleep
+                  this.frequency = aFrequency
+                  this.activeTime = aActiveTime
+                  this.blood = aBlood
+                  this.heartRate = aHeartRate
+                  console.log(this.home)
+                  console.log(this.sleep)
+                  console.log(this.frequency)
+                  console.log(this.aActiveTime)
+                  console.log(this.blood)
+                  console.log(this.heartRate)
+
                   let arr1=[],arr2=[],arr3=[],arr4=[],arr5=[],arr6=[],arr7=[]
                   if(res.data.frequency_today.length>0){
                     for(let i=0;i < this.time.length;i++){
@@ -327,18 +369,43 @@ export default {
                 itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                     color: '#E6A23C',
                     borderColor: '#E6A23C',
-                }
+                },
             },
-            {
+              {
                 name:"平均",
                 data: this.activityFrequencyA,
                 type: 'line',
                 itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                     color: '#409EFF',
                     borderColor: '#409EFF',
-                }
-            }
-            ]
+                },
+                markLine : {
+                  symbol:"none",               //去掉警戒线最后面的箭头
+                  lineStyle: {
+                    normal:
+                      {
+                        type: 'solid' ,
+                        color:"rgba(238, 99, 99)"
+                      }
+                    },
+                    data : [
+                      // for(let i in this.frequency){
+                      //   [
+                      //     { name: '', yAxis: 35, xAxis: '00:00' },
+                      //     { yAxis: 35, xAxis: '04:00' } ,
+                      //   ],
+                      // }
+
+                      [
+                        { name: '', yAxis: 50, xAxis: '05:00' },
+                        { yAxis: 50, xAxis: '06:45' } ,
+                      ],
+                      [
+                        { name: '', yAxis: 20, xAxis: '06:00' },
+                        { yAxis: 20, xAxis: '09:00' } ,
+                      ]
+                ] }
+            }]
         }
         let option2={
             title: {text: '活动时长'},
@@ -373,6 +440,22 @@ export default {
                 itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                     color: '#E6A23C',
                     borderColor: '#E6A23C',
+                },
+                markLine : {
+                  symbol:"none",               //去掉警戒线最后面的箭头
+                  label:{
+                      position:"end",         //将警示值放在哪个位置，三个值“start”,"middle","end"  开始  中点 结束
+                      formatter: "警戒线"
+                  },
+                  data : [{
+                      silent:false,             //鼠标悬停事件  true没有，false有
+                      lineStyle:{               //警戒线的样式  ，虚实  颜色
+                          type:"solid",
+                          color:"rgba(238, 99, 99)"
+                      },
+                      name: '警戒线',
+                      yAxis: 10
+                  }]
                 }
             },
             {
@@ -383,8 +466,7 @@ export default {
                     color: '#409EFF',
                     borderColor: '#409EFF',
                 }
-            }
-            ]
+            }]
         }
         let option3={
             title: {text: '心率'},
@@ -413,9 +495,24 @@ export default {
                 itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                     color: '#E6A23C',
                     borderColor: '#E6A23C',
+                },
+                markLine : {
+                  symbol:"none",               //去掉警戒线最后面的箭头
+                  label:{
+                      position:"end",         //将警示值放在哪个位置，三个值“start”,"middle","end"  开始  中点 结束
+                      formatter: "警戒线"
+                  },
+                  data : [{
+                      silent:false,             //鼠标悬停事件  true没有，false有
+                      lineStyle:{               //警戒线的样式  ，虚实  颜色
+                          type:"solid",
+                          color:"rgba(238, 99, 99)"
+                      },
+                      name: '警戒线',
+                      yAxis: 35
+                  }]
                 }
-            }
-            ]
+            }]
         }
         let option4={
             title: {text: '血压'},
@@ -444,6 +541,22 @@ export default {
                 itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                     color: '#E6A23C',
                     borderColor: '#E6A23C',
+                },
+                markLine : {
+                  symbol:"none",               //去掉警戒线最后面的箭头
+                  label:{
+                      position:"end",         //将警示值放在哪个位置，三个值“start”,"middle","end"  开始  中点 结束
+                      formatter: "警戒线"
+                  },
+                  data : [{
+                      silent:false,             //鼠标悬停事件  true没有，false有
+                      lineStyle:{               //警戒线的样式  ，虚实  颜色
+                          type:"solid",
+                          color:"rgba(238, 99, 99)"
+                      },
+                      name: '警戒线',
+                      yAxis: 35
+                  }]
                 }
             },
             {
@@ -502,6 +615,22 @@ export default {
                 itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                     color: '#E6A23C',
                     borderColor: '#E6A23C',
+                },
+                markLine : {
+                  symbol:"none",               //去掉警戒线最后面的箭头
+                  label:{
+                      position:"end",         //将警示值放在哪个位置，三个值“start”,"middle","end"  开始  中点 结束
+                      formatter: "警戒线"
+                  },
+                  data : [{
+                      silent:false,             //鼠标悬停事件  true没有，false有
+                      lineStyle:{               //警戒线的样式  ，虚实  颜色
+                          type:"solid",
+                          color:"rgba(238, 99, 99)"
+                      },
+                      name: '警戒线',
+                      yAxis: 35
+                  }]
                 }
             },
             {
@@ -576,7 +705,15 @@ export default {
                     borderColor: '#409EFF',
                 }
             }
-            ]
+            ],
+            // visualMap: {
+            //     show: false,
+            //     dimension: 1,
+            //     pieces: [],  //pieces的值由动态数据决定
+            //     outOfRange: {
+            //         color: 'red'
+            //     }
+            // }
         }
 
         activerate.setOption(option1);
