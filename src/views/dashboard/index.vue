@@ -20,7 +20,7 @@
               <span>预警人地址：{{item.address}}</span>
               <span>预警人名字：{{item.name}}</span>
               <div class="dashboard-context-handle">
-                 <el-button type="danger" size="mini" @click="getLocation(item.longitude,item.latitude)">定位</el-button>
+                 <el-button type="danger" size="mini" @click="getLocation(item.keyLongitude,item.keyLatitude)">定位</el-button>
                  <el-button type="danger" size="mini" @click="getDetails(item)" plain>详情</el-button>
               </div>
             </div>
@@ -124,7 +124,7 @@ export default {
       },
       getThisOrgan(data){
         if(data.className=="person"){
-          this.$refs.map.movePosBypoint(data.longitude,data.latitude)
+          this.$refs.map.movePosBypoint(data.keyLongitude,data.keyLatitude)
         }else{
           let role = JSON.parse(getRole())
           let user = JSON.parse(getUser());
@@ -156,12 +156,10 @@ export default {
         param.roleId=role
         param.userId=user.userId
         param.organizaId=user.organizationId||""
+        param.processingResult = 2
         await getPerWarnlData(param).then(res=>{
           if(res.code==0){
-            let data = res.data.data.filter(item=>{
-              return item.processingResult==2
-            })
-            this.dashboardContext=data
+            this.dashboardContext=res.data.data
           }
         }).catch(err=>{
 

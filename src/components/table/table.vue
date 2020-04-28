@@ -25,7 +25,7 @@
                         trigger="click"
                         :content="phoneNumber!='undefined'&&phoneNumber.length>0 ? '联系电话:'+phoneNumber:'联系电话:无'"
                         @show="loadData(scope.row,item.name)">
-                        <el-link slot="reference" :formatter="formatSex" v-html="arrFormatter(scope.row[item.name],item.name)"></el-link>
+                        <el-link type="primary" slot="reference" :formatter="formatSex" v-html="arrFormatter(scope.row[item.name],item.name)"></el-link>
                       </el-popover>
                 </div>
                 <el-button v-else-if="item.type=='button'"  icon="el-icon-setting" type="info" size="small" circle @click="handleSetting(scope.$index, scope.row,item.name)"></el-button>
