@@ -187,7 +187,7 @@ export default {
       }
     },
     mounted(){
-      this.personData=this.$route.query.row
+      this.personData.id=this.$route.query.id
       this.getPersonAlert()
       window.addEventListener('load', () => {
           let type = this.$route.query.type

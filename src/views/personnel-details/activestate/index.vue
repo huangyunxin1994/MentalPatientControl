@@ -389,22 +389,26 @@ export default {
                       }
                     },
                     data : [
-                      // for(let i in this.frequency){
-                      //   [
-                      //     { name: '', yAxis: 35, xAxis: '00:00' },
-                      //     { yAxis: 35, xAxis: '04:00' } ,
-                      //   ],
-                      // }
-
+                      [
+                        { name: '', yAxis: this.frequency[0].id, xAxis: '00:00' },
+                        { yAxis: this.frequency[0].id, xAxis: '04:00' } ,
+                      ],
                       [
                         { name: '', yAxis: 50, xAxis: '05:00' },
-                        { yAxis: 50, xAxis: '06:45' } ,
+                        { yAxis: 50, xAxis: '06:00' } ,
                       ],
                       [
                         { name: '', yAxis: 20, xAxis: '06:00' },
                         { yAxis: 20, xAxis: '09:00' } ,
                       ]
-                ] }
+                    ]
+                    // data:for(let i in this.frequency){
+                    //     [
+                    //       { name: '', yAxis: this.frequency[i].achieveAlert, xAxis: '00:00' },
+                    //       { yAxis: 35, xAxis: '04:00' } ,
+                    //     ],
+                    // }
+                }
             }]
         }
         let option2={
