@@ -3,7 +3,7 @@
         <el-header>
       <breadcrumb></breadcrumb>
       </el-header>
-      
+
           <div style="width:20%;padding-top:1vh;padding-left:20px">
                   <el-input v-model="inputVal" @input="filterData"></el-input>
             </div>
@@ -12,16 +12,16 @@
             </div>
             <el-main>
           <el-scrollbar style="height:100%;">
-              
+
           <div class="planset" v-for="(item,index) in filterArr" :key="index">
-            
+
             <div class="planset-content">
               <div class="planset-name">
                 <span class="planset-label">预案名称:</span>
                 <span>{{item.name}}</span>
               </div>
             </div>
-            <div  v-for="(ite,index) in item.alertConditions" :key="index"> 
+            <div  v-for="(ite,index) in item.alertConditions" :key="index">
               <div class="planset-content" v-if="ite.alertId=='1'">
                 <span class="planset-span"><span class="planset-label">预警类型:</span><span class="planset-item">{{ite.alertId | capitalize}}</span></span>
                 <span class="planset-date"><span class="planset-label">时间段:</span><span class="planset-item">{{ite.startTime}}至{{ite.endTime}}</span></span>
@@ -33,7 +33,7 @@
                 <span class="planset-date"><span class="planset-label">时间段:</span><span class="planset-item">{{ite.startTime}}至{{ite.endTime}}</span></span>
                 <span class="planset-span"><span class="planset-label">活动次数:</span><span class="planset-item">{{ite.achieveAlert}} 次</span></span>
               </div>
-                
+
               <div class="planset-content" v-else-if="ite.alertId=='3'">
                 <span class="planset-span"><span class="planset-label">预警类型:</span><span class="planset-item">{{ite.alertId | capitalize}}</span></span>
                 <span class="planset-date"><span class="planset-label">时间段:</span><span class="planset-item">{{ite.startTime}}至{{ite.endTime}}</span></span>
@@ -55,31 +55,30 @@
                 <span class="planset-date"><span class="planset-label">时间段:</span><span class="planset-item">{{ite.startTime}}至{{ite.endTime}}</span></span>
                 <span class="planset-span"><span class="planset-label">值:</span><span class="planset-item">{{ite.averageAlert}}</span></span>
               </div>
-              
+
             </div>
             <div class="planset-icon">
-                
-                <el-button type="danger" icon="el-icon-edit" size="mini"  @click="handleRemove(index)">删除</el-button>
-                <el-button type="primary" icon="el-icon-delete" size="mini" @click="handleEdit(index)">编辑</el-button>
+
+                <el-button type="danger" icon="el-icon-delete" size="mini"  @click="handleRemove(index)">删除</el-button>
+                <el-button type="primary" icon="el-icon-edit" size="mini" @click="handleEdit(index)">编辑</el-button>
                 <el-button type="info" icon="el-icon-user" size="mini"  @click="setUser(index)">关联患者</el-button>
-                
               </div>
-            
+
 
           </div>
-            
+
           </el-scrollbar>
           <my-dialog ref="dialog" :submitType="submitType" @getPlanQueryData="getPlanQueryData"></my-dialog>
           <my-transfer ref="transfer" @selectElec="getPlanQueryData"></my-transfer>
           <!-- @insertData="insertData" @updateData="updateData" -->
       </el-main>
-      
+
 
     </el-container>
 </template>
 <script>
 import breadcrumb from "@/components/Breadcrumb/index"
-import myDialog from '@/components/dialog-planset/dialog' 
+import myDialog from '@/components/dialog-planset/dialog'
 import myTransfer from '@/components/dialog-planset/dialog-user'
 import { getPlanQueryData,deleteReservePlan } from '@/api/table'
   export default {
@@ -89,7 +88,7 @@ import { getPlanQueryData,deleteReservePlan } from '@/api/table'
          console.log(value)
         if (!value) return ''
         value = value.toString()
-       
+
        if(value==="1") return '是否睡眠'
        else if(value==="2") return '睡眠质量'
        else if(value==="3") return '活动频率'
@@ -160,7 +159,7 @@ import { getPlanQueryData,deleteReservePlan } from '@/api/table'
         }).catch(err=>{
 
         })
-        
+
       },
       setUser(i){
         console.log(i)
@@ -178,7 +177,7 @@ import { getPlanQueryData,deleteReservePlan } from '@/api/table'
               para.userList = data[i].userList
               para.alertConditions = data[i].AlertConditionList
               arr.push(para)
-              
+
             }
             this.arr = arr
             this.filterArr = arr
@@ -199,7 +198,7 @@ import { getPlanQueryData,deleteReservePlan } from '@/api/table'
     mounted(){
       this.getPlanQueryData()
     }
-    
+
   }
 </script>
 

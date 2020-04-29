@@ -202,6 +202,8 @@ export default {
                       aSleep.push(item)
                     }else if(item.alertId == '3'){
                       //活动频率
+                      // aFrequencyItem[0] = item
+                      // aFrequency.push(aFrequencyItem)
                       aFrequency.push(item)
                     }else if(item.alertId == '4'){
                       //活动时长
@@ -214,18 +216,84 @@ export default {
                       aHeartRate.push(item)
                     }
                   })
+                  //活动频率时间转化
+                  for(let i in aFrequency){
+                    let start = aFrequency[i].startTime.substring(0,3)
+                    let startTime1 = start + "00"
+                    aFrequency[i].startTime = startTime1
+
+                    if(aFrequency[i].endTime.substring(4,5) != "00"){
+                      let start = aFrequency[i].endTime.substring(0,2)
+                      start = parseInt(start) + 1
+                      if(start == 24){
+                        start = 0
+                        let endTime1 = "0" + start + ":00"
+                        aFrequency[i].endTime = endTime1
+                      }else if(start < 10){
+                        let endTime1 = "0" + start + ":00"
+                        aFrequency[i].endTime = endTime1
+                      }else{
+                        let endTime1 =  start + ":00"
+                        aFrequency[i].endTime = endTime1
+                      }
+                    }
+                  }
+                  //活动时长时间转化
+                  for(let i in aActiveTime){
+                    let start = aActiveTime[i].startTime.substring(0,3)
+                    let startTime1 = start + "00"
+                    aActiveTime[i].startTime = startTime1
+
+                    if(aActiveTime[i].endTime.substring(4,5) != "00"){
+                      let start = aActiveTime[i].endTime.substring(0,2)
+                      start = parseInt(start) + 1
+                      if(start == 24){
+                        start = 0
+                        let endTime1 = "0" + start + ":00"
+                        aActiveTime[i].endTime = endTime1
+                      }else if(start < 10){
+                        let endTime1 = "0" + start + ":00"
+                        aActiveTime[i].endTime = endTime1
+                      }else{
+                        let endTime1 =  start + ":00"
+                        aActiveTime[i].endTime = endTime1
+                      }
+                    }
+                  }
+
+                  let bFrequency = []
+                  for(let i in aFrequency){
+                    let arr =[]
+                    // bFrequency[i][0] = aFrequency[i]
+                    let para ={},para2={}
+                    para.yAxis = aFrequency[i].achieveAlert
+                    para.xAxis= aFrequency[i].startTime
+                    para2.yAxis = aFrequency[i].achieveAlert
+                    para2.xAxis= aFrequency[i].endTime
+                    arr.push(para)
+                    arr.push(para2)
+                    bFrequency.push(arr)
+                  }
+
+                  let bActiveTime = []
+                  for(let i in aActiveTime){
+                    let arr =[]
+                    // bFrequency[i][0] = aActiveTime[i]
+                    let para ={},para2={}
+                    para.yAxis = aActiveTime[i].achieveAlert
+                    para.xAxis= aActiveTime[i].startTime
+                    para2.yAxis = aActiveTime[i].achieveAlert
+                    para2.xAxis= aActiveTime[i].endTime
+                    arr.push(para)
+                    arr.push(para2)
+                    bActiveTime.push(arr)
+                  }
                   this.home = aHome
                   this.sleep = aSleep
-                  this.frequency = aFrequency
-                  this.activeTime = aActiveTime
+                  this.frequency = bFrequency
+                  this.activeTime = bActiveTime
                   this.blood = aBlood
                   this.heartRate = aHeartRate
-                  console.log(this.home)
-                  console.log(this.sleep)
-                  console.log(this.frequency)
-                  console.log(this.aActiveTime)
-                  console.log(this.blood)
-                  console.log(this.heartRate)
 
                   let arr1=[],arr2=[],arr3=[],arr4=[],arr5=[],arr6=[],arr7=[]
                   if(res.data.frequency_today.length>0){
@@ -385,29 +453,11 @@ export default {
                     normal:
                       {
                         type: 'solid' ,
-                        color:"rgba(238, 99, 99)"
+                        color:"rgba(238, 99, 99)",
+                        width:3,
                       }
-                    },
-                    data : [
-                      [
-                        { name: '', yAxis: this.frequency[0].id, xAxis: '00:00' },
-                        { yAxis: this.frequency[0].id, xAxis: '04:00' } ,
-                      ],
-                      [
-                        { name: '', yAxis: 50, xAxis: '05:00' },
-                        { yAxis: 50, xAxis: '06:00' } ,
-                      ],
-                      [
-                        { name: '', yAxis: 20, xAxis: '06:00' },
-                        { yAxis: 20, xAxis: '09:00' } ,
-                      ]
-                    ]
-                    // data:for(let i in this.frequency){
-                    //     [
-                    //       { name: '', yAxis: this.frequency[i].achieveAlert, xAxis: '00:00' },
-                    //       { yAxis: 35, xAxis: '04:00' } ,
-                    //     ],
-                    // }
+                  },
+                  data:this.frequency
                 }
             }]
         }
@@ -444,22 +494,6 @@ export default {
                 itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                     color: '#E6A23C',
                     borderColor: '#E6A23C',
-                },
-                markLine : {
-                  symbol:"none",               //去掉警戒线最后面的箭头
-                  label:{
-                      position:"end",         //将警示值放在哪个位置，三个值“start”,"middle","end"  开始  中点 结束
-                      formatter: "警戒线"
-                  },
-                  data : [{
-                      silent:false,             //鼠标悬停事件  true没有，false有
-                      lineStyle:{               //警戒线的样式  ，虚实  颜色
-                          type:"solid",
-                          color:"rgba(238, 99, 99)"
-                      },
-                      name: '警戒线',
-                      yAxis: 10
-                  }]
                 }
             },
             {
@@ -469,6 +503,18 @@ export default {
                 itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                     color: '#409EFF',
                     borderColor: '#409EFF',
+                },
+                markLine : {
+                  symbol:"none",               //去掉警戒线最后面的箭头
+                  lineStyle: {
+                    normal:
+                      {
+                        type: 'solid' ,
+                        color:"rgba(238, 99, 99)",
+                        width:3,
+                      }
+                  },
+                  data:this.activeTime
                 }
             }]
         }
