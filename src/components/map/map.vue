@@ -10,6 +10,10 @@ import endMarker from "@/icons/png/endMarker.png"
 import startMarker from "@/icons/png/startMarker.png"
 import person from "@/icons/png/person.png"
 import { getPersonStatusQuery,selectPosition } from "@/api/table"
+BMap.Icon.prototype.name = "";
+BMap.Icon.prototype.setName = function(name){
+    this.name = name;
+}
 export default {
   name: 'Map',
   props:{
@@ -77,9 +81,9 @@ export default {
             let temp = new BMap.Point(this.personPoint.longitude,this.personPoint.latitude)
             points.push(temp)
             let that = this
-                 let myIcon = new BMap.Icon(person, new BMap.Size(86, 48), {
+                 let myIcon = new BMap.Icon(person, new BMap.Size(48, 48), {
                   // 指定定位位置
-                  offset: new BMap.Size(48, 48),
+                  anchor: new BMap.Size(24, 48),
                   // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置
                 });
                 for(let i in points){
@@ -106,12 +110,12 @@ export default {
             let that = this
             let points = []
             for( var i = 0;i < inHomeArr.length; i++){
-              let temp = new BMap.Point(inHomeArr[i].longitude,inHomeArr[i].latitude)
+              let temp = new BMap.Point(inHomeArr[i].keyLongitude,inHomeArr[i].keyLatitude)
               points.push(temp)
             }
                  var myIcon = new BMap.Icon(inhome, new BMap.Size(48, 48), {
                   // 指定定位位置
-                  offset: new BMap.Size(24, 48),
+                  anchor: new BMap.Size(24, 48),
                   // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置
                 });
                 myIcon.setName("0");
@@ -128,13 +132,13 @@ export default {
             let that = this
             let points = []
             for( var i = 0;i < outHomeArr.length; i++){
-              let temp = new BMap.Point(outHomeArr[i].longitude,outHomeArr[i].latitude)
+              let temp = new BMap.Point(outHomeArr[i].keyLongitude,outHomeArr[i].keyLatitude)
               points.push(temp)
             }
             
                  var myIcon = new BMap.Icon(outhome, new BMap.Size(48, 48), {
                   // 指定定位位置
-                  offset: new BMap.Size(24, 48),
+                  anchor: new BMap.Size(24, 48),
                   // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置
                 });
                 myIcon.setName("1");
@@ -150,12 +154,12 @@ export default {
             let that = this
             let points = []
             for( var i = 0;i < warningArr.length; i++){
-              let temp = new BMap.Point(warningArr[i].longitude,warningArr[i].latitude)
+              let temp = new BMap.Point(warningArr[i].keyLongitude,warningArr[i].keyLatitude)
               points.push(temp)
             }
                  var myIcon = new BMap.Icon(warning, new BMap.Size(48, 48), {
                   // 指定定位位置
-                  offset: new BMap.Size(24, 48),
+                  anchor: new BMap.Size(24, 48),
                   // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置
                 });
                 myIcon.setName("2");
@@ -184,12 +188,12 @@ export default {
             let that = this
             let points = []
             for( var i = 0;i < inHomeArr.length; i++){
-              let temp = new BMap.Point(inHomeArr[i].longitude,inHomeArr[i].latitude)
+              let temp = new BMap.Point(inHomeArr[i].keyLongitude,inHomeArr[i].keyLatitude)
               points.push(temp)
             }
             var myIcon = new BMap.Icon(inhome, new BMap.Size(48, 48), {
             // 指定定位位置
-            offset: new BMap.Size(24, 48),
+            anchor: new BMap.Size(24, 48),
             // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置
           });
           myIcon.setName("0");
@@ -207,12 +211,12 @@ export default {
             let that = this
             let points = []
             for( var i = 0;i < outHomeArr.length; i++){
-              let temp = new BMap.Point(outHomeArr[i].longitude,outHomeArr[i].latitude)
+              let temp = new BMap.Point(outHomeArr[i].keyLongitude,outHomeArr[i].keyLatitude)
               points.push(temp)
             }
             var myIcon = new BMap.Icon(outhome, new BMap.Size(48, 48), {
               // 指定定位位置
-              offset: new BMap.Size(24, 48),
+              anchor: new BMap.Size(24, 48),
               // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置
             });
             myIcon.setName("1");
@@ -229,12 +233,12 @@ export default {
             let that = this
             let points = []
             for( var i = 0;i < warningArr.length; i++){
-              let temp = new BMap.Point(warningArr[i].longitude,warningArr[i].latitude)
+              let temp = new BMap.Point(warningArr[i].keyLongitude,warningArr[i].keyLatitude)
               points.push(temp)
             }
             var myIcon = new BMap.Icon(warning, new BMap.Size(48, 48), {
               // 指定定位位置
-              offset: new BMap.Size(24, 48),
+              anchor: new BMap.Size(24, 48),
               // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置
             });
             myIcon.setName("2");
@@ -336,7 +340,6 @@ export default {
             params.x=marker.getPosition().lng;
             params.y=marker.getPosition().lat;
             that.infoWindowArr.push(params)
-            console.log(params)
             marker.addEventListener("click",function(e){
 
               var p = e.target;
@@ -350,6 +353,7 @@ export default {
       },
       //绑定标注点击事件显示新窗口并平移
       addClickHandler(content,marker,obj){
+         
             let opts = {
               width : 250,     // 信息窗口宽度
               height: 160,     // 信息窗口高度
@@ -368,9 +372,15 @@ export default {
 
               var p = e.target;
               var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
-              console.log(point)
+              console.log(352)
+              console.log(obj)
               this.openInfoWindow(infoWindow,point); //开启信息窗口
               that.movePosition(e)
+              let pointP = []
+              pointP.push(new BMap.Point(obj.keyLongitude, obj.keyLatitude))
+              pointP.push(new BMap.Point(obj.longitude, obj.latitude))
+              that.polylinePos(pointP)
+              that.markerPos(new BMap.Point(obj.longitude, obj.latitude))
               var btn = document.getElementById("btn_name")
               setTimeout(() => {
                   btn.onclick = ()=>{
@@ -455,6 +465,35 @@ export default {
             };
         
       },
+      markerPos(point){
+       
+        this.reomveMaker('Marker')
+            var myIcon = new BMap.Icon(person, new BMap.Size(48, 48), {
+                    // 指定定位位置
+                    anchor: new BMap.Size(24, 46),
+            });
+            myIcon.setName("person");
+            // 创建标注对象并添加到地图
+            var marker = new BMap.Marker(point,{icon: myIcon});
+            this.mainMap.addOverlay(marker);
+        
+          
+      },
+      polylinePos(point){
+        this.reomveMaker('Polyline')
+        console.log(point)
+        let that = this
+        var polyline = new BMap.Polyline(point, {
+          enableEditing: false,//是否启用线编辑，默认为false
+          enableClicking: true,//是否响应点击事件，默认为true
+          strokeWeight:'3',//折线的宽度，以像素为单位
+          strokeStyle:"dashed",
+          strokeOpacity: 0.8,//折线的透明度，取值范围0 - 1
+          strokeColor:"#18a45b" //折线颜色
+        });   //创建折线
+        that.mainMap.addOverlay(polyline);   //增加折线
+          
+      },
       polylineChange(point){
         let that = this
         var sy = new BMap.Symbol(BMap_Symbol_SHAPE_BACKWARD_OPEN_ARROW, {
@@ -474,6 +513,21 @@ export default {
         });   //创建折线
         that.mainMap.addOverlay(polyline);   //增加折线
           
+      },
+      reomveMaker(obj) {
+        var allmap = this.mainMap.getOverlays();
+        var map_length = allmap.length;
+        for (var i = 0; i < map_length; i++) {
+          if (allmap[i].toString() == `[object ${obj}]`) {
+            if(obj==='Marker'){
+              if(allmap[i].getIcon().name=='person')
+                this.mainMap.removeOverlay(allmap[i]);
+            }else if(obj==='Polyline'){
+              this.mainMap.removeOverlay(allmap[i]);
+            }
+            
+          }
+        }
       },
       movePosition(e){
         let that = this

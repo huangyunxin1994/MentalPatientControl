@@ -28,7 +28,7 @@
       </div>
     </div>
     <div class="right-menu">
-      <el-tooltip class="item" effect="dark" content="去管理端" placement="bottom-start" v-if="menuData.indexOf('7')!=-1||menuData.indexOf('8')!=-1||menuData.indexOf('9')!=-1||menuData.indexOf('10')!=-1">
+      <el-tooltip class="item" effect="dark" content="去操作端" placement="bottom-start" v-if="menuData.indexOf('7')!=-1||menuData.indexOf('8')!=-1||menuData.indexOf('9')!=-1||menuData.indexOf('10')!=-1">
         <router-link tag="i" to="/" class="navbar-message el-icon-s-tools"></router-link> 
       </el-tooltip>
       <el-dropdown class="avatar-container" trigger="click">

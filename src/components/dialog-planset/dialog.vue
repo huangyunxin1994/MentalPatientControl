@@ -34,7 +34,8 @@
                     :picker-options="{
                     start: setStart,
                     step: setStep,
-                    end: setEnd
+                    end: setEnd,
+                    minTime: form.alertConditions[index].startTime
                     }">
                 </el-time-select>
                 
@@ -78,7 +79,8 @@
                     :picker-options="{
                     start: setStart,
                     step: setStep,
-                    end: setEnd
+                    end: setEnd,
+                    minTime: form.alertConditions[index].startTime
                     }">
                 </el-time-select>
                 <label>活动次数</label>
@@ -113,7 +115,8 @@
                     :picker-options="{
                     start: setStart,
                     step: setStep,
-                    end: setEnd
+                    end: setEnd,
+                    minTime: form.alertConditions[index].startTime
                     }">
                 </el-time-select>
                <label>频率大于等于</label>
@@ -147,7 +150,8 @@
                     :picker-options="{
                     start: setStart,
                     step: setStep,
-                    end: setEnd
+                    end: setEnd,
+                    minTime: form.alertConditions[index].startTime
                     }">
                 </el-time-select>
                 <label>时长大于等于</label>
@@ -181,7 +185,8 @@
                     :picker-options="{
                     start: setStart,
                     step: setStep,
-                    end: setEnd
+                    end: setEnd,
+                    minTime: form.alertConditions[index].startTime
                     }">
                 </el-time-select>
                 <label>值</label>
@@ -223,7 +228,8 @@
                     :picker-options="{
                     start: setStart,
                     step: setStep,
-                    end: setEnd
+                    end: setEnd,
+                    minTime: form.alertConditions[index].startTime
                     }">
                 </el-time-select>
                 <label>值</label>
