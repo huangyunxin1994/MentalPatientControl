@@ -2,14 +2,17 @@
     <el-container class="usermanage-container">
       <my-tree></my-tree>
       <div class="usermanage-table">
-          <el-select v-model="value" filterable placeholder="请选择" @change="changeResult">
-            <el-option
-              v-for="item in options"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id">
-            </el-option>
-          </el-select>
+          <div class="usermanage-table-select">
+            <label >选择角色</label>
+            <el-select v-model="value" filterable placeholder="请选择" clearable  @change="changeResult">
+              <el-option
+                v-for="item in options"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </div>
           <el-button size="small" type="primary" @click.native="newData">新增用户</el-button>
           <my-table :tableTitle="tableTitle" :tableData="tableData" ref="table" @changeData="changeData" @removeData="removeData" @bRemoveData="bRemoveData" @settingData="settingData"></my-table>
           <my-dialog :tableTitle="handleTitle" :formRule="formRule" ref="dialog" @insertData="insertData" @updateData="updateData"></my-dialog>
@@ -273,12 +276,13 @@ export default {
     width: 85%;
     height: 100%;
     position: relative;
-    .el-select{
+    &-select{
         position: absolute;
         top:2vh;
         left: 25vw;
         z-index: 1;
         font-size: 0.7vw;
+        color: #606266;
     }
     .el-button{
         position: absolute;

@@ -50,9 +50,9 @@ export default {
             { title : "联系电话", name : "phone", type : "number" },
             { title : "住址", name : "address", type : "input" },
             { title : "所属组织", name : "organizationId", type : "cascader" },
-            { title : "监护人", name : "guardianId", type : "personselect" },
-            { title : "网格管理员", name : "networkAdministratorId", type : "personselect" },
-            { title : "责任医师", name : "responsiblePhysicianId", type : "personselect" }
+            { title : "监护人", name : "guardianId", type : "personselect" }
+            // { title : "网格管理员", name : "networkAdministratorId", type : "personselect" },
+            // { title : "责任医师", name : "responsiblePhysicianId", type : "personselect" }
         ],
         tableData:[]
     }
@@ -111,13 +111,15 @@ export default {
         })
       },
       newData(){
-        let para = {'submitType':"insert"}
+        let para = {'submitType':"insert",mappos:1}
         this.$refs.dialog.form=para
         let arr = ["organ","person","equip"]
         this.$refs.dialog.handleShow(arr);
       },
       changeData(row){
         row.submitType="update"
+        row.mappos = 1
+        console.log(row)
         this.$refs.dialog.form=Object.assign({}, row)
         let arr = ["organ","person","equip"]
         this.$refs.dialog.handleShow(arr);

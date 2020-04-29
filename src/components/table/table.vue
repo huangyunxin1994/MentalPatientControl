@@ -16,6 +16,7 @@
                        <el-button v-else-if="item.type=='remove'" type="danger" icon="el-icon-delete" size="small" circle @click="handleRemove(scope.$index, scope.row)"></el-button>
                        <el-button v-else-if="item.type=='search'&&scope.row['processingResult']==3" type="info" icon="el-icon-search" size="small" circle @click="handleSearch(scope.$index, scope.row)"></el-button>
                        <el-button v-else-if="item.type=='relevance'&&scope.row['processingResult']!=3" type="info" icon="el-icon-setting" size="small" circle @click="handleRelevance(scope.$index, scope.row)"></el-button>
+                       <el-button v-else-if="item.type=='post'" type="warning" icon="el-icon-s-promotion" size="small" circle @click="handlePosition(scope.$index, scope.row)"></el-button>
                     </el-tooltip>
                 </div>
                 <div v-else-if="item.type=='tooltip'">
@@ -28,7 +29,7 @@
                         <el-link type="primary" slot="reference" :formatter="formatSex" v-html="arrFormatter(scope.row[item.name],item.name)"></el-link>
                       </el-popover>
                 </div>
-                <el-button v-else-if="item.type=='button'"  icon="el-icon-setting" type="info" size="small" circle @click="handleSetting(scope.$index, scope.row,item.name)"></el-button>
+                <el-button v-else-if="item.type=='button'&&scope.row['roleId']>1"  icon="el-icon-setting" type="info" size="small" circle @click="handleSetting(scope.$index, scope.row,item.name)"></el-button>
                 <div v-else-if="item.type=='equip'">
                   <span v-for="(ite,index) in scope.row[item.name]" :key="index" v-html="arrFormatter(ite.type,item.name)"></span>
                 </div>
@@ -115,7 +116,7 @@ import "@/assets/icon/iconfont.css"
             else if(name == 'level')
              return value == 1 ? '一级' : (value == 2 ? '二级' : (value == 3? '三级' :(value == 4 ? '四级' :(value == 5 ? '五级' :(value == 6 ? '六级' :(value == 7 ? '七级' :(value == 8 ? '八级' : value == 9 ? '九级' :' ')))))))
             else if(name == 'equipAlertType')
-             return value == 1 ? 'SOS' : (value == 2 ? '低电' : (value == 3? '脱落报警' :(value == 4 ? '佩戴提醒' :(value == 5 ? '剪断报警' :(value == 6 ? '跌倒报警' :(value == 7 ? '心率异常' :(value == 8 ? '心率过高' :(value == 9 ? '心率过低' :(value == 10 ? '收缩压过高' :(value == 11 ? '收缩压过低' :(value == 12 ? '舒张压过高' :(value == 13 ? '舒张压过低' :(value == 14 ? '温度过高' :(value == 7 ? '烟雾浓度过高' :' '))))))))))))))
+             return value == 1 ? 'SOS' : (value == 2 ? '低电' : (value == 3? '脱落报警' :(value == 4 ? '佩戴提醒' :(value == 5 ? '剪断报警' :(value == 6 ? '跌倒报警' :(value == 7 ? '温度过高' :(value == 8 ? '烟雾浓度过高' :(value == 9 ? '离线' :"正常"))))))))
             else if(name == 'alertType')
              return value == 1 ? '活动频率异常' : (value == 2 ? '活动时间异常' : (value == 3? '心率异常' :(value == 4 ? '血压异常' :(value == 5 ? '睡眠质量异常' :(value == 6 ? '居家/离家异常' :(value == 7 ? '电子围栏触发' :(value == 8 ? '限制外出预警' :' ')))))))
             else if(name == 'thisState')
@@ -172,6 +173,10 @@ import "@/assets/icon/iconfont.css"
         //关联
         handleRelevance(index,row){
           this.$emit('relevancePerson',row)
+        },
+        //定位
+        handlePosition(index,row){
+          this.$emit('positionWarn',row)
         },
         //查询单个用户获得电话号码
         loadData(row,name){

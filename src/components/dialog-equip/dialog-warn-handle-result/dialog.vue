@@ -40,38 +40,47 @@
         this.dialogHandleResult = false
       },
       sureBtn(){
-        this.$confirm('确认提交处理结果吗？', '提示', {}).then(() => {
-          this.changeDataResult.processingResult = 3
-          changeEquipData({
-            id:this.changeDataResult.id,
-            //处理记录
-            handleRecord:this.textarea,
-            processingResult:this.changeDataResult.processingResult
-          }).then(res =>{
-            if(res.code==0){
+        console.log(this.textarea)
+        if(this.textarea!=""){
+            this.$confirm('确认提交处理结果吗？', '提示', {}).then(() => {
+            this.changeDataResult.processingResult = 3
+            changeEquipData({
+              id:this.changeDataResult.id,
+              //处理记录
+              handleRecord:this.textarea,
+              processingResult:this.changeDataResult.processingResult
+            }).then(res =>{
+              if(res.code==0){
+                this.$message({
+                  message: '提交成功',
+                  type: 'success'
+                });
+                console.log('处理结果填写成功')
+                this.dialogHandleResult = false
+                this.$emit("cancel")
+                store.dispatch('user/getWarnNum')
+                console.log(res)
+              }else{
+                this.$message({
+                  message: '提交时出现错误',
+                  type: 'error'
+                });
+              }
+            
+            }).catch(err=>{
               this.$message({
-                message: '提交成功',
-                type: 'success'
-              });
-              console.log('处理结果填写成功')
-              this.dialogHandleResult = false
-              this.$emit("cancel")
-              store.dispatch('user/getWarnNum')
-              console.log(res)
-            }else{
-              this.$message({
-                message: '提交时出现错误',
-                type: 'success'
-              });
-            }
-           
-          }).catch(err=>{
-             this.$message({
-                message: '提交时出现错误',
-                type: 'success'
-              });
+                  message: '提交时出现错误',
+                  type: 'error'
+                });
+            })
           })
-        })
+        }else{
+          this.$message({
+            message: '请填写处理结果',
+            type: 'error'
+          });
+        }
+        
       },
       getDandleResultShow(val){
         // this.changeData = val

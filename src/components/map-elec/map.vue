@@ -17,7 +17,8 @@ export default {
     return{
       mainMap:"",
       longitude:"",
-      latitude:""
+      latitude:"",
+      scaling:""
     }
   },
   methods:{
@@ -27,7 +28,7 @@ export default {
         await this.selectPosition()
         this.mainMap = new BMap.Map(this.$refs.allmap, {enableMapClick:false}) // 创建Map实例
         
-        this.mainMap.centerAndZoom(new BMap.Point(this.longitude,this.latitude), 16) // 初始化地图,设置中心点坐标和地图级别
+        this.mainMap.centerAndZoom(new BMap.Point(this.longitude,this.latitude), this.scaling) // 初始化地图,设置中心点坐标和地图级别
         this.mainMap.addControl(new BMap.MapTypeControl({ // 添加地图类型控件
           mapTypes: [
             window.BMAP_NORMAL_MAP,
@@ -60,6 +61,8 @@ export default {
                 if(res.code==0){
                     this.longitude = res.data.data[0].longitude
                     this.latitude = res.data.data[0].latitude
+                    this.scaling = res.data.data[0].scaling
+                    
                 }
             }).catch(err=>{
 

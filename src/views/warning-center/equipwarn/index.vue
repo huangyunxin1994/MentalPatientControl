@@ -89,33 +89,14 @@ export default {
           label: '跌倒报警'
         }, {
           value: '7',
-          label: '心率异常'
+          label: '温度过高'
         }, {
           value: '8',
-          label: '心率过高'
+          label: '烟雾浓度过高'
         },
         {
           value: '9',
-          label: '心率过低'
-        }, {
-          value: '10',
-          label: '收缩压过高'
-        }, {
-          value: '11',
-          label: '收缩压过低'
-        }, {
-          value: '12',
-          label: '舒张压过高'
-        },
-        {
-          value: '13',
-          label: '舒张压过低'
-        }, {
-          value: '14',
-          label: '温度过高'
-        }, {
-          value: '15',
-          label: '烟雾浓度过高'
+          label: '离线'
         }
       ],
       options: [
@@ -201,7 +182,7 @@ export default {
       this.$alert(`<div style='display: flex;justify-content: space-between;align-items: center;'>
                       <div><strong>处理时间：</strong>${val.handleTime}</div>
                       <div><strong>处理人：</strong>${val.handleUsername}</div></div>
-                   <p><strong>处理记录：</strong></p><textarea style='width:100%;min-height:200px;padding:10px;border:1px solid #d7dae2;border-radius: 4px'>${val.handleRecord}</textarea>`, '处理记录', {
+                   <p><strong>处理记录：</strong></p><textarea style='width:100%;min-height:200px;padding:10px;border:1px solid #d7dae2;border-radius: 4px' disabled>${val.handleRecord}</textarea>`, '处理记录', {
           dangerouslyUseHTMLString: true
         });
     },

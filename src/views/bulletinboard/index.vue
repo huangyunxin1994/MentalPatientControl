@@ -395,7 +395,6 @@ export default {
                         containLabel: true
                     },
                     xAxis: {
-                        interval: 1,
                         type: 'value',
                     },
                     yAxis: {

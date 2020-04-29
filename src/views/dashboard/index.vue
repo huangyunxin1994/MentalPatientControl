@@ -20,7 +20,7 @@
               <span>预警人地址：{{item.address}}</span>
               <span>预警人名字：{{item.name}}</span>
               <div class="dashboard-context-handle">
-                 <el-button type="danger" size="mini" @click="getLocation(item.keyLongitude,item.keyLatitude)">定位</el-button>
+                 <el-button type="danger" size="mini" @click="getLocation(item.longitude,item.latitude)">定位</el-button>
                  <el-button type="danger" size="mini" @click="getDetails(item)" plain>详情</el-button>
               </div>
             </div>

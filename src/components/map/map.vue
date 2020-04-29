@@ -22,6 +22,7 @@ export default {
     enterElecArr:Array,
     locusPorint:Array,
     personPoint:Object,
+    warnPoint:Object,
     centerR:Boolean,
     Elongitude:String,
     Elatitude:String
@@ -34,6 +35,7 @@ export default {
       circleShow:false,
       longitude:"",
       latitude:"",
+      scaling:""
 
     }
   },
@@ -53,7 +55,8 @@ export default {
         }
         this.mainMap = new BMap.Map(this.$refs.allmap, {enableMapClick:false}) // 创建Map实例
         
-        this.mainMap.centerAndZoom(new BMap.Point(this.longitude,this.latitude), 16) // 初始化地图,设置中心点坐标和地图级别
+        
+        this.mainMap.centerAndZoom(new BMap.Point(this.longitude,this.latitude), this.scaling) // 初始化地图,设置中心点坐标和地图级别
         this.mainMap.addControl(new BMap.MapTypeControl({ // 添加地图类型控件
           mapTypes: [
             window.BMAP_NORMAL_MAP,
@@ -76,7 +79,7 @@ export default {
 
         }
         console.log(this.personPoint)
-        if(this.personPoint){
+        if(this.personPoint&&Object.keys(this.personPoint).length>0){
             let points=[]
             let temp = new BMap.Point(this.personPoint.longitude,this.personPoint.latitude)
             points.push(temp)
@@ -91,7 +94,31 @@ export default {
                   let marker = new BMap.Marker(points[i],{icon: myIcon});
                   that.mainMap.addOverlay(marker);
                   that.addClickHandlerP(marker);
+                  that.mainMap.centerAndZoom(temp,16)
                 }
+                
+                
+        }
+        console.log("this.warnPoint")
+        console.log(this.warnPoint)
+        if(this.warnPoint&&Object.keys(this.warnPoint).length>0){
+            let points=[]
+            let temp = new BMap.Point(this.warnPoint.longitude,this.warnPoint.latitude)
+            points.push(temp)
+            let that = this
+                 let myIcon = new BMap.Icon(person, new BMap.Size(48, 48), {
+                  // 指定定位位置
+                  anchor: new BMap.Size(24, 48),
+                  // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置
+                });
+                for(let i in points){
+                  // 创建标注对象并添加到地图 
+                  let marker = new BMap.Marker(points[i],{icon: myIcon});
+                  that.mainMap.addOverlay(marker);
+                  that.addClickHandlerP(marker);
+                  that.mainMap.centerAndZoom(temp,16)
+                }
+                
                 
         }
         if(this.bulletArr&&this.bulletArr.length>0){
@@ -172,6 +199,15 @@ export default {
                 }
                 
           }
+          // var points= []
+          // for(let i in this.bulletArr){
+          //    let temp = new BMap.Point(this.bulletArr[i].keyLongitude,this.bulletArr[i].keyLatitude)
+          //    points.push(temp)
+          // }
+          // var view = this.mainMap.getViewport(eval(points));
+          // var mapZoom = view.zoom; 
+          // var centerPoint = view.center; 
+          // this.mainMap.centerAndZoom(centerPoint,mapZoom)
         }
         if(this.pointsArr&&this.pointsArr.length>0){
           // 向地图添加标注
@@ -252,6 +288,15 @@ export default {
             }
                 
           }
+          // var points= []
+          // for(let i in this.pointsArr){
+          //    let temp = new BMap.Point(this.pointsArr[i].keyLongitude,this.pointsArr[i].keyLatitude)
+          //    points.push(temp)
+          // }
+          // var view = this.mainMap.getViewport(eval(points));
+          // var mapZoom = view.zoom; 
+          // var centerPoint = view.center; 
+          // this.mainMap.centerAndZoom(centerPoint,mapZoom)
           }
           console.log(this.enterElecArr)
           if(this.enterElecArr&&this.enterElecArr.length>0){
@@ -279,7 +324,15 @@ export default {
            console.log(point)
           this.markerChange(pointM)
           this.polylineChange(point)
-            
+          var points= []
+          for(let i in this.locusPorint){
+             let temp = new BMap.Point(this.locusPorint[i].longitude,this.locusPorint[i].latitude)
+             points.push(temp)
+          }
+          var view = this.mainMap.getViewport(eval(points));
+          var mapZoom = view.zoom; 
+          var centerPoint = view.center; 
+          this.mainMap.centerAndZoom(centerPoint,mapZoom)  
         }
         
         
@@ -290,6 +343,7 @@ export default {
                 if(res.code==0){
                     this.longitude = res.data.data[0].longitude
                     this.latitude = res.data.data[0].latitude
+                    this.scaling = res.data.data[0].scaling
                 }
             }).catch(err=>{
 
@@ -532,7 +586,6 @@ export default {
       movePosition(e){
         let that = this
           var p = e.target;
-          this.mainMap.setZoom(16);
           var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat); 
           that.mainMap.panTo(point);
             
@@ -541,7 +594,6 @@ export default {
       movePosBypoint(x,y){
         let that = this
         let point = new BMap.Point(x,y); 
-        that.mainMap.setZoom(16); 
         that.mainMap.panTo(point);
            
         

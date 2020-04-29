@@ -13,7 +13,7 @@
                 <el-col :span="6">责任医师：{{personData.responsiblePhysician}}&nbsp;{{personData.responsiblePhysicianP}}</el-col>
 
                 <el-col :span="6">所属组织：{{personData.organizationName}}</el-col>
-                <el-col :span="12">病情描述：活动频率异常，情绪不稳定</el-col>
+                <el-col :span="12">病情描述：</el-col>
                  <el-col :span="6">监护人：{{personData.guardian}}&nbsp;{{personData.guardianP}}</el-col>
                 <el-col :span="6">是否限制外出：{{personData.restrictions | filterRestr}}</el-col>
                 <!-- <el-col :span="8">是否限制外出：{{personData.personnelStatus}}</el-col> -->
@@ -111,7 +111,10 @@ export default {
   },
     methods: {
       setDateTime(val){
+        if(val)
           this.dateTime=val.getTime();
+        else
+          this.dateTime=""
 
       },
       sureBtn(){
@@ -152,8 +155,7 @@ export default {
          let len = 24;
          while (len--) {
            now = new Date(now - 1000 * 60 * 60);
-           console.log(now)
-           this.time.unshift(now.getHours() + 1);
+           this.time.unshift(now.getHours());
          }
          for(let i in this.time){
            if(this.time[i]<10){
@@ -164,6 +166,7 @@ export default {
              this.time[i] = this.time[i] + ':00'
            }
          }
+         console.log(this.time)
        },
        getEchartData(){
           let time=this.dateTime;
@@ -172,10 +175,7 @@ export default {
           if(time!=""){
              para.time = parseTime(time,'{y}-{m}-{d}')
           }
-
           getPerSe(para).then(res=>{
-            console.log("*************************************************")
-            console.log(res)
               if(res.code==0){
                   //预警条数
                   this.warnNum = res.data.alertNum
@@ -270,11 +270,16 @@ export default {
                     para.xAxis= aFrequency[i].startTime
                     para2.yAxis = aFrequency[i].achieveAlert
                     para2.xAxis= aFrequency[i].endTime
+                    para2.silent=false
+                    para2.lineStyle={               //警戒线的样式  ，虚实  颜色
+                        type:"solid",
+                        color:"#F56C6C",
+                    },
                     arr.push(para)
                     arr.push(para2)
                     bFrequency.push(arr)
                   }
-
+                  console.log(bFrequency)
                   let bActiveTime = []
                   for(let i in aActiveTime){
                     let arr =[]
@@ -284,6 +289,11 @@ export default {
                     para.xAxis= aActiveTime[i].startTime
                     para2.yAxis = aActiveTime[i].achieveAlert
                     para2.xAxis= aActiveTime[i].endTime
+                    para2.silent=false
+                    para2.lineStyle={               //警戒线的样式  ，虚实  颜色
+                        type:"solid",
+                        color:"#F56C6C",
+                    },
                     arr.push(para)
                     arr.push(para2)
                     bActiveTime.push(arr)
@@ -454,7 +464,7 @@ export default {
                       {
                         type: 'solid' ,
                         color:"rgba(238, 99, 99)",
-                        width:3,
+                        width:2,
                       }
                   },
                   data:this.frequency
@@ -505,13 +515,14 @@ export default {
                     borderColor: '#409EFF',
                 },
                 markLine : {
-                  symbol:"none",               //去掉警戒线最后面的箭头
+                  symbol:"none",
+                  
                   lineStyle: {
                     normal:
                       {
                         type: 'solid' ,
                         color:"rgba(238, 99, 99)",
-                        width:3,
+                        width:2,
                       }
                   },
                   data:this.activeTime
@@ -556,7 +567,8 @@ export default {
                       silent:false,             //鼠标悬停事件  true没有，false有
                       lineStyle:{               //警戒线的样式  ，虚实  颜色
                           type:"solid",
-                          color:"rgba(238, 99, 99)"
+                          color:"rgba(238, 99, 99)",
+                          width:2,
                       },
                       name: '警戒线',
                       yAxis: 35
@@ -602,7 +614,8 @@ export default {
                       silent:false,             //鼠标悬停事件  true没有，false有
                       lineStyle:{               //警戒线的样式  ，虚实  颜色
                           type:"solid",
-                          color:"rgba(238, 99, 99)"
+                          color:"rgba(238, 99, 99)",
+                          width:2,
                       },
                       name: '警戒线',
                       yAxis: 35

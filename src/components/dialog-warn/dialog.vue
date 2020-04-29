@@ -5,6 +5,8 @@
         <el-table
             :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
             stripe
+            border
+            height="50vh"
             style="width: 100%">
             <el-table-column
               prop="alertType"
@@ -121,8 +123,6 @@
         this.dialogTableVisible=true
       },
       getListData(val){
-        console.log("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR")
-        console.log(val)
         this.tableData = val
         if(this.tableData.length == 0){
           console.log(this.tableData.length)

@@ -4,247 +4,248 @@
             <div class="plantset-title" style="margin-bottom:4vh">
                 <label>预案名称</label>
                 <el-input placeholder="请输入" v-model="form.name" style="width:20vw"> </el-input>
-                <el-button type="success" icon="el-icon-plus" circle size="mini" class="plantset-iconb" @click="addPlanSet"></el-button>
+                <el-button type="success" icon="el-icon-plus" circle size="mini"  @click="addPlanSet"></el-button>
             </div>
             <el-scrollbar style="height:50vh">
-            <div  v-for="(ite,index) in form.alertConditions" :key="index" class="plantset-content"> 
-              <div  class="plantset-title" v-if="ite.alertId==1">
-                <label>预警类型</label>
-                <el-select v-model="form.alertConditions[index].alertId" filterable placeholder="请选择" @change="changeval(index)">
-                    <el-option
+                <div  v-for="(ite,index) in form.alertConditions" :key="index" class="plantset-content"> 
+                <div  class="plantset-title" v-if="ite.alertId==1">
+                    
+                   
+                    <label>预警类型</label>
+                        <el-select v-model="form.alertConditions[index].alertId" filterable placeholder="请选择" @change="changeval(index)">
+                            <el-option
+                                v-for="item in planOptions"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    <label>时间段</label>
+                    <el-time-select
+                        placeholder="起始时间"
+                        v-model="form.alertConditions[index].startTime"
+                        :picker-options="{
+                        start: setStart,
+                        step: setStep,
+                        end: setEnd
+                        }">
+                    </el-time-select>
+                    <el-time-select
+                        placeholder="结束时间"
+                        v-model="form.alertConditions[index].endTime"
+                        :picker-options="{
+                        start: setStart,
+                        step: setStep,
+                        end: setEnd,
+                        minTime: form.alertConditions[index].startTime
+                        }">
+                    </el-time-select>
+                    <label>行为</label>
+                    <el-select v-model="form.alertConditions[index].averageAlert" filterable placeholder="请选择">
+                        <el-option
+                        v-for="item in typeOption"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>
+                    <label>大于等于</label>
+                    <el-input-number v-model="form.alertConditions[index].achieveAlert" :precision="1" :min="0" :max="999"></el-input-number>
+                    <label>小时</label>
+                     <el-button type="danger" icon="el-icon-delete" circle size="mini" class="plantset-iconb" @click="removePlan(index)"></el-button>
+                </div>
+                <div class="plantset-title" v-else-if="ite.alertId==2">
+                    <label>预警类型</label>
+                    <el-select v-model="form.alertConditions[index].alertId" filterable placeholder="请选择" @change="changeval(index)">
+                        <el-option
                         v-for="item in planOptions"
                         :key="item.value"
                         :label="item.label"
                         :value="item.value">
-                    </el-option>
-                </el-select>
-                <label>时间段</label>
-                <el-time-select
-                    placeholder="起始时间"
-                    v-model="form.alertConditions[index].startTime"
-                    :picker-options="{
-                    start: setStart,
-                    step: setStep,
-                    end: setEnd
-                    }">
-                </el-time-select>
-                <el-time-select
-                    placeholder="结束时间"
-                    v-model="form.alertConditions[index].endTime"
-                    :picker-options="{
-                    start: setStart,
-                    step: setStep,
-                    end: setEnd,
-                    minTime: form.alertConditions[index].startTime
-                    }">
-                </el-time-select>
-                
-                <label>行为</label>
-                <el-select v-model="form.alertConditions[index].averageAlert" filterable placeholder="请选择">
-                    <el-option
-                    v-for="item in typeOption"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                </el-select>
-                 <label>大于等于</label>
-                 <el-input-number v-model="form.alertConditions[index].achieveAlert" :precision="1" :max="999"></el-input-number>
-                 <label>小时</label>
-                 <el-button type="danger" icon="el-icon-delete" circle size="mini" class="plantset-iconb" @click="removePlan(index)"></el-button>
-              </div>
-              <div class="plantset-title" v-else-if="ite.alertId==2">
-                 <label>预警类型</label>
-                  <el-select v-model="form.alertConditions[index].alertId" filterable placeholder="请选择" @change="changeval(index)">
-                    <el-option
-                    v-for="item in planOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                </el-select>
-                <label>时间段</label>
-                <el-time-select
-                    placeholder="起始时间"
-                    v-model="form.alertConditions[index].startTime"
-                    :picker-options="{
-                    start: setStart,
-                    step: setStep,
-                    end: setEnd
-                    }">
-                </el-time-select>
-                <el-time-select
-                    placeholder="结束时间"
-                    v-model="form.alertConditions[index].endTime"
-                    :picker-options="{
-                    start: setStart,
-                    step: setStep,
-                    end: setEnd,
-                    minTime: form.alertConditions[index].startTime
-                    }">
-                </el-time-select>
-                <label>活动次数</label>
-                <el-input-number v-model="form.alertConditions[index].achieveAlert" :max="999"></el-input-number>
+                        </el-option>
+                    </el-select>
+                    <label>时间段</label>
+                    <el-time-select
+                        placeholder="起始时间"
+                        v-model="form.alertConditions[index].startTime"
+                        :picker-options="{
+                        start: setStart,
+                        step: setStep,
+                        end: setEnd
+                        }">
+                    </el-time-select>
+                    <el-time-select
+                        placeholder="结束时间"
+                        v-model="form.alertConditions[index].endTime"
+                        :picker-options="{
+                        start: setStart,
+                        step: setStep,
+                        end: setEnd,
+                        minTime: form.alertConditions[index].startTime
+                        }">
+                    </el-time-select>
+                    <label>活动次数</label>
+                    <el-input-number v-model="form.alertConditions[index].achieveAlert" :min="0" :max="999"></el-input-number>
+                    <label>次</label>
+                    <el-button type="danger" icon="el-icon-delete" circle size="mini" class="plantset-iconb" @click="removePlan(index)"></el-button>
+                </div>
+                    
+                <div  class="plantset-title" v-else-if="ite.alertId==3">
+                    <label>预警类型</label>
+                    <el-select v-model="form.alertConditions[index].alertId" filterable placeholder="请选择" @change="changeval(index)">
+                        <el-option
+                        v-for="item in planOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>
+                    <label>时间段</label>
+                    <el-time-select
+                        placeholder="起始时间"
+                        v-model="form.alertConditions[index].startTime"
+                        :picker-options="{
+                        start: setStart,
+                        step: setStep,
+                        end: setEnd
+                        }">
+                    </el-time-select>
+                    <el-time-select
+                        placeholder="结束时间"
+                        v-model="form.alertConditions[index].endTime"
+                        :picker-options="{
+                        start: setStart,
+                        step: setStep,
+                        end: setEnd,
+                        minTime: form.alertConditions[index].startTime
+                        }">
+                    </el-time-select>
+                <label>频率大于等于</label>
+                    <el-input-number v-model="form.alertConditions[index].achieveAlert" :min="0" :max="999"></el-input-number>
                 <label>次</label>
                 <el-button type="danger" icon="el-icon-delete" circle size="mini" class="plantset-iconb" @click="removePlan(index)"></el-button>
-              </div>
+                </div>
+                <div class="plantset-title" v-else-if="ite.alertId==4">
+                    <label>预警类型</label>
+                    <el-select v-model="form.alertConditions[index].alertId" filterable placeholder="请选择" @change="changeval(index)">
+                        <el-option
+                        v-for="item in planOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>
+                    <label>时间段</label>
+                    <el-time-select
+                        placeholder="起始时间"
+                        v-model="form.alertConditions[index].startTime"
+                        :picker-options="{
+                        start: setStart,
+                        step: setStep,
+                        end: setEnd
+                        }">
+                    </el-time-select>
+                    <el-time-select
+                        placeholder="结束时间"
+                        v-model="form.alertConditions[index].endTime"
+                        :picker-options="{
+                        start: setStart,
+                        step: setStep,
+                        end: setEnd,
+                        minTime: form.alertConditions[index].startTime
+                        }">
+                    </el-time-select>
+                    <label>时长大于等于</label>
+                    <el-input-number v-model="form.alertConditions[index].achieveAlert" :min="0" :max="999"></el-input-number>
+                    <label>分</label>
+                    <el-button type="danger" icon="el-icon-delete" circle size="mini" class="plantset-iconb" @click="removePlan(index)"></el-button>
+                </div>
+                <div class="plantset-title" v-else-if="ite.alertId==5">
+                    <label>预警类型</label>
+                    <el-select v-model="form.alertConditions[index].alertId" filterable placeholder="请选择" @change="changeval(index)">
+                        <el-option
+                        v-for="item in planOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>
+                    <label>时间段</label>
+                    <el-time-select
+                        placeholder="起始时间"
+                        v-model="form.alertConditions[index].startTime"
+                        :picker-options="{
+                    start: setStart,
+                        step: setStep,
+                        end: setEnd
+                        }">
+                    </el-time-select>
+                    <el-time-select
+                        placeholder="结束时间"
+                        v-model="form.alertConditions[index].endTime"
+                        :picker-options="{
+                        start: setStart,
+                        step: setStep,
+                        end: setEnd,
+                        minTime: form.alertConditions[index].startTime
+                        }">
+                    </el-time-select>
+                    <label>值</label>
+                    <el-select v-model="form.alertConditions[index].averageAlert" filterable placeholder="请选择">
+                        <el-option
+                        v-for="item in hOption"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>
+                    <el-input-number v-model="form.alertConditions[index].achieveAlert" :min="0" :max="999"></el-input-number>
+                    <label>次/每分</label>
+                    <el-button type="danger" icon="el-icon-delete" circle size="mini" class="plantset-iconb" @click="removePlan(index)"></el-button>
+                </div>
+                <div class="plantset-title"   v-else-if="ite.alertId==6">
+                    <label>预警类型</label>
+                    <el-select v-model="form.alertConditions[index].alertId" filterable placeholder="请选择" @change="changeval(index)">
+                        <el-option
+                        v-for="item in planOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>
+                    <label>时间段</label>
+                    <el-time-select
+                        placeholder="起始时间"
+                        v-model="form.alertConditions[index].startTime"
+                        :picker-options="{
+                        start: setStart,
+                        step: setStep,
+                        end: setEnd
+                        }">
+                    </el-time-select>
+                    <el-time-select
+                        placeholder="结束时间"
+                        v-model="form.alertConditions[index].endTime"
+                        :picker-options="{
+                        start: setStart,
+                        step: setStep,
+                        end: setEnd,
+                        minTime: form.alertConditions[index].startTime
+                        }">
+                    </el-time-select>
+                    <label>值</label>
+                    <el-select v-model="form.alertConditions[index].averageAlert" filterable placeholder="请选择">
+                        <el-option
+                        v-for="item in bOption"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>
+                    <el-button type="danger" icon="el-icon-delete" circle size="mini" class="plantset-iconb" @click="removePlan(index)"></el-button>
+                </div>
                 
-              <div  class="plantset-title" v-else-if="ite.alertId==3">
-                <label>预警类型</label>
-                 <el-select v-model="form.alertConditions[index].alertId" filterable placeholder="请选择" @change="changeval(index)">
-                    <el-option
-                    v-for="item in planOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                </el-select>
-                <label>时间段</label>
-                <el-time-select
-                    placeholder="起始时间"
-                    v-model="form.alertConditions[index].startTime"
-                    :picker-options="{
-                    start: setStart,
-                    step: setStep,
-                    end: setEnd
-                    }">
-                </el-time-select>
-                <el-time-select
-                    placeholder="结束时间"
-                    v-model="form.alertConditions[index].endTime"
-                    :picker-options="{
-                    start: setStart,
-                    step: setStep,
-                    end: setEnd,
-                    minTime: form.alertConditions[index].startTime
-                    }">
-                </el-time-select>
-               <label>频率大于等于</label>
-                <el-input-number v-model="form.alertConditions[index].achieveAlert" :max="999"></el-input-number>
-               <label>次</label>
-               <el-button type="danger" icon="el-icon-delete" circle size="mini" class="plantset-iconb" @click="removePlan(index)"></el-button>
-              </div>
-              <div class="plantset-title" v-else-if="ite.alertId==4">
-                <label>预警类型</label>
-                 <el-select v-model="form.alertConditions[index].alertId" filterable placeholder="请选择" @change="changeval(index)">
-                    <el-option
-                    v-for="item in planOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                </el-select>
-                <label>时间段</label>
-                <el-time-select
-                    placeholder="起始时间"
-                    v-model="form.alertConditions[index].startTime"
-                    :picker-options="{
-                    start: setStart,
-                    step: setStep,
-                    end: setEnd
-                    }">
-                </el-time-select>
-                <el-time-select
-                    placeholder="结束时间"
-                    v-model="form.alertConditions[index].endTime"
-                    :picker-options="{
-                    start: setStart,
-                    step: setStep,
-                    end: setEnd,
-                    minTime: form.alertConditions[index].startTime
-                    }">
-                </el-time-select>
-                <label>时长大于等于</label>
-                <el-input-number v-model="form.alertConditions[index].achieveAlert" :max="999"></el-input-number>
-                <label>分</label>
-                <el-button type="danger" icon="el-icon-delete" circle size="mini" class="plantset-iconb" @click="removePlan(index)"></el-button>
-              </div>
-              <div class="plantset-title" v-else-if="ite.alertId==5">
-                <label>预警类型</label>
-                 <el-select v-model="form.alertConditions[index].alertId" filterable placeholder="请选择" @change="changeval(index)">
-                    <el-option
-                    v-for="item in planOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                </el-select>
-                <label>时间段</label>
-                <el-time-select
-                    placeholder="起始时间"
-                    v-model="form.alertConditions[index].startTime"
-                    :picker-options="{
-                   start: setStart,
-                    step: setStep,
-                    end: setEnd
-                    }">
-                </el-time-select>
-                <el-time-select
-                    placeholder="结束时间"
-                    v-model="form.alertConditions[index].endTime"
-                    :picker-options="{
-                    start: setStart,
-                    step: setStep,
-                    end: setEnd,
-                    minTime: form.alertConditions[index].startTime
-                    }">
-                </el-time-select>
-                <label>值</label>
-                <el-select v-model="form.alertConditions[index].averageAlert" filterable placeholder="请选择">
-                    <el-option
-                    v-for="item in hOption"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                </el-select>
-                <el-input-number v-model="form.alertConditions[index].achieveAlert" :max="999"></el-input-number>
-                <label>次/每分</label>
-                <el-button type="danger" icon="el-icon-delete" circle size="mini" class="plantset-iconb" @click="removePlan(index)"></el-button>
-              </div>
-              <div class="plantset-title"   v-else-if="ite.alertId==6">
-                <label>预警类型</label>
-                 <el-select v-model="form.alertConditions[index].alertId" filterable placeholder="请选择" @change="changeval(index)">
-                    <el-option
-                    v-for="item in planOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                </el-select>
-                <label>时间段</label>
-                <el-time-select
-                    placeholder="起始时间"
-                    v-model="form.alertConditions[index].startTime"
-                    :picker-options="{
-                    start: setStart,
-                    step: setStep,
-                    end: setEnd
-                    }">
-                </el-time-select>
-                <el-time-select
-                    placeholder="结束时间"
-                    v-model="form.alertConditions[index].endTime"
-                    :picker-options="{
-                    start: setStart,
-                    step: setStep,
-                    end: setEnd,
-                    minTime: form.alertConditions[index].startTime
-                    }">
-                </el-time-select>
-                <label>值</label>
-                 <el-select v-model="form.alertConditions[index].averageAlert" filterable placeholder="请选择">
-                    <el-option
-                    v-for="item in bOption"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                </el-select>
-                <el-button type="danger" icon="el-icon-delete" circle size="mini" class="plantset-iconb" @click="removePlan(index)"></el-button>
-              </div>
-              
-            </div>
+                </div>
             </el-scrollbar>
         <div slot="footer" class="dialog-footer">
             <el-button @click.native="handleClose">取消</el-button>
@@ -271,16 +272,22 @@ export default {
                 name:"",
                 alertConditions:[]
             },
+            rules:{
+                name: [
+                    { required: true, message: '请输入活动名称', trigger: 'blur' },
+                    { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+                ],
+            },
             setStart:"00:00",
             setEnd:"23:45",
             setStep:"00:15",
             temp:[
-                {alertId:1,startTime:"",endTime:"",averageAlert:"",achieveAlert:""},
-                {alertId:2,startTime:"",endTime:"",averageAlert:"",achieveAlert:""},
-                {alertId:3,startTime:"",endTime:"",averageAlert:"",achieveAlert:""},
-                {alertId:4,startTime:"",endTime:"",averageAlert:"",achieveAlert:""},
-                {alertId:5,startTime:"",endTime:"",averageAlert:"",achieveAlert:""},
-                {alertId:6,startTime:"",endTime:"",averageAlert:"",achieveAlert:""},
+                {alertId:1,startTime:"08:00",endTime:"12:00",averageAlert:"",achieveAlert:""},
+                {alertId:2,startTime:"08:00",endTime:"12:00",averageAlert:"",achieveAlert:""},
+                {alertId:3,startTime:"08:00",endTime:"12:00",averageAlert:"",achieveAlert:""},
+                {alertId:4,startTime:"08:00",endTime:"12:00",averageAlert:"",achieveAlert:""},
+                {alertId:5,startTime:"08:00",endTime:"12:00",averageAlert:"",achieveAlert:""},
+                {alertId:6,startTime:"08:00",endTime:"12:00",averageAlert:"",achieveAlert:""},
             ],
             startTime:"",
             endTime:"",
@@ -353,102 +360,106 @@ export default {
 			},
             //新增
 			addSubmit() {
-                if(this.submitType=="update"){
-                    let para = JSON.parse( JSON.stringify(this.form))
-                    let param = {}
-                    param.id = para.id
-                    param.name = para.name
-                    console.log(param)
-                    updatePlan(param).then(res=>{
-                        if(res.code==0){
-                            let arr=para.alertConditions
-                            updateReservePlanAndCondition(arr).then(res=>{
-                                console.log(res)
+                this.$refs["ruleForm"].validate((valid) => {
+                    if (valid) {
+                        if(this.submitType=="update"){
+                            let para = JSON.parse( JSON.stringify(this.form))
+                            let param = {}
+                            param.id = para.id
+                            param.name = para.name
+                            console.log(param)
+                            updatePlan(param).then(res=>{
                                 if(res.code==0){
-                                    this.$message({
-                                        message: '修改成功',
-                                        type: 'success'
-                                    });
-                                    this.formVisible = false;	
-                                    this.$emit("getPlanQueryData")
+                                    let arr=para.alertConditions
+                                    updateReservePlanAndCondition(arr).then(res=>{
+                                        console.log(res)
+                                        if(res.code==0){
+                                            this.$message({
+                                                message: '修改成功',
+                                                type: 'success'
+                                            });
+                                            this.formVisible = false;	
+                                            this.$emit("getPlanQueryData")
+                                        }else{
+                                            this.$message({
+                                                message: '修改预案条件失败',
+                                                type: 'error'
+                                            });
+                                        }
+                                    }).catch(err=>{
+                                        this.$message({
+                                            message: '修改预案条件失败',
+                                            type: 'error'
+                                        });
+                                    })
                                 }else{
                                     this.$message({
-                                        message: '修改预案条件失败',
+                                        message: '修改预案失败',
                                         type: 'error'
                                     });
                                 }
                             }).catch(err=>{
                                 this.$message({
-                                    message: '修改预案条件失败',
+                                    message: '修改预案失败',
                                     type: 'error'
                                 });
                             })
-                        }else{
-                            this.$message({
-                                message: '修改预案失败',
-                                type: 'error'
-                            });
-                        }
-                    }).catch(err=>{
-                        this.$message({
-                            message: '修改预案失败',
-                            type: 'error'
-                        });
-                    })
-                }else if(this.submitType=="insert"){
-                    let para = JSON.parse( JSON.stringify(this.form))
-                    let param = {}
-                    param.name = para.name
-                    param.createTime  = parseTime(new Date())
-                    console.log(param)
-                    insertPlan(param).then(res=>{
-                        if(res.code==0){
-                            let id = res.data.id
-                            let arr = []
-                            arr=para.alertConditions
-                            for(let i in arr ){
-                                arr[i].planId = id
-                            }
-                            addReservePlan(arr).then(res=>{
-                                console.log(res)
+                        }else if(this.submitType=="insert"){
+                            let para = JSON.parse( JSON.stringify(this.form))
+                            let param = {}
+                            param.name = para.name
+                            param.createTime  = parseTime(new Date())
+                            console.log(param)
+                            insertPlan(param).then(res=>{
                                 if(res.code==0){
-                                    this.$message({
-                                        message: '新增成功',
-                                        type: 'success'
-                                    });
-                                    this.formVisible = false;	
-                                    this.$emit("getPlanQueryData")
+                                    let id = res.data.id
+                                    let arr = []
+                                    arr=para.alertConditions
+                                    for(let i in arr ){
+                                        arr[i].planId = id
+                                    }
+                                    addReservePlan(arr).then(res=>{
+                                        console.log(res)
+                                        if(res.code==0){
+                                            this.$message({
+                                                message: '新增成功',
+                                                type: 'success'
+                                            });
+                                            this.formVisible = false;	
+                                            this.$emit("getPlanQueryData")
+                                        }else{
+                                            this.$message({
+                                                message: '新增预案条件失败',
+                                                type: 'error'
+                                            });
+                                        }
+                                    }).catch(err=>{
+                                        this.$message({
+                                            message: '新增预案条件失败',
+                                            type: 'error'
+                                        });
+                                    })
                                 }else{
                                     this.$message({
-                                        message: '新增预案条件失败',
+                                        message: '新增预案失败',
                                         type: 'error'
                                     });
                                 }
                             }).catch(err=>{
                                 this.$message({
-                                    message: '新增预案条件失败',
+                                    message: '新增预案失败',
                                     type: 'error'
                                 });
                             })
+                            
                         }else{
                             this.$message({
-                                message: '新增预案失败',
+                                message: '参数不明确',
                                 type: 'error'
                             });
                         }
-                    }).catch(err=>{
-                        this.$message({
-                            message: '新增预案失败',
-                            type: 'error'
-                        });
-                    })
-                    
-                }else{
-                    this.$message({
-                        message: '参数不明确',
-                        type: 'error'
-                     });
-                }
+                    }
+                })
             },
             addPlanSet(){
                 console.log(this.temp)
@@ -522,21 +533,26 @@ export default {
     &-title{
         width: 100%;
         margin: 1vh 0;
+        min-width: 850px;
     }
     &-content{
         .el-input{
             width: 10%;
+            min-width: 100px;
         }
         .el-input-number{
             width: 15%;
+             min-width: 100px;
         }
         .el-select{
             width: 10%;
+            min-width: 100px;
         }
     }
     &-iconb{
         float: right;
-        margin-right: 2vw;
+        margin-right:2vw;
+        
     }
 }
 </style>
