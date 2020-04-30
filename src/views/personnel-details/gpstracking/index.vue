@@ -40,7 +40,7 @@
                    <my-map ref="map" :locusPorint="locusPorint" :enterElecArr="enterElecArr" :personPoint="personPoint" :warnPoint="warnPoint"></my-map>
               </div>
               <div class="gpstracking-map">
-                电子围栏预警记录:
+                
                 <my-table :tableTitle="tableTitle" :tableData="tableData" @positionWarn="positionWarn" @changeData="changeData"  @alertmessage="alertmessage" ></my-table>
               </div>
            
@@ -131,7 +131,7 @@ export default {
       async getPersonCoordinate(){
         let para ={}
         console.log(this.personData)
-        para.keyUserId= this.personData.keyUserid
+        para.keyUserId= this.personData.id
         para.startTime=this.beginTime
         para.endTime=this.endTime
         await getPersonCoordinate(para).then(res=>{
@@ -178,7 +178,7 @@ export default {
     },
      getPerSe(){
        let para ={}
-        para.keyUserId= this.personData.keyUserid
+        para.keyUserId= this.personData.id
        getPerSe(para).then(res=>{
               if(res.code==0){
                   let phoneList = res.data.phone_list
@@ -193,7 +193,10 @@ export default {
           })
      },
      async getPersonAlert(){
-        let id = this.personData.keyUserid
+       this.locusPorint=[]
+            this.enterElecArr=[]
+            this.warnPoint={}
+        let id = this.personData.id
        await getPersonAlert({keyUserid:id}).then(res=>{
           if(res.code==0){
             this.tableData=res.data.data
@@ -251,7 +254,7 @@ export default {
       }
     },
     mounted(){
-      this.personData.keyUserid=this.$route.query.id
+      this.personData.id=this.$route.query.id
       this.getPerSe()
       this.getPersonAlert()
       
@@ -312,6 +315,7 @@ export default {
     width: 50%;
       height: 100%;
       padding-bottom: 20px;
+      
   }
   
 }

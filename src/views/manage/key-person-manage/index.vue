@@ -126,6 +126,7 @@ export default {
       },
       /* 新增数据 */
       insertData(para){
+        para.personnelStatus=1
         insertKeyPnlData(para).then(res=>{
           this.$refs.dialog.loading = false;
           this.$refs.dialog.form={};

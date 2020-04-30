@@ -29,7 +29,9 @@
                         <el-link type="primary" slot="reference" :formatter="formatSex" v-html="arrFormatter(scope.row[item.name],item.name)"></el-link>
                       </el-popover>
                 </div>
-                <el-button v-else-if="item.type=='button'&&scope.row['roleId']>1"  icon="el-icon-setting" type="info" size="small" circle @click="handleSetting(scope.$index, scope.row,item.name)"></el-button>
+                <el-button v-else-if="item.type=='button'"  icon="el-icon-setting" type="info" size="small" circle @click="handleSetting(scope.$index, scope.row,item.name)"></el-button>
+                <el-button v-else-if="item.type=='buttonRole'&&scope.row['roleId']>1"  icon="el-icon-setting" type="info" size="small" circle @click="handleSetting(scope.$index, scope.row,item.name)"></el-button>
+
                 <div v-else-if="item.type=='equip'">
                   <span v-for="(ite,index) in scope.row[item.name]" :key="index" v-html="arrFormatter(ite.type,item.name)"></span>
                 </div>

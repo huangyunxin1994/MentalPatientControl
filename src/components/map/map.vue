@@ -460,7 +460,7 @@ export default {
             {
               path: '/persondetails' ,
               query: {
-                row: objArr[0]
+                id: objArr[0].keyUserid
               }
           })
           }
@@ -630,14 +630,6 @@ export default {
   },
   mounted(){
     
-  },
-  watch:{
-    pointsArr:{//深度监听，可监听到对象、数组的变化
-         handler(val, oldVal){
-            this.getmap()
-         },
-         deep:true //true 深度监听
-     }
   }
 }
 </script>

@@ -147,12 +147,12 @@
                         <el-form-item label="上传频率" v-if="equipmentType=='3'">
                             <el-input type="number" v-model="form['uploadInterval']"></el-input>
                         </el-form-item>
-                        <el-form-item label="设备位置" v-if="equipmentType=='1'">
+                        <!-- <el-form-item label="设备位置" v-if="equipmentType=='1'">
                             <div class="equip-map">
                                 <i class="equip-map-icon iconicon-test-copy"></i>
                                 <my-map ref="map" :centerR="centerR" :Elatitude="Elatitude" :Elongitude="Elongitude"></my-map>
                             </div>
-                        </el-form-item>
+                        </el-form-item> -->
                         <el-form-item label="人员位置" v-if="mappos=='1'">
                             <div class="equip-map">
                                 <i class="equip-map-icon iconicon-test-copy"></i>
@@ -345,7 +345,7 @@ export default {
                 });
             },
             getPersonData(){
-                getUserData().then(res=>{
+                getUserData({roleId:4}).then(res=>{
                     //console.log(res)
                     if(res.code==0){
                     this.personOptions=res.data.data

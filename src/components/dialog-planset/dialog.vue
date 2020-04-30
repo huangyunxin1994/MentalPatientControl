@@ -360,8 +360,9 @@ export default {
 			},
             //新增
 			addSubmit() {
-                this.$refs["ruleForm"].validate((valid) => {
-                    if (valid) {
+                this.$confirm('确认提交吗?', '提示', {
+				    type: 'warning'
+                }).then(() => {
                         if(this.submitType=="update"){
                             let para = JSON.parse( JSON.stringify(this.form))
                             let param = {}
@@ -458,7 +459,6 @@ export default {
                                 type: 'error'
                             });
                         }
-                    }
                 })
             },
             addPlanSet(){

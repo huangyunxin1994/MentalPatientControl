@@ -1,6 +1,6 @@
 <template>
     <el-container class="usermanage-container">
-      <my-tree></my-tree>
+      <my-tree @getThisOrgan="getThisOrgan"></my-tree>
       <div class="usermanage-table">
           <div class="usermanage-table-select">
             <label >选择角色</label>
@@ -28,6 +28,7 @@ import  myTree from '@/components/tree/tree'
 import  myDialog from '@/components/dialog/dialog' 
 import  myTransfer from '@/components/dialog-user/dialog-user'
 import { getUserData,insertUserData,updateUserData,removeUserData,bRemoveUserData,relationKyeUser,getRoleData } from '@/api/table'
+import { parse } from 'path-to-regexp'
 export default {
   name: 'Usermanage',
   components:{
@@ -90,7 +91,7 @@ export default {
             { title : "是否复用", name : "multiplexMark", width : "120", type : "radio" },
             { title : "角色", name : "roleName", width : "150", type : "input" },
             { title : "所属组织", name : "organizationName", minwidth : "150", type : "input" },
-           { title : "关联重点人员", name : "person", width : "120", type : "button" },
+           { title : "关联重点人员", name : "person", width : "120", type : "buttonRole" },
             { title : "操作",width : "150", type : "handle",button:[{name:"编辑",type:"edit"},{name:"删除",type:"remove"}] }
           ],
          handleTitle:[],
@@ -103,6 +104,20 @@ export default {
     getUserList(){
       this.$refs.table.listLoading=true
       getUserData().then(res=>{
+        console.log(res)
+        if(res.code==0){
+          this.tableData=res.data.data
+          console.log(this.tableData)
+          this.$refs.table.listLoading=false
+        }
+
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    getThisOrgan(val){
+      
+      getUserData({organizationId:val.id}).then(res=>{
         console.log(res)
         if(res.code==0){
           this.tableData=res.data.data
@@ -234,9 +249,11 @@ export default {
     },
     getRoleList(){
       getRoleData().then(res=>{
-        //console.log(res)
+        console.log(res)
         if(res.code==0){
           this.options=res.data.data
+          let para ={id:"",name:"全部"}
+          this.options.unshift(para)
         }
 
       }).catch(error => {

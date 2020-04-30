@@ -46,7 +46,6 @@ export default {
 			handleShow(row) {
         console.log("*************************************")
         console.log(row)
-          if(this.userData.length==0&&this.userValue.length==0){
 
               this.data=[]
               this.value=[]
@@ -62,7 +61,6 @@ export default {
                           });
                       }
                       this.data=userArr
-                      if(this.form.submitType=="update"){
                           let params={}
                           params.roleId=this.roleId;
                           params.type = 1
@@ -79,11 +77,6 @@ export default {
                                   this.$emit("initData",this.data,this.value)
                               }
                           })
-                      }else{
-                          this.value=[]
-                          this.roleFormVisible = true;
-                          this.$emit("initData",this.data,this.value)
-                      }
 
                   }else{
 
@@ -93,11 +86,7 @@ export default {
               }).catch(function (error) {
                   console.log(error);
               });
-          }else{
-             this.data=this.userData
-             this.value=this.userValue
-             this.roleFormVisible = true;
-          }
+          
 
 
       },
@@ -107,7 +96,7 @@ export default {
       },
       submitData(){
           this.roleFormVisible=false
-          this.$emit("submitData",this.value)
+          this.$emit("settingUser",this.value,this.roleId)
       },
       handleShow1(row){
         this.roleFormVisible=true

@@ -4,7 +4,7 @@
           <my-table :tableTitle="tableTitle" :tableData="tableData" ref="table" @changeData="changeData" @removeData="removeData" @bRemoveData="bRemoveData" @relevancePerson="relevancePerson"></my-table>
           <my-dialog1 :tableTitle="handleTitle" :formRule="formRule" ref="dialog1" @insertData="insertData" @updateData="updateData" @handleClosed="handleClosed"></my-dialog1>
           <my-dialog2 :powerData="powerData" ref="dialog2" @insertData="insertData" @updateData="updateData" @returnPre="returnPre"></my-dialog2>
-          <my-dialog3 :userValue="userValue" ref="dialog3" :userData="userData"  @insertData="insertData" @updateData="updateData" @returnPre2="returnPre2" @initData="initData" @submitData="submitData"></my-dialog3>
+          <my-dialog3 :userValue="userValue" ref="dialog3" :userData="userData"  @insertData="insertData" @updateData="updateData" @returnPre2="returnPre2" @initData="initData" @settingUser="settingUser"></my-dialog3>
     </el-container>
 </template>
 

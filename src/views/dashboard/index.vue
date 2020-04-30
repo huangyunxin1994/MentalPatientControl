@@ -125,23 +125,24 @@ export default {
       getThisOrgan(data){
         if(data.className=="person"){
           this.$refs.map.movePosBypoint(data.keyLongitude,data.keyLatitude)
-        }else{
-          let role = JSON.parse(getRole())
-          let user = JSON.parse(getUser());
-          console.log(user)
-          let param ={}
-          param.roleId=role
-          param.userId=user.userId
-          param.organizaId=data.id
-          getOrganData(param).then(res=>{
-            if(res.code==0){
-               this.pointsArr=res.data.user;
-               console.log("pointsArr")
-               console.log(this.pointsArr)
-               this.$refs.map.getmap();
-            }
-          })
         }
+        // else{
+        //   let role = JSON.parse(getRole())
+        //   let user = JSON.parse(getUser());
+        //   console.log(user)
+        //   let param ={}
+        //   param.roleId=role
+        //   param.userId=user.userId
+        //   param.organizaId=data.id
+        //   getOrganData(param).then(res=>{
+        //     if(res.code==0){
+        //        this.pointsArr=res.data.user;
+        //        console.log("pointsArr")
+        //        console.log(this.pointsArr)
+        //        this.$refs.map.getmap();
+        //     }
+        //   })
+        // }
       },
       getPersonData(val){
 

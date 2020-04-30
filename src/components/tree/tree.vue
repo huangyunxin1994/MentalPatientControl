@@ -7,7 +7,7 @@
         <el-tree
           :data="data"
           :props="defaultProps"
-          node-key="id"
+          node-key="uid"
           ref="tree"
           highlight-current
           :render-content="renderContent" 
@@ -28,15 +28,15 @@ function filterArray(data) {
     });
     var map = {};
     data.forEach(function (item) {
-        map[item.id] = item;
+        map[item.uid] = item;
     });
     var val = [];
     data.forEach(function (item) {
-        if(item.organizationId)
+        if(item.uorganizationId)
           item.className="person"
         else
           item.className="organ"
-        var parent = map[item.parentId]||map[item.organizationId];
+        var parent = map[item.uparentId]||map[item.uorganizationId];
         if (parent) {
             (parent.children || ( parent.children = [] )).push(item);
         } else {
@@ -80,17 +80,29 @@ export default {
         let role = JSON.parse(getRole()) 
         let para ={organizaId:organizaId,roleId:role,userId:userid}
         getOrganData(para).then(res=>{
-          console.log(res)
           this.data=res.data.data
           let organ = res.data.data;
+          organ.map(item=>{
+            item.uid="O"+item.id
+            item.uparentId="O"+item.parentId
+          })
           let person = res.data.user;
+          person.map(item=>{
+            item.uid="P"+item.id
+            item.uorganizationId="O"+item.organizationId
+          })
+          
           this.$emit("getPersonData",person)
           let arr=[]
           if(this.showPerson=="true")
             arr = organ.concat(person)
           else
             arr = organ
+
+          console.log(arr)
           let filterarr = filterArray(arr)
+          console.log("filterarr")
+          console.log(filterarr)
           this.data=filterarr
         }).catch(err=>{
         })
