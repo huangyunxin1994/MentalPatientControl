@@ -91,11 +91,13 @@ export default {
       warnNum:0,
       time:[],
       bhTime:[],
+      zjTime:[],
       // time:["15:00","17:00","19:00","21:00","23:00","1:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"],
       activityFrequencyT:[],
       activityFrequencyA:[],
       activityTimeT:[],
       activityTimeA:[],
+      zjData:[],
       minData:'',
       maxData:'',
       phoneList:[],
@@ -305,7 +307,7 @@ export default {
                   this.blood = aBlood
                   this.heartRate = aHeartRate
 
-                  let arr1=[],arr2=[],arr3=[],arr4=[],arr5=[],arr6=[],arr7=[]
+                  let arr1=[],arr2=[],arr3=[],arr4=[],arr5=[],arr6=[],arr7=[],arr8=[]
                   if(res.data.frequency_today.length>0){
                     for(let i=0;i < this.time.length;i++){
                         let para=[],para2=[]
@@ -355,6 +357,15 @@ export default {
                         arr7.push(para3)
                     }
                   }
+                  if(res.data.homeStzteList.length>0){
+                    for(let i in res.data.homeStzteList){
+                        let para=[],para2=[],para3=[]
+                        this.zjTime.push(res.data.homeStzteList[i].hours)
+                        para.push(res.data.homeStzteList[i].hours)
+                        para.push(res.data.homeStzteList[i].type)
+                        arr8.push(para)
+                    }
+                  }
                   this.activityFrequencyT = arr1
                   this.activityTimeT = arr2
                   this.activityFrequencyA = arr3
@@ -362,6 +373,7 @@ export default {
                   this.heartRateT = arr5
                   this.diastolicPressureT = arr6
                   this.systolicPressureT = arr7
+                  this.zjData=arr8
                   this.drawChart()
               }else{
                 this.warnActive = true
@@ -673,7 +685,7 @@ export default {
             },
             series: [{
                 name:"今日",
-                data: this.getEchartData2(),
+                data: "",//this.getEchartData2(),
                 type: 'line',
                 itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                     color: '#E6A23C',
@@ -698,7 +710,7 @@ export default {
             },
             {
                 name:"平均",
-                data: this.getEchartData2(),
+                data: "",//this.getEchartData2(),
                 type: 'line',
                 itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                     color: '#409EFF',
@@ -714,23 +726,20 @@ export default {
               orient: 'vertical',
               left: 'center',
               bottom:'bottom',
-              data:['今日','平均'],
+              data:['今日'],
             },
             xAxis: {
-                type: 'time',
-                boundaryGap: false,
-                name:"单位: 小时",
-                interval:2*3600*1000,
-                axisLabel : {
-                    formatter: this.formatterFun
-                    // formatter:this.getData
-                }
+              type: 'category',
+              boundaryGap: false,
+              name:"单位:小时",
+              interval:4,
+              data: this.zjTime
             },
             yAxis: {
                 type: 'value',
                 name:"单位: 在家/离家",
-                min:0,
-                max:1,
+                min:1,
+                max:2,
                 splitNumber: 5,
                 axisLabel:{
                   formatter: function (value) {
@@ -750,22 +759,12 @@ export default {
             },
             series: [{
                 name:"今日",
-                data: this.getEchartData3(),
+                data: this.zjData,
                 step: 'start',
                 type: 'line',
                 itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                     color: '#E6A23C',
                     borderColor: '#E6A23C',
-                }
-            },
-            {
-                name:"平均",
-                data: this.getEchartData3(),
-                step: 'start',
-                type: 'line',
-                itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
-                    color: '#409EFF',
-                    borderColor: '#409EFF',
                 }
             }
             ],

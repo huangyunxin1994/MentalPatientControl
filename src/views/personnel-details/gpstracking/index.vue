@@ -304,6 +304,9 @@ export default {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      .el-date-editor{
+       width: 80%;
+      }
   }
   &-content{
     height: calc(100% - 120px);

@@ -152,7 +152,7 @@ export default {
         }else{
           this.$message({
             message: '新增失败',
-            type: 'danger'
+            type: 'error'
           });
         }
       })
@@ -174,7 +174,7 @@ export default {
         }else{
           this.$message({
             message: '修改失败',
-            type: 'danger'
+            type: 'error'
           });
         }
       })
@@ -199,7 +199,7 @@ export default {
         }else{
           this.$message({
             message: '删除失败',
-            type: 'danger'
+            type: 'error'
           });
         }
       })
@@ -219,7 +219,7 @@ export default {
         }else{
           this.$message({
             message: '解绑失败',
-            type: 'danger'
+            type: 'error'
           });
         }
       }).catch(err=>{

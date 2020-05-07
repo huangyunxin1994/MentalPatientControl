@@ -67,7 +67,8 @@ export default {
             { title : "角色名称", name : "name", minwidth : "120", type : "input" },
             { title : "状态", name : "state", minwidth : "120", type : "radio" },
             { title : "描述", name : "remakes", minwidth : "120", type : "input" },
-            { title : "操作",width : "150", type : "handle",button:[{name:"编辑",type:"edit"},{name:"关联",type:"relevance"}] }
+            { title : "操作",width : "150", type : "handle",button:[{name:"编辑",type:"edit"}] }
+            //{ title : "操作",width : "150", type : "handle",button:[{name:"编辑",type:"edit"},{name:"关联",type:"relevance"}] }
             ],
          handleTitle:[
             { title : "角色名称", name : "name", type : "input" },
@@ -299,7 +300,7 @@ export default {
           this.addRoleRelationMenu(value,para,roleid)
         }else{
           this.$message({
-              message: '修改角色失败',
+              message: res.msg,
               type: 'error'
             });
           this.handleClosed()

@@ -3,7 +3,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">精神病患者管控数据分析平台</h3>
+        <h3 class="title">特殊人群辅助管理系统</h3>
       </div>
 
       <el-form-item prop="username">
@@ -69,8 +69,8 @@ export default {
     }
     return {
       loginForm: {
-        username: 'administrator',
-        password: 'password'
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],

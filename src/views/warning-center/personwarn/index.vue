@@ -96,6 +96,9 @@ export default {
         }, {
           value: '8',
           label: '限制外出预警'
+        }, {
+          value: '9',
+          label: 'SOS'
         }],
         options: [
         {

@@ -2,7 +2,7 @@
   <el-container class="login-container">
     <el-header class="bulletin-header" height="100">
       <span>&nbsp;</span>
-      <span class="bulletin-title">精神病患者管控数据分析平台</span>
+      <span class="bulletin-title">特殊人群辅助管理系统</span>
       <el-button @click="enterSys" type="primary">进入系统</el-button>
     </el-header>
     
@@ -44,7 +44,7 @@
 <script>
 import echarts from 'echarts'
 import  mymap  from '@/components/map/map'
-import {equipmentStatistics,keyPersonnelEarly,keyPersonnelStatistics,selectWlCount,userRoleStatistics,getPerWarnlData,getOrganData } from "@/api/table"
+import {equipmentStatistics,keyPersonnelEarly,keyPersonnelStatistics,selectWlCount,userRoleStatistics,getPerWarnlData,getOrganData,selectEw } from "@/api/table"
 import { getRole,getUser } from '@/utils/auth'
 export default {
   name: 'Login',
@@ -71,6 +71,8 @@ export default {
       equipActive:[],
       alert1:[],alert2:[],alert3:[],alert4:[],alert5:[],alert6:[],alert7:[],
       warnData:[],
+      warnDoneData:[],
+      warnDoneDataA:[],
       bulletArr:[]
 
     }
@@ -103,6 +105,7 @@ export default {
       await this.keyPersonnelStatistics()
       await this.keyPersonnelEarly()
       await this.userRoleStatistics()
+      await this.selectEw()
       await this.getPerWarnlData()
       await this.equipmentStatistics()
       await this.drawChart();
@@ -138,6 +141,80 @@ export default {
         }
         
       })
+    },
+    async selectEw(){
+      await selectEw().then(res=>{
+        if(res.code==0){
+          let arr1 =[],arr2=[]
+           console.log('预警处理')
+          console.log(res.data.list)
+          for(let i in res.data.list){
+            let data = this.formaterData(res.data.list[i])
+            arr1.push(data)
+          }
+          for(let i in res.data.listAll){
+            let data =  this.formaterData(res.data.listAll[i])
+            arr2.push(data)
+          }
+          this.warnDoneData=arr1
+          this.warnDoneDataA=arr2
+        }
+      })
+    },
+     formaterData(data){
+      let para =[]
+      switch(data.months){
+        case '01' : 
+          para.push("一月");
+          para.push(data.count);
+          break;
+        case '02' : 
+          para.push("二月");
+          para.push(data.count);
+          break
+        case '03' : 
+          para.push("三月");
+          para.push(data.count);
+          break
+        case '04' : 
+          para.push("四月");
+          para.push(data.count);
+          break
+        case '05' : 
+          para.push("五月");
+          para.push(data.count);
+          break
+        case '06' : 
+          para.push("六月");
+          para.push(data.count);
+          break
+        case '07' : 
+          para.push("七月");
+          para.push(data.count);
+          break
+        case '08' : 
+          para.push("八月");
+          para.push(data.count);
+          break
+        case '09' : 
+          para.push("九月");
+          para.push(data.count);
+          break
+        case '10' : 
+          para.push("十月");
+          para.push(data.count);
+          break
+        case '11' : 
+          para.push("十一月");
+          para.push(data.count);
+          break
+        case '12' : 
+          para.push("十二月");
+          para.push(data.count);
+          break
+      }
+      console.log(para)
+      return para
     },
     async keyPersonnelEarly(){
       await keyPersonnelEarly().then(res=>{
@@ -430,19 +507,19 @@ export default {
                         },
                      xAxis: {
                         type: 'category',
-                        data: ['十一月', '十二月', '一月', '二月', '三月', '四月']
+                        data: ['一月', '二月', '三月', '四月', '五月', '六月','七月', '八月', '九月', '十月', '十一月', '十二月']
                     },
                     yAxis: {
                         type: 'value'
                     },
                     series: [{
                         name:"预警总数",
-                        data: [10, 8, 12, 15, 6, 7],
+                        data: this.warnDoneDataA,
                         type: 'line'
                     },
                     {
                         name:"处理数",
-                        data: [5, 8, 10, 10, 5, 7],
+                        data: this.warnDoneData,
                         type: 'line'
                     }]
                 });

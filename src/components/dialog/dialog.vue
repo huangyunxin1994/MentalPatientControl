@@ -240,14 +240,7 @@ export default {
                     this.title="修改"
                     this.Elongitude = this.form['longitude']
                     this.Elatitude = this.form['latitude']
-                    this.equipmentType=this.form['equipmentType']
                     this.mappos = this.form['mappos']
-                    console.log(this.equipmentType)
-                    if(this.equipmentType=="1"){
-                        setTimeout(()=>{
-                            this.showMap()
-                        },0)
-                    }
                     if(this.mappos=="1"){
                         setTimeout(()=>{
                             this.showMap()
@@ -256,14 +249,7 @@ export default {
                 }  
                 else if(this.form.submitType=="insert"){
                      this.title="新增"
-                     this.equipmentType=this.form['equipmentType']
                      this.mappos = this.form['mappos']
-                    console.log(this.equipmentType)
-                    if(this.equipmentType=="1"){
-                        setTimeout(()=>{
-                            this.showMap()
-                        },0)
-                    }
                     if(this.mappos=="1"){
                         setTimeout(()=>{
                             this.showMap()
@@ -295,10 +281,6 @@ export default {
 							//NProgress.start();
                             let para = Object.assign({}, this.form);
                             //console.log(para)
-                            if(para.equipmentType==1){
-                                para.longitude = this.$refs.map.longitude
-                                para.latitude = this.$refs.map.latitude
-                             }
                              if(para.mappos==1){
                                 para.longitude = this.$refs.map.longitude
                                 para.latitude = this.$refs.map.latitude
@@ -471,9 +453,6 @@ export default {
     },
     watch:{
         equipmentType(val){
-            if(val==="1"){
-                this.showMap()
-            }
                
             this.form["equipmentType"]=val
         }

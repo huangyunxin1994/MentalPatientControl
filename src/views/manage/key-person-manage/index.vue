@@ -36,11 +36,11 @@ export default {
             { title : "姓名", name : "name", width : "120", type : "name" },
             { title : "病情描述", name : "level", minwidth : "150", type : "date" },
             { title : "联系电话", name : "phone", minwidth : "150", type : "date" },
-            { title : "住址", name : "address", width : "120", type : "input" },
+            { title : "住址", name : "address", minwidth : "300", type : "input" },
             { title : "所属组织", name : "organizationName", minwidth : "150", type : "input" },
-            { title : "监护人", name : "guardian", width : "120", type : "input" },
-            { title : "网络管理员", name : "networkAdministrator", minwidth : "150", type : "input" },
-            { title : "责任医师", name : "responsiblePhysician", minwidth : "150", type : "input" },
+            { title : "监护人", name : "jhlist", width : "120", type : "jhlist" },
+            { title : "网络管理员", name : "wglist", minwidth : "150", type : "wglist" },
+            { title : "责任医师", name : "zrlist", minwidth : "150", type : "zrlist" },
             { title : "关联设备", name : "eqlist", minwidth : "150", type : "equip"},
             { title : "操作",width : "150", type : "handle",button:[{name:"编辑",type:"edit"},{name:"删除",type:"remove"}] }
         ],
@@ -50,7 +50,7 @@ export default {
             { title : "联系电话", name : "phone", type : "number" },
             { title : "住址", name : "address", type : "input" },
             { title : "所属组织", name : "organizationId", type : "cascader" },
-            { title : "监护人", name : "guardianId", type : "personselect" }
+            { title : "监护人", name : "jhlist", type : "personselect" }
             // { title : "网格管理员", name : "networkAdministratorId", type : "personselect" },
             // { title : "责任医师", name : "responsiblePhysicianId", type : "personselect" }
         ],
@@ -72,14 +72,28 @@ export default {
             if(res.code==0){
               let personlist = res.data.data
               let equiplist = res.data.equipment
+              let userList = res.data.userList
               personlist.forEach((i)=>{
                 console.log(i)
                 console.log(equiplist)
                 let arr = equiplist.filter((item)=>{
                   return item.key_id==i.id
                 })
+                let jhlist = userList.filter((item)=>{
+                  return item.keyId==i.id&&item.roleId==4
+                })
+                 let wglist = userList.filter((item)=>{
+                  return item.keyId==i.id&&item.roleId==2
+                })
+                let zrlist = userList.filter((item)=>{
+                  return item.keyId==i.id&&item.roleId==3
+                })
                 i.eqlist=arr
+                i.jhlist=jhlist
+                i.wglist=wglist
+                i.zrlist=zrlist
               })
+              console.log(personlist)
               this.tableData = personlist
               this.$refs.table.listLoading=false
             }
@@ -140,7 +154,7 @@ export default {
           }else{
             this.$message({
               message: '新增失败',
-              type: 'danger'
+              type: 'error'
             });
           }
         })
@@ -160,7 +174,7 @@ export default {
           }else{
             this.$message({
               message: '修改失败',
-              type: 'danger'
+              type: 'error'
             });
           }
         })
@@ -179,7 +193,7 @@ export default {
           }else{
             this.$message({
               message: '删除失败',
-              type: 'danger'
+              type: 'error'
             });
           }
         })

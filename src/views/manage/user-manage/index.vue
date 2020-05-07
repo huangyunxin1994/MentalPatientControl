@@ -200,8 +200,8 @@ export default {
           this.getUserList();
         }else{
           this.$message({
-            message: '修改失败',
-            type: 'danger'
+            message: res.msg,
+            type: 'error'
           });
         }
       })
@@ -219,7 +219,7 @@ export default {
         }else{
           this.$message({
             message: '删除失败',
-            type: 'danger'
+            type: 'error'
           });
         }
       })
@@ -239,7 +239,7 @@ export default {
         }else{
           this.$message({
             message: '删除失败',
-            type: 'danger'
+            type: 'error'
           });
         }
       })

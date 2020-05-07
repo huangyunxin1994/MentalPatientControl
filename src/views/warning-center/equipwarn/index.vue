@@ -69,9 +69,6 @@ export default {
           label: '全部'
         },
         {
-          value: '1',
-          label: 'SOS'
-        }, {
           value: '2',
           label: '低电'
         }, {
