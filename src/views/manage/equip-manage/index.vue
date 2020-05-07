@@ -1,10 +1,30 @@
 <template>
     <el-container class="equipmanage-container">
-        <div class="equipmanage-button">
+        <div class="equipmanage-container-handle">
+          <label for="" class="equipmanage-container-handle-label">设备状态</label>
+          <el-select v-model="valueW" filterable placeholder="请选择" @change="changeResultW">
+            <el-option
+              v-for="item in optionsW"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value" style="width:10vw">
+            </el-option>
+          </el-select>
+          <label for="" class="equipmanage-container-handle-label">设备类型</label>
+          <el-select v-model="value" filterable placeholder="请选择" @change="changeResult">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value" style="width:10vw">
+            </el-option>
+          </el-select>
+           
+        </div>
+        <el-button size="small" type="primary" @click="newData">新增设备</el-button>
           <!-- <el-button type="primary">模板下载</el-button> -->
-          <el-button size="small" type="primary" @click="newData">新增设备</el-button>
+         
           <!-- <el-button type="primary">批量导入</el-button> -->
-          </div>
           <my-table :tableTitle="tableTitle" :tableData="tableData" ref="table" @changeData="changeData" @removeData="removeData"></my-table>
           <my-dialog :tableTitle="handleTitle" :formRule="formRule" ref="dialog" @insertData="insertData" @updateData="updateData" @untying="untying"></my-dialog>
         
@@ -27,9 +47,42 @@ export default {
         formRule:{
             
         },
+        optionsW: [
+        {
+          value: '',
+          label: '全部'
+        },
+        {
+          value: '1',
+          label: '正常'
+        }, {
+          value: '2',
+          label: '离线'
+        }, {
+          value: '3',
+          label: '预警'
+        }
+      ],
+      options: [
+        {
+          value: '',
+          label: '全部'
+        },
+        {
+          value: '1',
+          label: '活动监测器'
+        }, {
+          value: '2',
+          label: '睡眠监测器'
+        }, {
+          value: '3',
+          label: '智能手表'
+        }],
+        value:"",
+        valueW:"",
         tableTitle:[
             { title : "编号", name : "code", minwidth : "120", type : "name" },
-            { title : "设备状态", name : "equipment_state", width : "120", type : "input" },
+            { title : "设备状态", name : "equipmentState", width : "120", type : "input" },
             { title : "关联人员", name : "userName", width : "120", type : "input" },
             { title : "设备类型", name : "equipmentType", minwidth : "150", type : "equipselect" },
             { title : "温度", name : "temperature", minwidth : "150", type : "input" },
@@ -56,6 +109,8 @@ export default {
         param.roleId=role
         param.userId=user.userId
         param.organizationId=user.organizationId||""
+        param.equipmentState = this.valueW
+        param.type = this.value
         getEquipData(param).then(res=>{
           console.log(res)
           if(res.code==0){
@@ -97,7 +152,7 @@ export default {
         }else{
           this.$message({
             message: '新增失败',
-            type: 'danger'
+            type: 'error'
           });
         }
       })
@@ -119,7 +174,7 @@ export default {
         }else{
           this.$message({
             message: '修改失败',
-            type: 'danger'
+            type: 'error'
           });
         }
       })
@@ -144,7 +199,7 @@ export default {
         }else{
           this.$message({
             message: '删除失败',
-            type: 'danger'
+            type: 'error'
           });
         }
       })
@@ -164,14 +219,22 @@ export default {
         }else{
           this.$message({
             message: '解绑失败',
-            type: 'danger'
+            type: 'error'
           });
         }
       }).catch(err=>{
 
       })
 
-    }
+    },
+    changeResult(val){
+      this.value=val;
+      this.getEquipList()
+    },
+    changeResultW(val){
+      this.valueW=val;
+      this.getEquipList()
+    },
     },
     mounted(){
       this.getEquipList()
@@ -184,13 +247,26 @@ export default {
     width: 100%;
     height: 100%;
     position: relative;
-    .equipmanage-button{
+    &-handle{
+      position: absolute;
+      top: 2vh;
+      left: 25vw;
+      &-label{
+        font-size: 0.7vw;
+        color: #606266;
+      }
+      .el-select{
+        width: 10vw;
+      }
+      
+    }
+    .el-button{
         position: absolute;
         top:2vh;
         right: 10vh;
         z-index: 1;
         font-size: 0.7vw;
-    }
+      }
   }
 }
 </style>

@@ -3,8 +3,10 @@
     <el-dialog title="警告列表" :visible.sync="dialogTableVisible" center :append-to-body='true' :lock-scroll="false" width="50vw">
       <div class="warnList">
         <el-table
-            :data="tableData"
+            :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
             stripe
+            border
+            height="50vh"
             style="width: 100%">
             <el-table-column
               prop="alertType"
@@ -30,6 +32,21 @@
               </template>
             </el-table-column>
         </el-table>
+        <div class="fenye">
+          <div></div>
+          <div class="block">
+            <el-pagination
+              background
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="currentPage"
+              :page-sizes="[5, 10, 15, 20]"
+              :page-size="pagesize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="tableData.length">
+            </el-pagination>
+          </div>
+        </div>
 
         <el-row class="cancelSwrap">
           <div class="cancel">
@@ -58,7 +75,9 @@
         warnData:[],//初始化后台传过来的数据
         tableData: [],
         data:false,
-        isCompile:'编辑'
+        isCompile:'编辑',
+        currentPage:1, //初始页
+        pagesize:10,
       }
     },
     methods:{
@@ -90,8 +109,10 @@
           return '睡眠质量异常'
         }else if(num == '6'){
           return '居家/离家异常'
-        }else{
+        }else if(num == '7'){
           return '电子围栏触发'
+        }else if(num == '8'){
+          return '限制外出预警'
         }
       },
       cancel(){
@@ -104,13 +125,20 @@
       getListData(val){
         this.tableData = val
         if(this.tableData.length == 0){
-          console.log("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR")
           console.log(this.tableData.length)
         }
       },
       compile(index, row){
         // console.log(this.tableData[index])
         this.$refs.showHandle.getDandleShow(this.tableData[index])
+      },
+      handleSizeChange(val) {
+        this.pagesize = val;
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        this.currentPage = val;
+        console.log(`当前页: ${val}`);
       }
     },
     created() {
@@ -126,6 +154,19 @@
 <style scoped="scoped">
   .cancelSwrap{
     width: 100%;
+  }
+  .warnList{
+    /* position: relative; */
+  }
+  .fenye{
+    padding: 30px;
+    display: flex;
+    justify-content:space-between;
+  }
+  .block{
+    /* position: absolute; */
+    /* right: 0; */
+    /* margin-right: 0px; */
   }
   .cancel{
     width: 140px;

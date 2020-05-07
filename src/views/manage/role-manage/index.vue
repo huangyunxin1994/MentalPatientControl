@@ -1,18 +1,19 @@
 <template>
     <el-container class="rolemanage-container">
-          <el-button size="small" type="primary" @click.native="newData">新增角色</el-button>
-          <my-table :tableTitle="tableTitle" :tableData="tableData" ref="table" @changeData="changeData" @removeData="removeData" @bRemoveData="bRemoveData"></my-table>
+          <!-- <el-button size="small" type="primary" @click.native="newData">新增角色</el-button> -->
+          <my-table :tableTitle="tableTitle" :tableData="tableData" ref="table" @changeData="changeData" @removeData="removeData" @bRemoveData="bRemoveData" @relevancePerson="relevancePerson"></my-table>
           <my-dialog1 :tableTitle="handleTitle" :formRule="formRule" ref="dialog1" @insertData="insertData" @updateData="updateData" @handleClosed="handleClosed"></my-dialog1>
           <my-dialog2 :powerData="powerData" ref="dialog2" @insertData="insertData" @updateData="updateData" @returnPre="returnPre"></my-dialog2>
-          <my-dialog3 :userValue="userValue" :userData="userData" ref="dialog3" @insertData="insertData" @updateData="updateData" @returnPre2="returnPre2" @initData="initData" @submitData="submitData"></my-dialog3>
+          <my-dialog3 :userValue="userValue" ref="dialog3" :userData="userData"  @insertData="insertData" @updateData="updateData" @returnPre2="returnPre2" @initData="initData" @settingUser="settingUser"></my-dialog3>
     </el-container>
 </template>
- 
+
 <script>
 import  myTable from '@/components/table/table'
-import  myDialog1 from '@/components/dialog-role/dialog' 
-import  myDialog2 from '@/components/dialog-setpower/dialog' 
-import  myDialog3 from '@/components/dialog-setuser/dialog' 
+import  myDialog1 from '@/components/dialog-role/dialog'
+import  myDialog2 from '@/components/dialog-setpower/dialog'
+import  myDialog3 from '@/components/dialog-setuser/dialog'
+
 import { getRoleData,insertRoleData,updateRoleData,removeRoleData,bRemoveRoleData,getAllMenu,addUserRole,deleteUserRole,addRoleRelationMenu} from '@/api/table'
 import { getRole } from '@/utils/auth'
 function filterArray(data) {
@@ -45,7 +46,7 @@ function jsonToArray(nodes) {
             r = r.concat(jsonToArray(nodes[i]["children"]));
             delete nodes[i]["children"]
         }
-      } 
+      }
       return r;
     }
 export default {
@@ -66,7 +67,8 @@ export default {
             { title : "角色名称", name : "name", minwidth : "120", type : "input" },
             { title : "状态", name : "state", minwidth : "120", type : "radio" },
             { title : "描述", name : "remakes", minwidth : "120", type : "input" },
-            { title : "操作",width : "150", type : "handle",button:[{name:"编辑",type:"edit"},{name:"删除",type:"remove"}] }
+            { title : "操作",width : "150", type : "handle",button:[{name:"编辑",type:"edit"}] }
+            //{ title : "操作",width : "150", type : "handle",button:[{name:"编辑",type:"edit"},{name:"关联",type:"relevance"}] }
             ],
          handleTitle:[
             { title : "角色名称", name : "name", type : "input" },
@@ -107,6 +109,10 @@ export default {
       this.$refs.dialog1.form=Object.assign({}, row)
       this.$refs.dialog1.handleShow();
     },
+    //关联人员
+    relevancePerson(row){
+      this.$refs.dialog3.handleShow(row)
+    },
     /* 新增数据 */
     insertData(para){
       if(para.step==0){
@@ -143,7 +149,7 @@ export default {
             this.$refs.dialog1.formVisible = false;
             this.$refs.dialog2.handleShow();
         }
-        
+
       }else if(para.step==1){
         // let para = {'submitType':"insert"}
         // this.$refs.dialog3.form=para
@@ -151,7 +157,7 @@ export default {
        // this.$refs.dialog3.handleShow();
         this.insertRoleData("11")
       }
-      
+
     },
     /* 修改数据 */
     updateData(para){
@@ -191,7 +197,7 @@ export default {
             this.$refs.dialog1.formVisible = false;
             this.$refs.dialog2.handleShow();
         }
-        
+
       }else if(para.step==1){
         // let para = {'submitType':"update",'roleId':this.roleid}
         // this.$refs.dialog3.form=para
@@ -199,7 +205,7 @@ export default {
         //this.$refs.dialog3.handleShow();
         this.updateRoleData("11")
       }
-      
+
     },
     /* 删除数据 */
     removeData(para){
@@ -271,7 +277,7 @@ export default {
          this.insertRoleData(value)
       }else{
         this.updateRoleData(value)
-      }  
+      }
     },
     updateRoleData(value){
       updateRoleData(this.roleData).then(res=>{
@@ -294,7 +300,7 @@ export default {
           this.addRoleRelationMenu(value,para,roleid)
         }else{
           this.$message({
-              message: '修改角色失败',
+              message: res.msg,
               type: 'error'
             });
           this.handleClosed()
@@ -438,7 +444,7 @@ export default {
             return arr.indexOf(v) === arr.lastIndexOf(v);
         });
     },
-    
+
   },
   mounted(){
     this.getRoleList()

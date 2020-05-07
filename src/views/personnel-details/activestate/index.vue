@@ -7,14 +7,14 @@
               <el-row :gutter="20">
                 <el-col :span="6">姓名：{{personData.name}}</el-col>
                 <el-col :span="6">联系电话：{{personData.phone}}</el-col>
-                <el-col :span="6">网格管理员：{{personData.networkAdministrator}}-{{personData.networkAdministratorP}}</el-col>
+                <el-col :span="6">网格管理员：{{personData.networkAdministrator}}&nbsp;{{personData.networkAdministratorP}}</el-col>
                 <el-col :span="6">人员级别：{{personData.level | fiterData}}</el-col>
                 <el-col :span="12">住址：{{personData.address}}</el-col>
-                <el-col :span="6">责任医师：{{personData.responsiblePhysician}}-{{personData.responsiblePhysicianP}}</el-col>
-               
+                <el-col :span="6">责任医师：{{personData.responsiblePhysician}}&nbsp;{{personData.responsiblePhysicianP}}</el-col>
+
                 <el-col :span="6">所属组织：{{personData.organizationName}}</el-col>
-                <el-col :span="12">病情描述：活动频率异常，情绪不稳定</el-col>
-                 <el-col :span="6">监护人：{{personData.guardian}}-{{personData.guardianP}}</el-col>
+                <el-col :span="12">病情描述：</el-col>
+                 <el-col :span="6">监护人：{{personData.guardian}}&nbsp;{{personData.guardianP}}</el-col>
                 <el-col :span="6">是否限制外出：{{personData.restrictions | filterRestr}}</el-col>
                 <!-- <el-col :span="8">是否限制外出：{{personData.personnelStatus}}</el-col> -->
             </el-row>
@@ -75,7 +75,7 @@ export default {
     filterRestr: (value)=> {
         if (!value) return ''
         value = value.toString()
-        return value == 1 ? '不限制外出' : value == 2 ? '限制外出' : ""
+        return value == 1 ? '否' : value == 2 ? '是' : ""
     }
   },
   data(){
@@ -90,31 +90,44 @@ export default {
       warnActive: false,
       warnNum:0,
       time:[],
+      bhTime:[],
+      zjTime:[],
       // time:["15:00","17:00","19:00","21:00","23:00","1:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"],
       activityFrequencyT:[],
       activityFrequencyA:[],
       activityTimeT:[],
       activityTimeA:[],
+      zjData:[],
       minData:'',
       maxData:'',
       phoneList:[],
       activerate:"",
       activetime:"",
-      heartrate:"1",
-      bloodpress:"1",
+      heartrate:"",
+      bloodpress:"",
       sleepquality:"",
-      inouthome:""
+      inouthome:"",
+      alertConditions:"",
+      home:[],sleep:[],frequency:[],activeTime:[],blood:[],heartRate:[]
     }
   },
     methods: {
       setDateTime(val){
+        if(val)
           this.dateTime=val.getTime();
+        else
+          this.dateTime=""
 
       },
       sureBtn(){
+        if(this.dateTime!=""){
           this.getEchartData()
           this.getData2()
           this.drawChart()
+        }else{
+
+        }
+
       },
       getData(){
          this.time=[]
@@ -144,10 +157,8 @@ export default {
          let len = 24;
          while (len--) {
            now = new Date(now - 1000 * 60 * 60);
-           console.log(now)
-           this.time.unshift(now.getHours() + 1);
+           this.time.unshift(now.getHours());
          }
-         console.log(this.time)
          for(let i in this.time){
            if(this.time[i]<10){
              this.time[i] = '0'+ this.time[i] + ':00'
@@ -157,68 +168,202 @@ export default {
              this.time[i] = this.time[i] + ':00'
            }
          }
+         console.log(this.time)
        },
        getEchartData(){
-        console.log("127")
           let time=this.dateTime;
-          if(time==""){
-              time=new Date(new Date().toLocaleDateString()).getTime()
-          }
           let para ={}
-          para.keyUserId  = this.personData.keyUserid
-          para.time = parseTime(time,'{y}-{m}-{d}')
+          para.keyUserId  = this.personData.id
+          if(time!=""){
+             para.time = parseTime(time,'{y}-{m}-{d}')
+          }
           getPerSe(para).then(res=>{
               if(res.code==0){
+                  //预警条数
                   this.warnNum = res.data.alertNum
                   this.warnTableData = res.data.alert_list
                   let phoneList = res.data.phone_list
+                  this.personData = res.data.keyUser
                   this.personData.networkAdministratorP = phoneList[0].NetworkAdministrator
                   this.personData.responsiblePhysicianP = phoneList[0].ResponsiblePhysician
                   this.personData.guardianP = phoneList[0].Guardian
+                  //将预警信息传递过去
                   this.$refs.senda.getListData(this.warnTableData)
                   this.warnActive = false
 
-                  let arr1=[],arr2=[],arr3=[],arr4=[],arr5=[],arr6=[],arr7=[]
+                  //拿到警戒线信息
+                  let aHome=[],aSleep=[],aFrequency=[],aActiveTime=[],aBlood=[],aHeartRate=[]
+                  this.alertConditions = res.data.alertConditions
+                  console.log(this.alertConditions)
+                  this.alertConditions.forEach((item,index)=>{
+                    if(item.alertId == '1'){
+                      //是否在家预警线
+                      aHome.push(item)
+                    }else if(item.alertId == '2'){
+                      //睡眠质量
+                      aSleep.push(item)
+                    }else if(item.alertId == '3'){
+                      //活动频率
+                      // aFrequencyItem[0] = item
+                      // aFrequency.push(aFrequencyItem)
+                      aFrequency.push(item)
+                    }else if(item.alertId == '4'){
+                      //活动时长
+                      aActiveTime.push(item)
+                    }else if(item.alertId == '5'){
+                      //心率
+                      aBlood.push(item)
+                    }else{
+                      //血压
+                      aHeartRate.push(item)
+                    }
+                  })
+                  //活动频率时间转化
+                  for(let i in aFrequency){
+                    let start = aFrequency[i].startTime.substring(0,3)
+                    let startTime1 = start + "00"
+                    aFrequency[i].startTime = startTime1
+
+                    if(aFrequency[i].endTime.substring(4,5) != "00"){
+                      let start = aFrequency[i].endTime.substring(0,2)
+                      start = parseInt(start) + 1
+                      if(start == 24){
+                        start = 0
+                        let endTime1 = "0" + start + ":00"
+                        aFrequency[i].endTime = endTime1
+                      }else if(start < 10){
+                        let endTime1 = "0" + start + ":00"
+                        aFrequency[i].endTime = endTime1
+                      }else{
+                        let endTime1 =  start + ":00"
+                        aFrequency[i].endTime = endTime1
+                      }
+                    }
+                  }
+                  //活动时长时间转化
+                  for(let i in aActiveTime){
+                    let start = aActiveTime[i].startTime.substring(0,3)
+                    let startTime1 = start + "00"
+                    aActiveTime[i].startTime = startTime1
+
+                    if(aActiveTime[i].endTime.substring(4,5) != "00"){
+                      let start = aActiveTime[i].endTime.substring(0,2)
+                      start = parseInt(start) + 1
+                      if(start == 24){
+                        start = 0
+                        let endTime1 = "0" + start + ":00"
+                        aActiveTime[i].endTime = endTime1
+                      }else if(start < 10){
+                        let endTime1 = "0" + start + ":00"
+                        aActiveTime[i].endTime = endTime1
+                      }else{
+                        let endTime1 =  start + ":00"
+                        aActiveTime[i].endTime = endTime1
+                      }
+                    }
+                  }
+
+                  let bFrequency = []
+                  for(let i in aFrequency){
+                    let arr =[]
+                    // bFrequency[i][0] = aFrequency[i]
+                    let para ={},para2={}
+                    para.yAxis = aFrequency[i].achieveAlert
+                    para.xAxis= aFrequency[i].startTime
+                    para2.yAxis = aFrequency[i].achieveAlert
+                    para2.xAxis= aFrequency[i].endTime
+                    para2.silent=false
+                    para2.lineStyle={               //警戒线的样式  ，虚实  颜色
+                        type:"solid",
+                        color:"#F56C6C",
+                    },
+                    arr.push(para)
+                    arr.push(para2)
+                    bFrequency.push(arr)
+                  }
+                  console.log(bFrequency)
+                  let bActiveTime = []
+                  for(let i in aActiveTime){
+                    let arr =[]
+                    // bFrequency[i][0] = aActiveTime[i]
+                    let para ={},para2={}
+                    para.yAxis = aActiveTime[i].achieveAlert
+                    para.xAxis= aActiveTime[i].startTime
+                    para2.yAxis = aActiveTime[i].achieveAlert
+                    para2.xAxis= aActiveTime[i].endTime
+                    para2.silent=false
+                    para2.lineStyle={               //警戒线的样式  ，虚实  颜色
+                        type:"solid",
+                        color:"#F56C6C",
+                    },
+                    arr.push(para)
+                    arr.push(para2)
+                    bActiveTime.push(arr)
+                  }
+                  this.home = aHome
+                  this.sleep = aSleep
+                  this.frequency = bFrequency
+                  this.activeTime = bActiveTime
+                  this.blood = aBlood
+                  this.heartRate = aHeartRate
+
+                  let arr1=[],arr2=[],arr3=[],arr4=[],arr5=[],arr6=[],arr7=[],arr8=[]
                   if(res.data.frequency_today.length>0){
-                    for(let i in this.time){
+                    for(let i=0;i < this.time.length;i++){
                         let para=[],para2=[]
-                        para.push(this.time[i])
-                        para2.push(this.time[i])
                         let arr = res.data.frequency_today.filter(item=>{
                           return item.hours+":00" ==this.time[i]
                         })
-                        para.push(arr[0].activityFrequency)
-                        para2.push(arr[0].activityTime)
-                        arr1.push(para)
-                        arr2.push(para2)
+                        if(arr.length>0){
+                          para.push(this.time[i])
+                          para2.push(this.time[i])
+                          para.push(arr[0].activityFrequency)
+                          para2.push(arr[0].activityTime)
+                          arr1.push(para)
+                          arr2.push(para2)
+                        }
                     }
                   }
                   if(res.data.frequency_lastday.length>0){
                     for(let i in this.time){
                         let para=[],para2=[]
-                        para.push(this.time[i])
-                        para2.push(this.time[i])
+
                         let arr = res.data.frequency_lastday.filter(item=>{
                           return item.hours+":00" ==this.time[i]
                         })
-                        para.push(arr[0].activityFrequency)
-                        para2.push(arr[0].activityTime)
-                        arr3.push(para)
-                        arr4.push(para2)
+                        if(arr.length>0){
+                           para.push(this.time[i])
+                           para2.push(this.time[i])
+                           para.push(arr[0].activityFrequency)
+                            para2.push(arr[0].activityTime)
+                            arr3.push(para)
+                            arr4.push(para2)
+                        }
+
                     }
                   }
                   if(res.data.Blood_today.length>0){
                     for(let i in res.data.Blood_today){
                         let para=[],para2=[],para3=[]
-                        para.push(res.data.Blood_today[i].hours+":00")
+                        this.bhTime.push(res.data.Blood_today[i].hours)
+                        para.push(res.data.Blood_today[i].hours)
                         para.push(res.data.Blood_today[i].heartRate)
-                        para2.push(res.data.Blood_today[i].hours+":00")
+                        para2.push(res.data.Blood_today[i].hours)
                         para2.push(res.data.Blood_today[i].diastolicPressure)
-                        para3.push(res.data.Blood_today[i].hours+":00")
+                        para3.push(res.data.Blood_today[i].hours)
                         para3.push(res.data.Blood_today[i].systolicPressure)
                         arr5.push(para)
                         arr6.push(para2)
                         arr7.push(para3)
+                    }
+                  }
+                  if(res.data.homeStzteList.length>0){
+                    for(let i in res.data.homeStzteList){
+                        let para=[],para2=[],para3=[]
+                        this.zjTime.push(res.data.homeStzteList[i].hours)
+                        para.push(res.data.homeStzteList[i].hours)
+                        para.push(res.data.homeStzteList[i].type)
+                        arr8.push(para)
                     }
                   }
                   this.activityFrequencyT = arr1
@@ -228,6 +373,7 @@ export default {
                   this.heartRateT = arr5
                   this.diastolicPressureT = arr6
                   this.systolicPressureT = arr7
+                  this.zjData=arr8
                   this.drawChart()
               }else{
                 this.warnActive = true
@@ -242,7 +388,6 @@ export default {
           if(time==""){
               time=new Date(new Date().toLocaleDateString()).getTime()
           }
-          getPerSe
           let data=[];
           for(let i = 0; i < 25; i ++){
               let para=[]
@@ -259,7 +404,6 @@ export default {
           if(time==""){
               time=new Date(new Date().toLocaleDateString()).getTime()
           }
-          getPerSe
           let data=[];
           for(let i = 0; i < 25; i ++){
               let para=[]
@@ -315,18 +459,29 @@ export default {
                 itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                     color: '#E6A23C',
                     borderColor: '#E6A23C',
-                }
+                },
             },
-            {
+              {
                 name:"平均",
                 data: this.activityFrequencyA,
                 type: 'line',
                 itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                     color: '#409EFF',
                     borderColor: '#409EFF',
+                },
+                markLine : {
+                  symbol:"none",               //去掉警戒线最后面的箭头
+                  lineStyle: {
+                    normal:
+                      {
+                        type: 'solid' ,
+                        color:"rgba(238, 99, 99)",
+                        width:2,
+                      }
+                  },
+                  data:this.frequency
                 }
-            }
-            ]
+            }]
         }
         let option2={
             title: {text: '活动时长'},
@@ -370,9 +525,21 @@ export default {
                 itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                     color: '#409EFF',
                     borderColor: '#409EFF',
+                },
+                markLine : {
+                  symbol:"none",
+                  
+                  lineStyle: {
+                    normal:
+                      {
+                        type: 'solid' ,
+                        color:"rgba(238, 99, 99)",
+                        width:2,
+                      }
+                  },
+                  data:this.activeTime
                 }
-            }
-            ]
+            }]
         }
         let option3={
             title: {text: '心率'},
@@ -388,7 +555,7 @@ export default {
               boundaryGap: false,
               name:"单位:小时",
               interval:4,
-              data: this.time
+              data: this.bhTime
             },
             yAxis: {
                 type: 'value',
@@ -401,9 +568,25 @@ export default {
                 itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                     color: '#E6A23C',
                     borderColor: '#E6A23C',
+                },
+                markLine : {
+                  symbol:"none",               //去掉警戒线最后面的箭头
+                  label:{
+                      position:"end",         //将警示值放在哪个位置，三个值“start”,"middle","end"  开始  中点 结束
+                      formatter: "警戒线"
+                  },
+                  data : [{
+                      silent:false,             //鼠标悬停事件  true没有，false有
+                      lineStyle:{               //警戒线的样式  ，虚实  颜色
+                          type:"solid",
+                          color:"rgba(238, 99, 99)",
+                          width:2,
+                      },
+                      name: '警戒线',
+                      yAxis: 35
+                  }]
                 }
-            }
-            ]
+            }]
         }
         let option4={
             title: {text: '血压'},
@@ -419,7 +602,7 @@ export default {
               boundaryGap: false,
               name:"单位:小时",
               interval:4,
-              data: this.time
+              data: this.bhTime
             },
             yAxis: {
                 type: 'value',
@@ -432,6 +615,23 @@ export default {
                 itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                     color: '#E6A23C',
                     borderColor: '#E6A23C',
+                },
+                markLine : {
+                  symbol:"none",               //去掉警戒线最后面的箭头
+                  label:{
+                      position:"end",         //将警示值放在哪个位置，三个值“start”,"middle","end"  开始  中点 结束
+                      formatter: "警戒线"
+                  },
+                  data : [{
+                      silent:false,             //鼠标悬停事件  true没有，false有
+                      lineStyle:{               //警戒线的样式  ，虚实  颜色
+                          type:"solid",
+                          color:"rgba(238, 99, 99)",
+                          width:2,
+                      },
+                      name: '警戒线',
+                      yAxis: 35
+                  }]
                 }
             },
             {
@@ -485,16 +685,32 @@ export default {
             },
             series: [{
                 name:"今日",
-                data: this.getEchartData2(),
+                data: "",//this.getEchartData2(),
                 type: 'line',
                 itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                     color: '#E6A23C',
                     borderColor: '#E6A23C',
+                },
+                markLine : {
+                  symbol:"none",               //去掉警戒线最后面的箭头
+                  label:{
+                      position:"end",         //将警示值放在哪个位置，三个值“start”,"middle","end"  开始  中点 结束
+                      formatter: "警戒线"
+                  },
+                  data : [{
+                      silent:false,             //鼠标悬停事件  true没有，false有
+                      lineStyle:{               //警戒线的样式  ，虚实  颜色
+                          type:"solid",
+                          color:"rgba(238, 99, 99)"
+                      },
+                      name: '警戒线',
+                      yAxis: 35
+                  }]
                 }
             },
             {
                 name:"平均",
-                data: this.getEchartData2(),
+                data: "",//this.getEchartData2(),
                 type: 'line',
                 itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                     color: '#409EFF',
@@ -510,23 +726,20 @@ export default {
               orient: 'vertical',
               left: 'center',
               bottom:'bottom',
-              data:['今日','平均'],
+              data:['今日'],
             },
             xAxis: {
-                type: 'time',
-                boundaryGap: false,
-                name:"单位: 小时",
-                interval:2*3600*1000,
-                axisLabel : {
-                    formatter: this.formatterFun
-                    // formatter:this.getData
-                }
+              type: 'category',
+              boundaryGap: false,
+              name:"单位:小时",
+              interval:4,
+              data: this.zjTime
             },
             yAxis: {
                 type: 'value',
                 name:"单位: 在家/离家",
-                min:0,
-                max:1,
+                min:1,
+                max:2,
                 splitNumber: 5,
                 axisLabel:{
                   formatter: function (value) {
@@ -546,25 +759,23 @@ export default {
             },
             series: [{
                 name:"今日",
-                data: this.getEchartData3(),
+                data: this.zjData,
                 step: 'start',
                 type: 'line',
                 itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                     color: '#E6A23C',
                     borderColor: '#E6A23C',
                 }
-            },
-            {
-                name:"平均",
-                data: this.getEchartData3(),
-                step: 'start',
-                type: 'line',
-                itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
-                    color: '#409EFF',
-                    borderColor: '#409EFF',
-                }
             }
-            ]
+            ],
+            // visualMap: {
+            //     show: false,
+            //     dimension: 1,
+            //     pieces: [],  //pieces的值由动态数据决定
+            //     outOfRange: {
+            //         color: 'red'
+            //     }
+            // }
         }
 
         activerate.setOption(option1);
@@ -619,7 +830,7 @@ export default {
       }
     },
      mounted(){
-        this.personData= this.$route.query.row
+        this.personData.id= this.$route.query.id //通过路由传参，将从人员状态出拿到的数据传递过来，保存在personDate
         this.getData()
         this.getEchartData()
         window.addEventListener('load', () => {
@@ -629,7 +840,7 @@ export default {
           else if(type==2)
            this.$router.push({ path: '/warningcenter' })
         })
-        //  
+        //
         // window.onbeforeunload = e => {      //刷新时弹出提示
         //   this.$router.push({ path: '/personstate' })
         //   return  ''
@@ -649,12 +860,12 @@ export default {
        display: flex;
        justify-content: space-between;
        &-item{
-         width:50%; 
+         width:50%;
          height:40vh;
          padding:20px;
          margin:20px;
          border-radius: 0.8vw;
-         
+
          &-alert{
            background: rgb(254, 240, 240)
          }

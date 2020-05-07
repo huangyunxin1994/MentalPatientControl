@@ -133,15 +133,27 @@
                                 <el-radio-button v-model="equipmentType" label="3">智能手表</el-radio-button>
                             </el-radio-group>
                         </el-form-item>
-                        
+                        <el-form-item label="人员位置" v-else-if="item.type=='mappos'">
+                            <div class="equip-map">
+                                <i class="equip-map-icon iconicon-test-copy"></i>
+                                <my-map ref="map" :centerR="centerR" :Elatitude="Elatitude" :Elongitude="Elongitude"></my-map>
+                            </div>
+                        </el-form-item>
                         <el-form-item :label="item.title" :prop="item.name" v-else>
                             <el-input v-model="form[item.name]"></el-input>
                         </el-form-item>
+                        
                         </div>
                         <el-form-item label="上传频率" v-if="equipmentType=='3'">
                             <el-input type="number" v-model="form['uploadInterval']"></el-input>
                         </el-form-item>
-                        <el-form-item label="设备位置" v-if="equipmentType=='1'">
+                        <!-- <el-form-item label="设备位置" v-if="equipmentType=='1'">
+                            <div class="equip-map">
+                                <i class="equip-map-icon iconicon-test-copy"></i>
+                                <my-map ref="map" :centerR="centerR" :Elatitude="Elatitude" :Elongitude="Elongitude"></my-map>
+                            </div>
+                        </el-form-item> -->
+                        <el-form-item label="人员位置" v-if="mappos=='1'">
                             <div class="equip-map">
                                 <i class="equip-map-icon iconicon-test-copy"></i>
                                 <my-map ref="map" :centerR="centerR" :Elatitude="Elatitude" :Elongitude="Elongitude"></my-map>
@@ -210,6 +222,7 @@ export default {
             cascaderselectOptions:[],
             title:"",
             equipmentType:"",
+            mappos:"",
             keyId:"",
             centerR:true,
             Elatitude:"",
@@ -227,9 +240,8 @@ export default {
                     this.title="修改"
                     this.Elongitude = this.form['longitude']
                     this.Elatitude = this.form['latitude']
-                    this.equipmentType=this.form['equipmentType']
-                    console.log(this.equipmentType)
-                    if(this.equipmentType=="1"){
+                    this.mappos = this.form['mappos']
+                    if(this.mappos=="1"){
                         setTimeout(()=>{
                             this.showMap()
                         },0)
@@ -237,9 +249,8 @@ export default {
                 }  
                 else if(this.form.submitType=="insert"){
                      this.title="新增"
-                     this.equipmentType=this.form['equipmentType']
-                    console.log(this.equipmentType)
-                    if(this.equipmentType=="1"){
+                     this.mappos = this.form['mappos']
+                    if(this.mappos=="1"){
                         setTimeout(()=>{
                             this.showMap()
                         },0)
@@ -270,7 +281,7 @@ export default {
 							//NProgress.start();
                             let para = Object.assign({}, this.form);
                             //console.log(para)
-                            if(para.equipmentType==1){
+                             if(para.mappos==1){
                                 para.longitude = this.$refs.map.longitude
                                 para.latitude = this.$refs.map.latitude
                              }
@@ -316,7 +327,7 @@ export default {
                 });
             },
             getPersonData(){
-                getUserData().then(res=>{
+                getUserData({roleId:4}).then(res=>{
                     //console.log(res)
                     if(res.code==0){
                     this.personOptions=res.data.data
@@ -442,9 +453,6 @@ export default {
     },
     watch:{
         equipmentType(val){
-            if(val==="1"){
-                this.showMap()
-            }
                
             this.form["equipmentType"]=val
         }

@@ -63,6 +63,7 @@ export const removeKeyPnlData = params => { return post(`${base}/keypersonnel/de
 export const getPerWarnlData = params => { return get(`${base}/personnel/selectPersonnelAlert`, params); };
 export const getWarnListData = params => { return get(`${base}/personnel/selectByPage`,params); };
 export const changeWarnData = params => { return post(`${base}/personnel/update`,params, {emulateJSON: true} ) }
+export const getByPrimaryKey = params => { return get(`${base}/personnel/selectByPrimaryKey`,params ) }
 
 /*
  *设备预警信息查询
@@ -113,3 +114,4 @@ export const keyPersonnelStatistics = params => { return get(`${base}/home/keyPe
 export const selectCount = params => { return get(`${base}/home/untreatedCount`, params); };
 export const selectWlCount = params => { return get(`${base}/home/selectWlCount`, params); };
 export const userRoleStatistics = params => { return get(`${base}/home/userRoleStatistics`, params); };
+export const selectEw = params => { return get(`${base}/home/selectEw`, params); };

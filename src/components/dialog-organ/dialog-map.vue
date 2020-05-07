@@ -27,9 +27,11 @@ export default {
             point:"",
             longitude:"",
             latitude:"",
+            scaling:"",
             form:{
                 longitude: "108.386207",
-                latitude: "22.830839"
+                latitude: "22.830839",
+                scaling:16
             },
             map:"",
             marker:"",
@@ -41,9 +43,11 @@ export default {
         },
         getmap () {
             this.map = new BMap.Map(this.$refs.allmap, {enableMapClick:false}) // 创建Map实例 
-            this.map.centerAndZoom(new BMap.Point(this.form.longitude,this.form.latitude), 16) // 初始化地图,设置中心点坐标和地图级别
+           
             this.map.setCurrentCity('北京') // 设置地图显示的城市 此项是必须设置的
             this.map.enableScrollWheelZoom(true)// 开启鼠标滚轮缩放
+            let zoom = this.form.scaling
+             this.map.centerAndZoom(new BMap.Point(this.form.longitude,this.form.latitude), zoom) // 初始化地图,设置中心点坐标和地图级别
             this.longitude = this.map.getCenter().lng
             this.latitude = this.map.getCenter().lat
             let that = this
@@ -54,6 +58,7 @@ export default {
             this.map.addEventListener("zoomend",function(){
                     that.longitude = that.map.getCenter().lng
                     that.latitude = that.map.getCenter().lat
+                    that.scaling = that.map.getZoom()
             });
             
         },
@@ -87,6 +92,7 @@ export default {
                 let para = Object.assign({}, this.form);
                 para.longitude = this.longitude
                 para.latitude = this.latitude
+                para.scaling = this.scaling
                 updateOrganData(para).then((res)=>{
                     if(res.code==0){
                         this.$message({

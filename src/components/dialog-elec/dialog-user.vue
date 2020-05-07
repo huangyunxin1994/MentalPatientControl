@@ -127,7 +127,6 @@ export default {
             },
             handleClose() {
                 this.roleFormVisible=false
-                this.$emit("selectElec")
             }
             
     }

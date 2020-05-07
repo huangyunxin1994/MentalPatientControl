@@ -84,13 +84,27 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-        const data = JSON.parse(getUser())
-        if (!data) {
-          reject('Verification failed, please Login again.')
-        }
-        commit('SET_NAME', data.name)
+        const user = JSON.parse(getUser())
+        const role = JSON.parse(getRole())
+        let para ={}
+        para.roleId = role
+        para.organizaId = user.organizationId
+        para.userId = user.userId
+        selectCount(para).then(response => {
+          console.log(response)
+          const data = response
+          let totle = data.data.eCount+data.data.pCount
+          let para ={}
+          para.totle=totle;
+          para.eCount=data.data.eCount;
+          para.pCount=data.data.pCount;
+          commit('SET_WARNNUM', para)
+          commit('SET_NAME', user.name)
         commit('SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
-        resolve(data)
+          resolve(data)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   // user logout

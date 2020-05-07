@@ -22,7 +22,7 @@ export default {
   },
   data() {
     return {
-      dateVale: new Date(),
+      dateVale: "",
       currentDayList: [], // 初始化后台请求过来的数据
       currentSec: new Date().getSeconds(), // 初始化当前选中的秒
       currentMin: new Date().getMinutes(), // 初始化当前选中的分

@@ -1,8 +1,8 @@
 <template>
     <el-container class="earlywarning-container">
-      <my-tree></my-tree>
+      <my-tree @getThisOrgan="getThisOrgan"></my-tree>
       <div class="earlywarning-table">
-          <my-table :tableTitle="tableTitle" :tableData="tableData"  @changeData="changeData"></my-table>
+          <my-table :tableTitle="tableTitle" :tableData="tableData"  @changeData="changeData" ref="table"></my-table>
       </div>
       <dialog-relation ref='sendData' @sendState='getSendData'></dialog-relation>
     </el-container>
@@ -13,6 +13,7 @@ import  myTable from '@/components/table/table'
 import  myTree from '@/components/tree/tree'
 import  dialogRelation from '@/components/dialog-relation/dialog'
 import {getPersonStatusQuery , getKeyPnlData ,relationReservePlanList} from '@/api/table'
+import { getUser, getRole } from '@/utils/auth'
 export default {
   name: 'Earlywarning',
   components:{
@@ -51,13 +52,42 @@ export default {
       },
       //获取到预警关联列表
       getKeyPnlDataList(){
-        getKeyPnlData().then((res)=>{
+        let role = JSON.parse(getRole())
+        let user = JSON.parse(getUser());
+        console.log(user)
+        let param ={}
+        param.roleId=role
+        param.userId=user.userId
+        param.organizationId=user.organizationId||""
+        getKeyPnlData(param).then((res)=>{
           if(res.code == 0){
             var obj=[]
             this.tableData = res.data.data
           }
         }).catch((err)=>{
 
+        })
+      },
+      getThisOrgan(data){
+        let role = JSON.parse(getRole())
+        let user = JSON.parse(getUser());
+        console.log(user)
+        let param ={}
+        param.roleId=role
+        param.userId=user.userId
+        param.organizationId=user.organizationId||""
+        param.orId=data.id
+          this.$refs.table.listLoading=true
+          getKeyPnlData(param).then(res=>{
+            console.log(res)
+            if(res.code==0){
+              this.tableData=res.data.data
+              console.log(this.tableData)
+              this.$refs.table.listLoading=false
+            }
+
+        }).catch(error => {
+          console.log(error)
         })
       },
       changeData(val){

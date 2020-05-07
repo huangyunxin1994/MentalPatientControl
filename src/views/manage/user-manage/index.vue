@@ -1,15 +1,18 @@
 <template>
     <el-container class="usermanage-container">
-      <my-tree></my-tree>
+      <my-tree @getThisOrgan="getThisOrgan"></my-tree>
       <div class="usermanage-table">
-          <el-select v-model="value" filterable placeholder="请选择" @change="changeResult">
-            <el-option
-              v-for="item in options"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id">
-            </el-option>
-          </el-select>
+          <div class="usermanage-table-select">
+            <label >选择角色</label>
+            <el-select v-model="value" filterable placeholder="请选择" clearable  @change="changeResult">
+              <el-option
+                v-for="item in options"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </div>
           <el-button size="small" type="primary" @click.native="newData">新增用户</el-button>
           <my-table :tableTitle="tableTitle" :tableData="tableData" ref="table" @changeData="changeData" @removeData="removeData" @bRemoveData="bRemoveData" @settingData="settingData"></my-table>
           <my-dialog :tableTitle="handleTitle" :formRule="formRule" ref="dialog" @insertData="insertData" @updateData="updateData"></my-dialog>
@@ -25,6 +28,7 @@ import  myTree from '@/components/tree/tree'
 import  myDialog from '@/components/dialog/dialog' 
 import  myTransfer from '@/components/dialog-user/dialog-user'
 import { getUserData,insertUserData,updateUserData,removeUserData,bRemoveUserData,relationKyeUser,getRoleData } from '@/api/table'
+import { parse } from 'path-to-regexp'
 export default {
   name: 'Usermanage',
   components:{
@@ -87,7 +91,7 @@ export default {
             { title : "是否复用", name : "multiplexMark", width : "120", type : "radio" },
             { title : "角色", name : "roleName", width : "150", type : "input" },
             { title : "所属组织", name : "organizationName", minwidth : "150", type : "input" },
-           { title : "关联重点人员", name : "person", width : "120", type : "button" },
+           { title : "关联重点人员", name : "person", width : "120", type : "buttonRole" },
             { title : "操作",width : "150", type : "handle",button:[{name:"编辑",type:"edit"},{name:"删除",type:"remove"}] }
           ],
          handleTitle:[],
@@ -100,6 +104,20 @@ export default {
     getUserList(){
       this.$refs.table.listLoading=true
       getUserData().then(res=>{
+        console.log(res)
+        if(res.code==0){
+          this.tableData=res.data.data
+          console.log(this.tableData)
+          this.$refs.table.listLoading=false
+        }
+
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    getThisOrgan(val){
+      
+      getUserData({organizationId:val.id}).then(res=>{
         console.log(res)
         if(res.code==0){
           this.tableData=res.data.data
@@ -182,8 +200,8 @@ export default {
           this.getUserList();
         }else{
           this.$message({
-            message: '修改失败',
-            type: 'danger'
+            message: res.msg,
+            type: 'error'
           });
         }
       })
@@ -201,7 +219,7 @@ export default {
         }else{
           this.$message({
             message: '删除失败',
-            type: 'danger'
+            type: 'error'
           });
         }
       })
@@ -221,7 +239,7 @@ export default {
         }else{
           this.$message({
             message: '删除失败',
-            type: 'danger'
+            type: 'error'
           });
         }
       })
@@ -231,9 +249,11 @@ export default {
     },
     getRoleList(){
       getRoleData().then(res=>{
-        //console.log(res)
+        console.log(res)
         if(res.code==0){
           this.options=res.data.data
+          let para ={id:"",name:"全部"}
+          this.options.unshift(para)
         }
 
       }).catch(error => {
@@ -273,12 +293,13 @@ export default {
     width: 85%;
     height: 100%;
     position: relative;
-    .el-select{
+    &-select{
         position: absolute;
         top:2vh;
         left: 25vw;
         z-index: 1;
         font-size: 0.7vw;
+        color: #606266;
     }
     .el-button{
         position: absolute;

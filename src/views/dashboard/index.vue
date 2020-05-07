@@ -21,7 +21,7 @@
               <span>预警人名字：{{item.name}}</span>
               <div class="dashboard-context-handle">
                  <el-button type="danger" size="mini" @click="getLocation(item.longitude,item.latitude)">定位</el-button>
-                 <el-button type="danger" size="mini" @click="getDetails(item.id)" plain>详情</el-button>
+                 <el-button type="danger" size="mini" @click="getDetails(item)" plain>详情</el-button>
               </div>
             </div>
           </el-scrollbar>
@@ -44,35 +44,35 @@ export default {
   components:{
     mymap,
     myTree,
-    
+
   },
   filters: {
     filterData: (value)=> {
         if (!value) return ''
         value = value.toString()
-        return value == 1 ? '活动频率异常' : (value == 2 ? '活动时间异常' : (value == 3? '心率异常' :(value == 4 ? '血压异常' :(value == 5 ? '睡眠质量异常' :(value == 6 ? '居家/离家异常' :(value == 7 ? '电子围栏触发' :' '))))))
+        return value == 1 ? '活动频率异常' : (value == 2 ? '活动时间异常' : (value == 3? '心率异常' :(value == 4 ? '血压异常' :(value == 5 ? '睡眠质量异常' :(value == 6 ? '居家/离家异常' :(value == 7 ? '电子围栏触发' :(value == 8 ? '限制外出预警' :' ')))))))
     }
   },
   computed:{
     inHomeNum(){
       var inHomeArr = this.pointsArr.filter((item) => {
-            return item.personnelStatus === "1"
+            return item.personnelStatus === "1"&&item.warning != 2
       })
       return inHomeArr.length
     },
     outHomeNum(){
       var outHomeArr = this.pointsArr.filter((item) => {
-            return item.personnelStatus === "2"
+            return item.personnelStatus === "2"&&item.warning != 2
       })
       return outHomeArr.length
     },
     warningNum(){
       var warningArr = this.pointsArr.filter((item) => {
-            return item.personnelStatus === "3"
+            return item.warning == 2
       })
       return warningArr.length
     }
-    
+
   },
   data(){
     return{
@@ -88,7 +88,16 @@ export default {
         this.$refs.map.movePosBypoint(x,y)
       },
       getDetails(id){
-         this.$router.push({name: 'Warningcenter'})
+         // console.log("*****************************")
+         // console.log(id)
+         this.$router.push({
+           // path: 'Warningcenter',
+           path:'/persondetails',
+           query:{
+             id:id.keyUserid
+             // row:id
+           },
+         })
       },
       showThisMark1(val){
         this.$refs.map.showMarkerOver(val,this.showall1)
@@ -107,7 +116,7 @@ export default {
         this.showall3=!this.showall3
         this.showall1=false
         this.showall2=false
-        
+
       },
       showThisCircle(val){
         this.$refs.map.showCircleOver(val)
@@ -115,32 +124,43 @@ export default {
       },
       getThisOrgan(data){
         if(data.className=="person"){
-          this.$refs.map.movePosBypoint(data.longitude,data.latitude)
-        }else{
-          getOrganData({organizaId:data.id}).then(res=>{
-            if(res.code==0){
-               this.pointsArr=res.data.user;
-               this.$refs.map.getmap();
-            }
-          })
+          this.$refs.map.movePosBypoint(data.keyLongitude,data.keyLatitude)
         }
+        // else{
+        //   let role = JSON.parse(getRole())
+        //   let user = JSON.parse(getUser());
+        //   console.log(user)
+        //   let param ={}
+        //   param.roleId=role
+        //   param.userId=user.userId
+        //   param.organizaId=data.id
+        //   getOrganData(param).then(res=>{
+        //     if(res.code==0){
+        //        this.pointsArr=res.data.user;
+        //        console.log("pointsArr")
+        //        console.log(this.pointsArr)
+        //        this.$refs.map.getmap();
+        //     }
+        //   })
+        // }
       },
       getPersonData(val){
+
         this.pointsArr=val
+        console.log("pointsArr")
+               console.log(this.pointsArr)
       },
       async getPerWarnlData(){
-        let role = JSON.parse(getRole()) 
+        let role = JSON.parse(getRole())
         let user = JSON.parse(getUser());
         let param ={}
         param.roleId=role
         param.userId=user.userId
         param.organizaId=user.organizationId||""
+        param.processingResult = 2
         await getPerWarnlData(param).then(res=>{
           if(res.code==0){
-            let data = res.data.data.filter(item=>{
-              return item.processingResult==2
-            })
-            this.dashboardContext=data
+            this.dashboardContext=res.data.data
           }
         }).catch(err=>{
 

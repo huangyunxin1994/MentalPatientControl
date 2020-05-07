@@ -24,6 +24,8 @@
 
 <script>
   import { getPerSe , getWarnListData , changeWarnData } from '@/api/table'
+  import {getUser} from '@/utils/auth'
+  import { parseTime } from '@/utils/index.js'
   import store from "@/store"
   export default{
     props:['message'],
@@ -40,13 +42,20 @@
         this.dialogHandleResult = false
       },
       sureBtn(){
+        if(this.textarea!=""){
         this.$confirm('确认提交处理结果吗？', '提示', {}).then(() => {
           this.changeDataResult.processingResult = 3
+          let bb = getUser()
+          console.log(typeof(bb))
+          bb = JSON.parse(bb)
+          let nowData = parseTime(new Date())
           changeWarnData({
             id:this.changeDataResult.id,
             //处理记录
             handleRecord:this.textarea,
-            processingResult:this.changeDataResult.processingResult
+            processingResult:this.changeDataResult.processingResult,
+            handleUsername:bb.name,
+            handleTime:nowData
           }).then(res =>{
             if(res.code==0){
               this.$message({
@@ -61,17 +70,23 @@
             }else{
               this.$message({
                 message: '提交时出现错误',
-                type: 'success'
+                type: 'error'
               });
             }
            
           }).catch(err=>{
              this.$message({
                 message: '提交时出现错误',
-                type: 'success'
+                type: 'error'
               });
           })
         })
+        }else{
+          this.$message({
+            message: '请填写处理结果',
+            type: 'error'
+          });
+        }
       },
       getDandleResultShow(val){
         // this.changeData = val

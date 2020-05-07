@@ -1,6 +1,15 @@
 <template>
     <el-container class="Equipwarn-container">
         <div class="Equipwarn-container-handle">
+          <label for="" class="Equipwarn-container-handle-label">预警类型</label>
+          <el-select v-model="valueW" filterable placeholder="请选择" @change="changeResultW">
+            <el-option
+              v-for="item in optionsW"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value" style="width:10vw">
+            </el-option>
+          </el-select>
           <label for="" class="Equipwarn-container-handle-label">处理结果</label>
           <el-select v-model="value" filterable placeholder="请选择" @change="changeResult">
             <el-option
@@ -44,7 +53,6 @@ export default {
     return{
       tableTitle:[
             { title : "报警类型", name : "equipAlertType", width : "120", type : "input" },
-            { title : "设备名", name : "equipmentName", width : "120", type : "input"},
             { title : "设备号", name : "equipmentCode", minwidth : "180", type : "input" },
             { title : "设备类型", name : "equipmentType", width : "120", type : "input" },
             { title : "关联人员", name : "keyName", width : "120", type : "input" },
@@ -55,6 +63,39 @@ export default {
             { title : "操作",width : "150", type : "handle",button:[{name:"处理",type:"edit"},{name:"查看处理记录",type:"search"}] }
         ],
       tableData:[],
+      optionsW: [
+        {
+          value: '',
+          label: '全部'
+        },
+        {
+          value: '2',
+          label: '低电'
+        }, {
+          value: '3',
+          label: '脱落报警'
+        }, {
+          value: '4',
+          label: '佩戴提醒'
+        },
+        {
+          value: '5',
+          label: '剪断报警'
+        }, {
+          value: '6',
+          label: '跌倒报警'
+        }, {
+          value: '7',
+          label: '温度过高'
+        }, {
+          value: '8',
+          label: '烟雾浓度过高'
+        },
+        {
+          value: '9',
+          label: '离线'
+        }
+      ],
       options: [
         {
           value: '',
@@ -74,6 +115,7 @@ export default {
           label: '忽略'
         }],
         value: '2',
+        valueW: '',
         pickerOptions: {
           shortcuts: [{
             text: '最近一周',
@@ -116,6 +158,7 @@ export default {
       param.userId=user.userId
       param.organizaId=user.organizationId||""
       param.processingResult = this.value
+      param.alertType = this.valueW
       param.beginTime = this.beginTime
       param.endTime = this.endTime
       this.$refs.table.listLoading = true 
@@ -136,7 +179,7 @@ export default {
       this.$alert(`<div style='display: flex;justify-content: space-between;align-items: center;'>
                       <div><strong>处理时间：</strong>${val.handleTime}</div>
                       <div><strong>处理人：</strong>${val.handleUsername}</div></div>
-                   <p><strong>处理记录：</strong></p><textarea style='width:100%;min-height:200px;padding:10px;border:1px solid #d7dae2;border-radius: 4px'>${val.handleRecord}</textarea>`, '处理记录', {
+                   <p><strong>处理记录：</strong></p><textarea style='width:100%;min-height:200px;padding:10px;border:1px solid #d7dae2;border-radius: 4px' disabled>${val.handleRecord}</textarea>`, '处理记录', {
           dangerouslyUseHTMLString: true
         });
     },
@@ -151,14 +194,18 @@ export default {
       this.value=val;
       this.getEquWarnlData()
     },
+    changeResultW(val){
+      this.valueW=val;
+      this.getEquWarnlData()
+    },
     changeDate(val){
       console.log(val)
       if(val==null){
         this.beginTime = ""
         this.endTime = ""
       }else{
-        this.beginTime = parseTime(val[0])
-        this.endTime = parseTime(val[1])
+        this.beginTime = parseTime(val[0],`{y}-{m}-{d}`)+" 00:00:00"
+        this.endTime = parseTime(val[1],`{y}-{m}-{d}`)+" 23:59:59"
       }
       this.getEquWarnlData()
     }
@@ -181,6 +228,12 @@ export default {
       &-label{
         font-size: 0.7vw;
         color: #606266;
+      }
+      .el-select{
+        width: 10vw;
+      }
+      .el-date-picker{
+        width: 10vw;
       }
     }
   }
