@@ -50,7 +50,7 @@ export default {
             { title : "联系电话", name : "phone", type : "number" },
             { title : "住址", name : "address", type : "input" },
             { title : "所属组织", name : "organizationId", type : "cascader" },
-            { title : "监护人", name : "jhlist", type : "personselect" }
+            { title : "监护人", name : "guardianId", type : "personselect" }
             // { title : "网格管理员", name : "networkAdministratorId", type : "personselect" },
             // { title : "责任医师", name : "responsiblePhysicianId", type : "personselect" }
         ],
@@ -92,6 +92,8 @@ export default {
                 i.jhlist=jhlist
                 i.wglist=wglist
                 i.zrlist=zrlist
+                if(jhlist.length>0)
+                i.guardianId=jhlist[0].userId
               })
               console.log(personlist)
               this.tableData = personlist
