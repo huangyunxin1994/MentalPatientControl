@@ -41,8 +41,6 @@ export default {
     const validateUsername = (rule, value, callback) => {
       if(!value){
         callback(new Error('请输入账号'))
-      }else if (value.length <= 6||value.length > 12) {
-        callback(new Error('账号长度在6到12个字符之间'))
       }else {
         callback()
       }
@@ -50,8 +48,6 @@ export default {
     const validatePassword = (rule, value, callback) => {
       if(!value){
         callback(new Error('请输入密码'))
-      }else if (value.length <= 6||value.length > 12) {
-        callback(new Error('密码长度在6到12个字符之间'))
       } else {
         callback()
       }

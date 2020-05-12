@@ -92,7 +92,7 @@ export default {
       time:[],
       bhTime:[],
       zjTime:[],
-      // time:["15:00","17:00","19:00","21:00","23:00","1:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"],
+       time:["00:00","01:00","02:00","03:00","04:00","05:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"],
       activityFrequencyT:[],
       activityFrequencyA:[],
       activityTimeT:[],
@@ -744,13 +744,13 @@ export default {
                 axisLabel:{
                   formatter: function (value) {
                     var texts = [];
-                    if(value==1){
+                    if(value==2){
                       texts.push('离家');
                     }
-                    else if (value <1 && value >0) {
+                    else if (value <2 && value >1) {
                       texts.push(' ');
                     }
-                    else if(value== 0){
+                    else if(value== 1){
                       texts.push('在家');
                     }
                       return texts;
@@ -831,7 +831,7 @@ export default {
     },
      mounted(){
         this.personData.id= this.$route.query.id //通过路由传参，将从人员状态出拿到的数据传递过来，保存在personDate
-        this.getData()
+        //this.getData()
         this.getEchartData()
         window.addEventListener('load', () => {
          let type = this.$route.query.type
