@@ -161,7 +161,7 @@ export default {
       param.roleId=role
       param.userId=user.userId
       param.organizaId=user.organizationId||""
-      param.processingResult = this.value
+      param.processingResult = 1
       param.alertType = this.valueW
       param.beginTime = this.beginTime
       param.endTime = this.endTime
