@@ -3,7 +3,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">特殊人群辅助管理系统</h3>
+        <h3 class="title">中科华宸创新科技研发中心</h3>
       </div>
 
       <el-form-item prop="username">
@@ -45,6 +45,14 @@
 
 
     </el-form>
+    <div class="footer">
+      <span class="footer-message">Copyright © 2019-2020 中科华宸创新科技研发中心.</span> 
+      <a target="_blank" href="http://beian.miit.gov.cn/">桂ICP备20002998号-1</a>
+      <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=45010302002241">
+        <img src="../../icons/png/gongan.png" style="float:left;"/>
+        <span>桂公网安备 45010302002241号</span >
+      </a>
+    </div>
   </div>
 </template>
 
@@ -240,6 +248,30 @@ $light_gray:#eee;
     color: $dark_gray;
     cursor: pointer;
     user-select: none;
+  }
+  .footer{
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &-message,a{
+      font-size: 14px;
+      font-weight: 500;
+      color:#939393;
+      margin-right: 100px;
+    }
+    a{
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+    }
+    a:hover{
+      color:#C0C4CC;
+      
+    }
   }
 }
 </style>
