@@ -13,7 +13,7 @@
                 <el-col :span="6">责任医师：{{personData.responsiblePhysician}}&nbsp;{{personData.responsiblePhysicianP}}</el-col>
 
                 <el-col :span="6">所属组织：{{personData.organizationName}}</el-col>
-                <el-col :span="12">病情描述：活动频率异常，情绪不稳定</el-col>
+                <el-col :span="12">病情描述：</el-col>
                  <el-col :span="6">监护人：{{personData.guardian}}&nbsp;{{personData.guardianP}}</el-col>
                 <el-col :span="6">是否限制外出：{{personData.restrictions | filterRestr}}</el-col>
                 <!-- <el-col :span="8">是否限制外出：{{personData.personnelStatus}}</el-col> -->
@@ -91,11 +91,13 @@ export default {
       warnNum:0,
       time:[],
       bhTime:[],
-      // time:["15:00","17:00","19:00","21:00","23:00","1:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"],
+      zjTime:[],
+       time:["00:00","01:00","02:00","03:00","04:00","05:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"],
       activityFrequencyT:[],
       activityFrequencyA:[],
       activityTimeT:[],
       activityTimeA:[],
+      zjData:[],
       minData:'',
       maxData:'',
       phoneList:[],
@@ -111,7 +113,10 @@ export default {
   },
     methods: {
       setDateTime(val){
+        if(val)
           this.dateTime=val.getTime();
+        else
+          this.dateTime=""
 
       },
       sureBtn(){
@@ -152,8 +157,7 @@ export default {
          let len = 24;
          while (len--) {
            now = new Date(now - 1000 * 60 * 60);
-           console.log(now)
-           this.time.unshift(now.getHours() + 1);
+           this.time.unshift(now.getHours());
          }
          for(let i in this.time){
            if(this.time[i]<10){
@@ -164,6 +168,7 @@ export default {
              this.time[i] = this.time[i] + ':00'
            }
          }
+         console.log(this.time)
        },
        getEchartData(){
           let time=this.dateTime;
@@ -172,7 +177,6 @@ export default {
           if(time!=""){
              para.time = parseTime(time,'{y}-{m}-{d}')
           }
-
           getPerSe(para).then(res=>{
               if(res.code==0){
                   //预警条数
@@ -268,11 +272,16 @@ export default {
                     para.xAxis= aFrequency[i].startTime
                     para2.yAxis = aFrequency[i].achieveAlert
                     para2.xAxis= aFrequency[i].endTime
+                    para2.silent=false
+                    para2.lineStyle={               //警戒线的样式  ，虚实  颜色
+                        type:"solid",
+                        color:"#F56C6C",
+                    },
                     arr.push(para)
                     arr.push(para2)
                     bFrequency.push(arr)
                   }
-
+                  console.log(bFrequency)
                   let bActiveTime = []
                   for(let i in aActiveTime){
                     let arr =[]
@@ -282,6 +291,11 @@ export default {
                     para.xAxis= aActiveTime[i].startTime
                     para2.yAxis = aActiveTime[i].achieveAlert
                     para2.xAxis= aActiveTime[i].endTime
+                    para2.silent=false
+                    para2.lineStyle={               //警戒线的样式  ，虚实  颜色
+                        type:"solid",
+                        color:"#F56C6C",
+                    },
                     arr.push(para)
                     arr.push(para2)
                     bActiveTime.push(arr)
@@ -293,7 +307,7 @@ export default {
                   this.blood = aBlood
                   this.heartRate = aHeartRate
 
-                  let arr1=[],arr2=[],arr3=[],arr4=[],arr5=[],arr6=[],arr7=[]
+                  let arr1=[],arr2=[],arr3=[],arr4=[],arr5=[],arr6=[],arr7=[],arr8=[]
                   if(res.data.frequency_today.length>0){
                     for(let i=0;i < this.time.length;i++){
                         let para=[],para2=[]
@@ -343,6 +357,15 @@ export default {
                         arr7.push(para3)
                     }
                   }
+                  if(res.data.homeStzteList.length>0){
+                    for(let i in res.data.homeStzteList){
+                        let para=[],para2=[],para3=[]
+                        this.zjTime.push(res.data.homeStzteList[i].hours)
+                        para.push(res.data.homeStzteList[i].hours)
+                        para.push(res.data.homeStzteList[i].type)
+                        arr8.push(para)
+                    }
+                  }
                   this.activityFrequencyT = arr1
                   this.activityTimeT = arr2
                   this.activityFrequencyA = arr3
@@ -350,6 +373,7 @@ export default {
                   this.heartRateT = arr5
                   this.diastolicPressureT = arr6
                   this.systolicPressureT = arr7
+                  this.zjData=arr8
                   this.drawChart()
               }else{
                 this.warnActive = true
@@ -452,7 +476,7 @@ export default {
                       {
                         type: 'solid' ,
                         color:"rgba(238, 99, 99)",
-                        width:3,
+                        width:2,
                       }
                   },
                   data:this.frequency
@@ -503,13 +527,14 @@ export default {
                     borderColor: '#409EFF',
                 },
                 markLine : {
-                  symbol:"none",               //去掉警戒线最后面的箭头
+                  symbol:"none",
+                  
                   lineStyle: {
                     normal:
                       {
                         type: 'solid' ,
                         color:"rgba(238, 99, 99)",
-                        width:3,
+                        width:2,
                       }
                   },
                   data:this.activeTime
@@ -554,7 +579,8 @@ export default {
                       silent:false,             //鼠标悬停事件  true没有，false有
                       lineStyle:{               //警戒线的样式  ，虚实  颜色
                           type:"solid",
-                          color:"rgba(238, 99, 99)"
+                          color:"rgba(238, 99, 99)",
+                          width:2,
                       },
                       name: '警戒线',
                       yAxis: 35
@@ -600,7 +626,8 @@ export default {
                       silent:false,             //鼠标悬停事件  true没有，false有
                       lineStyle:{               //警戒线的样式  ，虚实  颜色
                           type:"solid",
-                          color:"rgba(238, 99, 99)"
+                          color:"rgba(238, 99, 99)",
+                          width:2,
                       },
                       name: '警戒线',
                       yAxis: 35
@@ -658,7 +685,7 @@ export default {
             },
             series: [{
                 name:"今日",
-                data: this.getEchartData2(),
+                data: "",//this.getEchartData2(),
                 type: 'line',
                 itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                     color: '#E6A23C',
@@ -683,7 +710,7 @@ export default {
             },
             {
                 name:"平均",
-                data: this.getEchartData2(),
+                data: "",//this.getEchartData2(),
                 type: 'line',
                 itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                     color: '#409EFF',
@@ -699,34 +726,31 @@ export default {
               orient: 'vertical',
               left: 'center',
               bottom:'bottom',
-              data:['今日','平均'],
+              data:['今日'],
             },
             xAxis: {
-                type: 'time',
-                boundaryGap: false,
-                name:"单位: 小时",
-                interval:2*3600*1000,
-                axisLabel : {
-                    formatter: this.formatterFun
-                    // formatter:this.getData
-                }
+              type: 'category',
+              boundaryGap: false,
+              name:"单位:小时",
+              interval:4,
+              data: this.zjTime
             },
             yAxis: {
                 type: 'value',
                 name:"单位: 在家/离家",
-                min:0,
-                max:1,
+                min:1,
+                max:2,
                 splitNumber: 5,
                 axisLabel:{
                   formatter: function (value) {
                     var texts = [];
-                    if(value==1){
+                    if(value==2){
                       texts.push('离家');
                     }
-                    else if (value <1 && value >0) {
+                    else if (value <2 && value >1) {
                       texts.push(' ');
                     }
-                    else if(value== 0){
+                    else if(value== 1){
                       texts.push('在家');
                     }
                       return texts;
@@ -735,22 +759,12 @@ export default {
             },
             series: [{
                 name:"今日",
-                data: this.getEchartData3(),
+                data: this.zjData,
                 step: 'start',
                 type: 'line',
                 itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
                     color: '#E6A23C',
                     borderColor: '#E6A23C',
-                }
-            },
-            {
-                name:"平均",
-                data: this.getEchartData3(),
-                step: 'start',
-                type: 'line',
-                itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
-                    color: '#409EFF',
-                    borderColor: '#409EFF',
                 }
             }
             ],
@@ -817,7 +831,7 @@ export default {
     },
      mounted(){
         this.personData.id= this.$route.query.id //通过路由传参，将从人员状态出拿到的数据传递过来，保存在personDate
-        this.getData()
+        //this.getData()
         this.getEchartData()
         window.addEventListener('load', () => {
          let type = this.$route.query.type

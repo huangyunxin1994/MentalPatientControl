@@ -28,8 +28,8 @@ export default {
             { title : "人员级别", name : "level", minwidth : "150", type : "input" },
             { title : "住址", name : "address", minwidth : "500", type : "input" },
             { title : "监护人", name : "guardian", minwidth : "150", type : "tooltip" },
-            { title : "网络管理员", name : "networkAdministrator", minwidth : "150", type : "tooltip" },
-            { title : "责任医师", name : "responsiblePhysician", width : "120", type : "tooltip" },
+            { title : "网格管理员", name : "wgList", minwidth : "150", type : "wglist" },
+            { title : "责任医师", name : "zrList", minwidth : "150", type : "zrlist" },
             { title : "所属组织", name : "organizationName", minwidth : "150", type : "input" },
             { title : "联系电话", name : "phone", width : "120", type : "input" },
             { title : "身份证号", name : "idCard", minwidth : "150", type : "input" }
@@ -56,7 +56,9 @@ export default {
             }else{
               res.data.data[i].personnelStatus.thisState = res.data.data[i].personnelStatus.personnelStatus
             }
-            res.data.data[i].personnelStatus.eqlist=res.data.data[i].eqlist
+            res.data.data[i].personnelStatus.wgList=res.data.data[i].wgList
+            res.data.data[i].personnelStatus.zrList=res.data.data[i].zrList
+            res.data.data[i].personnelStatus.jhList=res.data.data[i].jhList
             obj.push(res.data.data[i].personnelStatus)
           }
           console.log(obj)

@@ -58,8 +58,8 @@ export default {
             { title : "所属组织", name : "organizationName", width : "120", type : "input" },
             { title : "预警时间", name : "alertTime", minwidth : "180", type : "input" },
             { title : "监护人", name : "guardian", width : "120", type : "tooltip" },
-            { title : "网格管理员", name : "networkAdministrator", minwidth : "150", type : "tooltip" },
-            { title : "责任医师", name : "responsiblePhysician", width : "120", type : "tooltip" },
+            { title : "触发值", name : "triggeres", minwidth : "120", type : "input" },
+            { title : "实际值", name : "actual", width : "120", type : "input" },
             { title : "处理结果", name : "processingResult", minwidth : "150", type : "input" },
             { title : "处理时间", name : "handleTime", minwidth : "180", type : "input" },
             { title : "处理人", name : "handleUsername", minwidth : "150", type : "input" },
@@ -96,6 +96,9 @@ export default {
         }, {
           value: '8',
           label: '限制外出预警'
+        }, {
+          value: '9',
+          label: 'SOS'
         }],
         options: [
         {
@@ -178,7 +181,7 @@ export default {
       this.$alert(`<div style='display: flex;justify-content: space-between;align-items: center;'>
                       <div><strong>处理时间：</strong>${val.handleTime}</div>
                       <div><strong>处理人：</strong>${val.handleUsername}</div></div>
-                   <p><strong>处理记录：</strong></p><textarea style='width:100%;min-height:200px;padding:10px;border:1px solid #d7dae2;border-radius: 4px'>${val.handleRecord}</textarea>`, '处理记录', {
+                   <p><strong>处理记录：</strong></p><textarea style='width:100%;min-height:200px;padding:10px;border:1px solid #d7dae2;border-radius: 4px' disabled>${val.handleRecord}</textarea>`, '处理记录', {
           dangerouslyUseHTMLString: true
         });
     },
@@ -255,7 +258,14 @@ export default {
         font-size: 0.7vw;
         color: #606266;
       }
+      
     }
+    .el-select{
+        width: 10vw;
+      }
+      .el-date-editor{
+         width: 10vw;
+      }
   }
 }
 </style>

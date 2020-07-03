@@ -42,6 +42,7 @@
         this.dialogHandleResult = false
       },
       sureBtn(){
+        if(this.textarea!=""){
         this.$confirm('确认提交处理结果吗？', '提示', {}).then(() => {
           this.changeDataResult.processingResult = 3
           let bb = getUser()
@@ -69,17 +70,23 @@
             }else{
               this.$message({
                 message: '提交时出现错误',
-                type: 'success'
+                type: 'error'
               });
             }
            
           }).catch(err=>{
              this.$message({
                 message: '提交时出现错误',
-                type: 'success'
+                type: 'error'
               });
           })
         })
+        }else{
+          this.$message({
+            message: '请填写处理结果',
+            type: 'error'
+          });
+        }
       },
       getDandleResultShow(val){
         // this.changeData = val

@@ -114,3 +114,4 @@ export const keyPersonnelStatistics = params => { return get(`${base}/home/keyPe
 export const selectCount = params => { return get(`${base}/home/untreatedCount`, params); };
 export const selectWlCount = params => { return get(`${base}/home/selectWlCount`, params); };
 export const userRoleStatistics = params => { return get(`${base}/home/userRoleStatistics`, params); };
+export const selectEw = params => { return get(`${base}/home/selectEw`, params); };

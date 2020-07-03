@@ -50,7 +50,7 @@ export default {
                         let user = JSON.parse(getUser())
                         let params = {}
                         params.roleId = role
-                        params.organizaId = user.organizationId
+                        params.organizaId = user.organizationId||-1
                         findPresent(params).then((res) => {
                         if(res.code=="0"){
                             let userList = res.data.data
@@ -95,9 +95,12 @@ export default {
                             console.log(userList)
                             let userArr = [];
                             for(let i = 0;i < userList.length; i++){
+                                let organizationName=""
+                                if(userList[i].organizationName)
+                                organizationName=userList[i].organizationName
                                 userArr.push({
                                     value: parseInt(userList[i].userId),
-                                    desc: userList[i].name+","+userList[i].organizationName
+                                    desc: userList[i].name+","+organizationName||""
                                 });
                             }
                             this.data=userArr

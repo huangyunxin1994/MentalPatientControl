@@ -51,7 +51,6 @@ export default {
               { title : "组织名称", name : "name", type : "input" },
               { title : "上级组织", name : "parentId", type : "cascader" },
               { title : "描述", name : "organization", type : "input" }
-              
             ],
             organId:"",
             tableData:[]
@@ -94,6 +93,17 @@ export default {
       changeData(row){
         console.log(row)
         row.submitType="update"
+        if(row.id==1)
+        this.handleTitle=[
+              { title : "组织名称", name : "name", type : "input" },
+              { title : "描述", name : "organization", type : "input" }
+        ]
+        else
+        this.handleTitle=[
+              { title : "组织名称", name : "name", type : "input" },
+              { title : "上级组织", name : "parentId", type : "cascader" },
+              { title : "描述", name : "organization", type : "input" }
+            ]
         this.$refs.dialog.form=Object.assign({}, row)
         let arr = ["organ"]
         this.$refs.dialog.handleShow(arr);

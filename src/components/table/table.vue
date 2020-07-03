@@ -3,7 +3,7 @@
     <div style="margin-bottom:2vh;width:20vw">
        <el-input v-model="inputValue" placeholder="请输入内容"></el-input>
     </div>
-    <el-table :data="tables" border stripe highlight-current-row v-loading="listLoading" height="calc(100% - 100px)">
+    <el-table :data="tables.slice((page-1)*20,page*20)" border stripe highlight-current-row v-loading="listLoading" height="calc(100% - 100px)">
         <el-table-column type="index" width="60">
         </el-table-column>
         <el-table-column v-for="(item,index) in tableTitle" :key="index" :prop="item.name" :label="item.title" :width="item.width" :min-width="item.minwidth" :sortable="item.type!='button'&&item.type!='handle'?true:false">
@@ -16,6 +16,7 @@
                        <el-button v-else-if="item.type=='remove'" type="danger" icon="el-icon-delete" size="small" circle @click="handleRemove(scope.$index, scope.row)"></el-button>
                        <el-button v-else-if="item.type=='search'&&scope.row['processingResult']==3" type="info" icon="el-icon-search" size="small" circle @click="handleSearch(scope.$index, scope.row)"></el-button>
                        <el-button v-else-if="item.type=='relevance'&&scope.row['processingResult']!=3" type="info" icon="el-icon-setting" size="small" circle @click="handleRelevance(scope.$index, scope.row)"></el-button>
+                       <el-button v-else-if="item.type=='post'" type="warning" icon="el-icon-s-promotion" size="small" circle @click="handlePosition(scope.$index, scope.row)"></el-button>
                     </el-tooltip>
                 </div>
                 <div v-else-if="item.type=='tooltip'">
@@ -28,7 +29,24 @@
                         <el-link type="primary" slot="reference" :formatter="formatSex" v-html="arrFormatter(scope.row[item.name],item.name)"></el-link>
                       </el-popover>
                 </div>
+                <div v-else-if="item.type=='wglist'">
+                      <el-popover v-for="(ite,index) in scope.row[item.name]" :key="index" placement="top" width="200" trigger="click" :content="ite.phone!='undefined'&&ite.phone.length>0 ? '联系电话:'+ite.phone:'联系电话:无'">
+                        <el-link type="primary"  :formatter="formatSex"  slot="reference" >{{ite.name+'&nbsp;&nbsp;&nbsp;'}}</el-link>
+                      </el-popover>
+                </div>
+                <div v-else-if="item.type=='jhlist'">
+                      <el-popover v-for="(ite,index) in scope.row[item.name]" :key="index" placement="top" width="200" trigger="click" :content="ite.phone!='undefined'&&ite.phone.length>0 ? '联系电话:'+ite.phone:'联系电话:无'">
+                        <el-link type="primary"  :formatter="formatSex"  slot="reference" >{{ite.name+'&nbsp;&nbsp;&nbsp;'}}</el-link>
+                      </el-popover>
+                </div>
+                <div v-else-if="item.type=='zrlist'">
+                      <el-popover v-for="(ite,index) in scope.row[item.name]" :key="index" placement="top" width="200" trigger="click" :content="ite.phone!='undefined'&&ite.phone.length>0 ? '联系电话:'+ite.phone:'联系电话:无'">
+                        <el-link type="primary"  :formatter="formatSex"  slot="reference" >{{ite.name+'&nbsp;&nbsp;&nbsp;'}}</el-link>
+                      </el-popover>
+                </div>
                 <el-button v-else-if="item.type=='button'"  icon="el-icon-setting" type="info" size="small" circle @click="handleSetting(scope.$index, scope.row,item.name)"></el-button>
+                <el-button v-else-if="item.type=='buttonRole'&&scope.row['roleId']>1"  icon="el-icon-setting" type="info" size="small" circle @click="handleSetting(scope.$index, scope.row,item.name)"></el-button>
+
                 <div v-else-if="item.type=='equip'">
                   <span v-for="(ite,index) in scope.row[item.name]" :key="index" v-html="arrFormatter(ite.type,item.name)"></span>
                 </div>
@@ -38,7 +56,7 @@
     </el-table>
     <el-col :span="24" class="toolbar">
       <!-- <el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button> -->
-      <el-pagination background layout="prev, pager, next, jumper" @current-change="handleCurrentChange" :page-size="20" :total="0" style="float:right;">
+      <el-pagination background layout="prev, pager, next, jumper" @current-change="handleCurrentChange" :page-size="20" :total="tables.length" style="float:right;">
       </el-pagination>
     </el-col>
 </section>
@@ -60,22 +78,6 @@ import "@/assets/icon/iconfont.css"
         sels:[],
         total: 0,
         page: 1,
-        options: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }],
         value: '',
         phoneNumber:""
       }
@@ -115,9 +117,9 @@ import "@/assets/icon/iconfont.css"
             else if(name == 'level')
              return value == 1 ? '一级' : (value == 2 ? '二级' : (value == 3? '三级' :(value == 4 ? '四级' :(value == 5 ? '五级' :(value == 6 ? '六级' :(value == 7 ? '七级' :(value == 8 ? '八级' : value == 9 ? '九级' :' ')))))))
             else if(name == 'equipAlertType')
-             return value == 1 ? 'SOS' : (value == 2 ? '低电' : (value == 3? '脱落报警' :(value == 4 ? '佩戴提醒' :(value == 5 ? '剪断报警' :(value == 6 ? '跌倒报警' :(value == 7 ? '心率异常' :(value == 8 ? '心率过高' :(value == 9 ? '心率过低' :(value == 10 ? '收缩压过高' :(value == 11 ? '收缩压过低' :(value == 12 ? '舒张压过高' :(value == 13 ? '舒张压过低' :(value == 14 ? '温度过高' :(value == 7 ? '烟雾浓度过高' :' '))))))))))))))
+             return value == 2 ? '低电' : (value == 3? '脱落报警' :(value == 4 ? '佩戴提醒' :(value == 5 ? '剪断报警' :(value == 6 ? '跌倒报警' :(value == 7 ? '温度过高' :(value == 8 ? '烟雾浓度过高' :(value == 9 ? '离线' :"正常")))))))
             else if(name == 'alertType')
-             return value == 1 ? '活动频率异常' : (value == 2 ? '活动时间异常' : (value == 3? '心率异常' :(value == 4 ? '血压异常' :(value == 5 ? '睡眠质量异常' :(value == 6 ? '居家/离家异常' :(value == 7 ? '电子围栏触发' :(value == 8 ? '限制外出预警' :' ')))))))
+             return value == 1 ? '活动频率异常' : (value == 2 ? '活动时间异常' : (value == 3? '心率异常' :(value == 4 ? '血压异常' :(value == 5 ? '睡眠质量异常' :(value == 6 ? '居家/离家异常' :(value == 7 ? '电子围栏触发' :(value == 8 ? '限制外出预警' :(value == 9 ? 'SOS' :' '))))))))
             else if(name == 'thisState')
              return value == 1 ? '<span style="color:#67C23A;font-weight:bold">在家</span>' : (value == 2 ? '<span style="color:#E6A23C;font-weight:bold">离家</span>' : value == 3? '<span style="color:#F56C6C;font-weight:bold">预警</span>' :"");
             else if(name == 'equipmentState'){
@@ -129,7 +131,7 @@ import "@/assets/icon/iconfont.css"
 
         },
         handleCurrentChange(val){
-            console.log(val)
+           this.page = val;
         },
         userDetails(index,row){
           this.$emit('changeRouter',row)
@@ -173,20 +175,14 @@ import "@/assets/icon/iconfont.css"
         handleRelevance(index,row){
           this.$emit('relevancePerson',row)
         },
+        //定位
+        handlePosition(index,row){
+          this.$emit('positionWarn',row)
+        },
         //查询单个用户获得电话号码
         loadData(row,name){
-          console.log(row)
-         console.log(name)
          let para ={};
-
-         if(name=="guardian"){
-            para.userId=row.guardianId
-
-         }else if(name=="networkAdministrator"){
-            para.userId=row.networkAdministratorId
-         }else if(name=="responsiblePhysician"){
-            para.userId=row.responsiblePhysicianId
-         }
+          para.userId=row.guardianId
           getThisUser(para).then(res=>{
             if(res.code==0){
               console.log(res)

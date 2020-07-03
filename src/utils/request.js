@@ -6,9 +6,9 @@ import Qs from 'qs'
 
 // create an axios instance
 const service = axios.create({
-  //baseURL: "http://47.115.89.236:8080/specialGroup", // url = base url + request url
-  //baseURL: "http://192.168.1.111:8080", // url = base url + request url
-   baseURL: "http://192.168.1.3:8080", // url = base url + request url
+  baseURL: "https://www.hckj-cn.com/specialGroup", // url = base url + request url
+ //baseURL: "http://192.168.1.111:8080", // url = base url + request url
+ //baseURL: "http://192.168.1.3:8080", // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000 // request timeout
 })
@@ -48,6 +48,7 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
+    console.log(response.data)
     switch (response.data.code) {
 
       case '-2':
