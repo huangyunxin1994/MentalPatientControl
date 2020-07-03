@@ -174,8 +174,6 @@ export default {
           }
 
           getPerSe(para).then(res=>{
-            console.log("*************************************************")
-            console.log(res)
               if(res.code==0){
                   //预警条数
                   this.warnNum = res.data.alertNum
