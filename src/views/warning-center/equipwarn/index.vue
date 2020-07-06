@@ -145,14 +145,15 @@ export default {
         },
         value2: '',
         beginTime:"",
-        endTime:""
+        endTime:"",
+        currentPage:1,
+        pageSize:20,
     }
   },
   methods: {
-    getEquWarnlData(){
+    getEquWarnlData(currentPage){
       let role = JSON.parse(getRole())
       let user = JSON.parse(getUser());
-      console.log(user)
       let param ={}
       param.roleId=role
       param.userId=user.userId
@@ -161,14 +162,17 @@ export default {
       param.alertType = this.valueW
       param.beginTime = this.beginTime
       param.endTime = this.endTime
-      this.$refs.table.listLoading = true 
+      param.currentPage = currentPage||this.currentPage
+      param.pageSize = this.pageSize
+      this.$refs.table.listLoading = true
       getEquWarnlData(param).then(res=>{
         if(res.code==0){
           for(let i in res.data.data){
           res.data.data[i].equipAlertType = res.data.data[i].alertType
           }
           this.tableData= res.data.data
-          this.$refs.table.listLoading = false 
+          this.$refs.table.listLoading = false
+          this.$refs.table.tableLength = res.data.count
         }
       }).catch(err=>{
 

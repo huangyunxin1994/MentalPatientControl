@@ -1,19 +1,19 @@
 <template>
     <el-container class="organmanage-container">
       <my-tree @getThisOrgan="getThisOrgan" ref="tree"></my-tree>
-      
+
       <div class="organmanage-table">
         <div class="organmanage-parent">
           <el-button size="small" type="primary" plain  @click="handlesetPos()">地图初始经纬度</el-button>
         </div>
-          
+
           <el-button class="organmanage-table-button" type="primary" size="small" @click="newData">添加组织</el-button>
           <my-table :tableTitle="tableTitle" :tableData="tableData" ref="table" @changeData="changeData" @removeData="removeData" @bRemoveData="bRemoveData" @settingData="settingData"></my-table>
           <my-dialog :tableTitle="handleTitle" :formRule="formRule" ref="dialog" @insertData="insertData" @updateData="updateData"></my-dialog>
           <my-transfer ref="transfer"></my-transfer>
           <dialog-map ref="dialogmap"></dialog-map>
       </div>
-        
+
     </el-container>
 </template>
 
@@ -53,7 +53,9 @@ export default {
               { title : "描述", name : "organization", type : "input" }
             ],
             organId:"",
-            tableData:[]
+            tableData:[],
+            currentPage:1,
+            pageSize:20,
         }
     },
     methods: {
@@ -66,13 +68,17 @@ export default {
       handlesetPos(){
         this.$refs.dialogmap.handleShow()
       },
-      getThisOrgan(data){
+      getThisOrgan(data,currentPage){
         this.organId= data.id
         if(data.children)
         delete data.children
         this.organData=data
         this.$refs.table.listLoading=true
-        getChildOrganData({id:data.id}).then(res=>{
+        let param = {}
+        param.currentPage = currentPage||this.currentPage
+        param.pageSize = this.pageSize
+        param.id = data.id
+        getChildOrganData(param).then(res=>{
           if(res.code==0){
             this.tableData=res.data.data
             this.$refs.table.listLoading=false
@@ -160,7 +166,7 @@ export default {
             });
             this.$refs.dialog.loading = false;
         })
-      
+
       },
       updateData(para){
         updateOrganData(para).then(res=>{

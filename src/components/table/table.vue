@@ -3,7 +3,7 @@
     <div style="margin-bottom:2vh;width:20vw">
        <el-input v-model="inputValue" placeholder="请输入内容"></el-input>
     </div>
-    <el-table :data="tables.slice((page-1)*20,page*20)" border stripe highlight-current-row v-loading="listLoading" height="calc(100% - 100px)">
+    <el-table :data="tableData" border stripe highlight-current-row v-loading="listLoading" height="calc(100% - 100px)">
         <el-table-column type="index" width="60">
         </el-table-column>
         <el-table-column v-for="(item,index) in tableTitle" :key="index" :prop="item.name" :label="item.title" :width="item.width" :min-width="item.minwidth" :sortable="item.type!='button'&&item.type!='handle'?true:false">
@@ -56,7 +56,7 @@
     </el-table>
     <el-col :span="24" class="toolbar">
       <!-- <el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button> -->
-      <el-pagination background layout="prev, pager, next, jumper" @current-change="handleCurrentChange" :page-size="20" :total="tables.length" style="float:right;">
+      <el-pagination background layout="prev, pager, next, jumper" @current-change="handleCurrentChange" :page-size="20" :total="tableLength!=''? tableLength:0" style="float:right;">
       </el-pagination>
     </el-col>
 </section>
@@ -74,6 +74,7 @@ import "@/assets/icon/iconfont.css"
     data() {
       return {
         listLoading:false,
+        tableLength:'',
         inputValue:"",
         sels:[],
         total: 0,
@@ -132,6 +133,7 @@ import "@/assets/icon/iconfont.css"
         },
         handleCurrentChange(val){
            this.page = val;
+           this.$emit('getPerWarnlData',val)
         },
         userDetails(index,row){
           this.$emit('changeRouter',row)
@@ -217,9 +219,14 @@ import "@/assets/icon/iconfont.css"
       tables:function(){
         var search=this.inputValue;
         if(search){
+          let arr = []
+          this.tableTitle.forEach(e => {
+              if(e.name)
+              arr.push(e.name)
+          });
           return  this.tableData.filter(function(dataNews){
             return Object.keys(dataNews).some(function(key){
-              return String(dataNews[key]).toLowerCase().indexOf(search) > -1
+              return String(dataNews[key]).toLowerCase().indexOf(search) > -1 && String(arr).indexOf(key)>-1
             })
           })
         }

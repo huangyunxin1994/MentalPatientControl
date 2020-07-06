@@ -18,14 +18,14 @@
           <my-dialog :tableTitle="handleTitle" :formRule="formRule" ref="dialog" @insertData="insertData" @updateData="updateData"></my-dialog>
           <my-transfer ref="transfer"></my-transfer>
       </div>
-        
+
     </el-container>
 </template>
 
 <script>
 import  myTable from '@/components/table/table'
 import  myTree from '@/components/tree/tree'
-import  myDialog from '@/components/dialog/dialog' 
+import  myDialog from '@/components/dialog/dialog'
 import  myTransfer from '@/components/dialog-user/dialog-user'
 import { getUserData,insertUserData,updateUserData,removeUserData,bRemoveUserData,relationKyeUser,getRoleData } from '@/api/table'
 import { parse } from 'path-to-regexp'
@@ -93,32 +93,43 @@ export default {
          handleTitle:[],
          tableData:[],
          options: [],
-        value: ''
+        value: '',
+        currentPage:1,
+        pageSize:20,
     }
   },
   methods: {
-    getUserList(){
+    getUserList(currentPage){
       this.$refs.table.listLoading=true
-      getUserData().then(res=>{
+      let param = {}
+      param.currentPage = currentPage||this.currentPage
+      param.pageSize = this.pageSize
+      getUserData(param).then(res=>{
+        console.log("用户管理用户管理")
         console.log(res)
         if(res.code==0){
           this.tableData=res.data.data
           console.log(this.tableData)
           this.$refs.table.listLoading=false
+          this.$refs.table.tableLength = res.data.count
         }
 
       }).catch(error => {
         console.log(error)
       })
     },
-    getThisOrgan(val){
-      
-      getUserData({organizationId:val.id}).then(res=>{
+    getThisOrgan(val,currentPage){
+      let param = {}
+      param.currentPage = currentPage||this.currentPage
+      param.pageSize = this.pageSize
+      param.organizationId = val.id
+      getUserData(param).then(res=>{
         console.log(res)
         if(res.code==0){
           this.tableData=res.data.data
           console.log(this.tableData)
           this.$refs.table.listLoading=false
+          this.$refs.table.tableLength = res.data.count
         }
 
       }).catch(error => {
@@ -136,7 +147,7 @@ export default {
               { title : "所属组织", name : "organizationId", type : "cascader" },
               { title : "联系电话", name : "phone", type : "number" },
               { title : "身份证号", name : "idCard", type : "input" },
-              
+
       ]
       let para = {'submitType':"insert",'multiplexMark':1,'sex':1,"status":1}
       this.$refs.dialog.form=para
@@ -154,7 +165,7 @@ export default {
               { title : "所属组织", name : "organizationId", type : "cascader" },
               { title : "联系电话", name : "phone", type : "number" },
               { title : "身份证号", name : "idCard", type : "number" },
-              
+
       ]
       row.submitType="update"
       this.$refs.dialog.form=Object.assign({}, row)
@@ -256,10 +267,14 @@ export default {
         //console.log(error)
       })
     },
-    changeResult(val){
+    changeResult(val,currentPage){
       this.value=val;
       this.$refs.table.listLoading=true
-      getUserData({roleId:val}).then(res=>{
+      let param = {}
+      param.currentPage = currentPage||this.currentPage
+      param.pageSize = this.pageSize
+      param.roleId = val
+      getUserData(param).then(res=>{
         console.log(res)
         if(res.code==0){
           this.tableData=res.data.data
@@ -283,7 +298,7 @@ export default {
   &-container {
     width: 100%;
     height: 100%;
-   
+
   }
   &-table{
     width: 85%;
@@ -304,7 +319,7 @@ export default {
         z-index: 1;
         font-size: 0.7vw;
     }
-    
+
   }
 }
 </style>

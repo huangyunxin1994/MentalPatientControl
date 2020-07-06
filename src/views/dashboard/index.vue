@@ -81,6 +81,7 @@ export default {
       pointsArr:[],
       enterElecArr:[],
       showall1:false,
+      pointsArray:[]
     }
   },
     methods: {
@@ -88,7 +89,6 @@ export default {
         this.$refs.map.movePosBypoint(x,y)
       },
       getDetails(id){
-         // console.log("*****************************")
          // console.log(id)
          this.$router.push({
            // path: 'Warningcenter',
@@ -122,33 +122,44 @@ export default {
         this.$refs.map.showCircleOver(val)
         this.showflag=!this.showflag
       },
+      getPerson(data){
+        let _this = this
+        if(data.className == "person"){
+          this.pointsArray.push(data)
+        }else{
+          for(let i in data.children){
+            _this.getPerson(data.children[i])
+          }
+        }
+        return this.pointsArray
+      },
       getThisOrgan(data){
         if(data.className=="person"){
           this.$refs.map.movePosBypoint(data.keyLongitude,data.keyLatitude)
         }
-        // else{
-        //   let role = JSON.parse(getRole())
-        //   let user = JSON.parse(getUser());
-        //   console.log(user)
-        //   let param ={}
-        //   param.roleId=role
-        //   param.userId=user.userId
-        //   param.organizaId=data.id
-        //   getOrganData(param).then(res=>{
-        //     if(res.code==0){
-        //        this.pointsArr=res.data.user;
-        //        console.log("pointsArr")
-        //        console.log(this.pointsArr)
-        //        this.$refs.map.getmap();
-        //     }
-        //   })
-        // }
+        else{
+          let _this = this
+          this.pointsArray = []
+          _this.getPerson(data)
+          let role = JSON.parse(getRole())
+          let user = JSON.parse(getUser());
+          let param ={}
+          param.roleId=role
+          param.userId=user.userId
+          param.organizaId=data.id
+          getOrganData(param).then(res=>{
+            if(res.code==0){
+               this.pointsArr=this.pointsArray;
+               this.$refs.map.getmap();
+            }
+          })
+        }
       },
       getPersonData(val){
 
         this.pointsArr=val
         console.log("pointsArr")
-               console.log(this.pointsArr)
+        console.log(this.pointsArr)
       },
       async getPerWarnlData(){
         let role = JSON.parse(getRole())

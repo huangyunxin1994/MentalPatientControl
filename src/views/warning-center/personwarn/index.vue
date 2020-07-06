@@ -33,7 +33,7 @@
           </el-date-picker>
         </div>
 
-          <my-table :tableTitle="tableTitle" :tableData="tableData" @changeData="changeData" @alertmessage="alertmessage" @changeRouter="changeRouter" ref="table"></my-table>
+          <my-table :tableTitle="tableTitle" :tableData="tableData" @changeData="changeData" @alertmessage="alertmessage" @changeRouter="changeRouter" @getPerWarnlData="getPerWarnlData" ref="table"></my-table>
           <dialog-warn-handle ref="sendData" @sendState='getSendData'></dialog-warn-handle>
     </el-container>
 </template>
@@ -149,12 +149,14 @@ export default {
         },
         value2: '',
         beginTime:"",
-        endTime:""
+        endTime:"",
+        currentPage:1,
+        pageSize:20,
 
     }
   },
   methods: {
-    getPerWarnlData(){
+    getPerWarnlData(currentPage){
       let role = JSON.parse(getRole())
       let user = JSON.parse(getUser());
       let param ={}
@@ -165,12 +167,15 @@ export default {
       param.alertType = this.valueW
       param.beginTime = this.beginTime
       param.endTime = this.endTime
+      param.currentPage = currentPage||this.currentPage
+      param.pageSize = this.pageSize
       this.$refs.table.listLoading = true
       getPerWarnlData(param).then(res=>{
         if(res.code==0){
-          console.log(res)
           this.tableData= res.data.data
           this.$refs.table.listLoading = false
+          this.$refs.table.tableLength = res.data.count
+          // this.$refs.table.getTableLength(res.data.count)
         }
       }).catch(err=>{
 
@@ -197,7 +202,7 @@ export default {
           if(res.data.data.length==0){
             updateKeyPnlData({id:val,warning:1}).then(res=>{
               if(res.code==0){
-                
+
               }
             }).catch(err=>{
 
@@ -258,7 +263,7 @@ export default {
         font-size: 0.7vw;
         color: #606266;
       }
-      
+
     }
     .el-select{
         width: 10vw;

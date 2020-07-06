@@ -34,7 +34,9 @@ export default {
             { title : "联系电话", name : "phone", width : "120", type : "input" },
             { title : "身份证号", name : "idCard", minwidth : "150", type : "input" }
         ],
-        tableData:[]
+        tableData:[],
+        currentPage:1,
+        pageSize:20
     }
   },
   methods: {
@@ -44,10 +46,12 @@ export default {
       let organizationId = user.organizationId;
       let userid = user.userId;
       let role = JSON.parse(getRole())
-      let para ={roleId:role,userId:userid}
+      let currentPage = currentPage||this.currentPage
+      let pageSize = this.pageSize
+      let para ={roleId:role,userId:userid,currentPage:currentPage,pageSize:pageSize}
       getPersonStatusQuery(para).then((res)=>{
         if(res.code==0){
-           console.log(res)
+          console.log(res)
           console.log(res.data.data)
           var obj=[];
           for(let i in res.data.data){
@@ -59,6 +63,7 @@ export default {
             res.data.data[i].personnelStatus.wgList=res.data.data[i].wgList
             res.data.data[i].personnelStatus.zrList=res.data.data[i].zrList
             res.data.data[i].personnelStatus.jhList=res.data.data[i].jhList
+            res.data.data[i].personnelStatus.eqlist=res.data.data[i].eqlist
             obj.push(res.data.data[i].personnelStatus)
           }
           console.log(obj)

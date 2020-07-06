@@ -30,7 +30,10 @@ export default {
             { title : "地址", name : "address", minwidth : "150", type : "input" },
             { title : "操作",width : "150", type : "handle",button:[{name:"关联预案",type:"edit"}] }
         ],
-      tableData:[]
+      tableData:[],
+      //添加的分页内容
+      currentPage:1,
+      pageSize:20
     }
   },
     methods: {

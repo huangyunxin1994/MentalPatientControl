@@ -19,21 +19,21 @@
               :value="item.value" style="width:10vw">
             </el-option>
           </el-select>
-           
+
         </div>
         <el-button size="small" type="primary" @click="newData">新增设备</el-button>
           <!-- <el-button type="primary">模板下载</el-button> -->
-         
+
           <!-- <el-button type="primary">批量导入</el-button> -->
           <my-table :tableTitle="tableTitle" :tableData="tableData" ref="table" @changeData="changeData" @removeData="removeData"></my-table>
           <my-dialog :tableTitle="handleTitle" :formRule="formRule" ref="dialog" @insertData="insertData" @updateData="updateData" @untying="untying"></my-dialog>
-        
+
     </el-container>
 </template>
 
 <script>
 import  myTable from '@/components/table/table'
-import  myDialog from '@/components/dialog/dialog' 
+import  myDialog from '@/components/dialog/dialog'
 import { getEquipData,insertEquipData,updateEquipData,removeEquipData,untying } from '@/api/table'
 import { getRole,getUser } from '@/utils/auth'
 export default {
@@ -45,7 +45,7 @@ export default {
   data(){
     return{
         formRule:{
-            
+
         },
         optionsW: [
         {
@@ -94,13 +94,15 @@ export default {
             { title : "关联人员", name : "keyId", type : "userselect" },
             { title : "", type : "equipbutton" },
             { title : "设备类型", name : "equipmentType", type : "equipselect" },
-            
+
         ],
-        tableData:[]
+        tableData:[],
+        currentPage:1,
+        pageSize:20,
     }
   },
     methods: {
-      getEquipList(){
+      getEquipList(currentPage){
         this.$refs.table.listLoading=true
         let role = JSON.parse(getRole())
         let user = JSON.parse(getUser());
@@ -111,12 +113,15 @@ export default {
         param.organizationId=user.organizationId||""
         param.equipmentState = this.valueW
         param.type = this.value
+        param.currentPage = currentPage||this.currentPage
+        param.pageSize = this.pageSize
         getEquipData(param).then(res=>{
           console.log(res)
           if(res.code==0){
             this.tableData=res.data.data
             console.log(this.tableData)
             this.$refs.table.listLoading=false
+            this.$refs.table.tableLength = res.data.count
           }
 
       }).catch(error => {
@@ -258,7 +263,7 @@ export default {
       .el-select{
         width: 10vw;
       }
-      
+
     }
     .el-button{
         position: absolute;

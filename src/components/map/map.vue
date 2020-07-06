@@ -54,8 +54,8 @@ export default {
             this.name = name;
         }
         this.mainMap = new BMap.Map(this.$refs.allmap, {enableMapClick:false}) // 创建Map实例
-        
-        
+
+
         this.mainMap.centerAndZoom(new BMap.Point(this.longitude,this.latitude), this.scaling) // 初始化地图,设置中心点坐标和地图级别
         this.mainMap.addControl(new BMap.MapTypeControl({ // 添加地图类型控件
           mapTypes: [
@@ -64,7 +64,7 @@ export default {
           ]
         }))
         this.mainMap.setCurrentCity('北京') // 设置地图显示的城市 此项是必须设置的
-        
+
         this.mainMap.enableScrollWheelZoom(true)// 开启鼠标滚轮缩放
         if(this.centerR){
             let that = this
@@ -90,14 +90,14 @@ export default {
                   // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置
                 });
                 for(let i in points){
-                  // 创建标注对象并添加到地图 
+                  // 创建标注对象并添加到地图
                   let marker = new BMap.Marker(points[i],{icon: myIcon});
                   that.mainMap.addOverlay(marker);
                   that.addClickHandlerP(marker);
                   that.mainMap.centerAndZoom(temp,16)
                 }
-                
-                
+
+
         }
         console.log("this.warnPoint")
         console.log(this.warnPoint)
@@ -112,14 +112,14 @@ export default {
                   // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置
                 });
                 for(let i in points){
-                  // 创建标注对象并添加到地图 
+                  // 创建标注对象并添加到地图
                   let marker = new BMap.Marker(points[i],{icon: myIcon});
                   that.mainMap.addOverlay(marker);
                   that.addClickHandlerP(marker);
                   that.mainMap.centerAndZoom(temp,16)
                 }
-                
-                
+
+
         }
         if(this.bulletArr&&this.bulletArr.length>0){
           console.log(this.bulletArr)
@@ -127,7 +127,7 @@ export default {
           var inHomeArr = this.bulletArr.filter((item) => {
             return item.personnelStatus === "1"&&item.warning != 2
           })
-           var outHomeArr = this.bulletArr.filter((item) => {
+          var outHomeArr = this.bulletArr.filter((item) => {
             return item.personnelStatus === "2"&&item.warning != 2
           })
           var warningArr = this.bulletArr.filter((item) => {
@@ -147,12 +147,12 @@ export default {
                 });
                 myIcon.setName("0");
                 for(var i in points){
-                  // 创建标注对象并添加到地图 
+                  // 创建标注对象并添加到地图
                   var marker = new BMap.Marker(points[i],{icon: myIcon});
                   var content= "<p class='mymap-item'><span>姓名："+inHomeArr[i].name+"</span><p/><p>状态：<span style='color:#409EFF'>在家</span><p/><p>"+"联系电话："+inHomeArr[i].phone+"</p></input>";
                   that.mainMap.addOverlay(marker);
                   that.addClickHandlerBull(content,marker);
-                
+
                 }
           }
           if(outHomeArr.length>0){
@@ -162,7 +162,7 @@ export default {
               let temp = new BMap.Point(outHomeArr[i].keyLongitude,outHomeArr[i].keyLatitude)
               points.push(temp)
             }
-            
+
                  var myIcon = new BMap.Icon(outhome, new BMap.Size(48, 48), {
                   // 指定定位位置
                   anchor: new BMap.Size(24, 48),
@@ -170,7 +170,7 @@ export default {
                 });
                 myIcon.setName("1");
                 for(var i in points){
-                  // 创建标注对象并添加到地图 
+                  // 创建标注对象并添加到地图
                   var marker = new BMap.Marker(points[i],{icon: myIcon});
                   var content= "<p class='mymap-item'><span>姓名："+outHomeArr[i].name+"</span><p/><p>状态：<span style='color:#909399'>离家</span><p/><p>"+"联系电话："+outHomeArr[i].phone+"</p></input>";
                   that.mainMap.addOverlay(marker);
@@ -191,13 +191,13 @@ export default {
                 });
                 myIcon.setName("2");
                 for(var i in points){
-                  // 创建标注对象并添加到地图 
+                  // 创建标注对象并添加到地图
                   var marker = new BMap.Marker(points[i],{icon: myIcon});
                   var content= "<p class='mymap-item'><span>姓名："+warningArr[i].name+"</span><p/><p>状态：<span style='color:#F56C6C'>预警</span><p/><p>"+"联系电话："+warningArr[i].phone+"</p></input>";
                   that.mainMap.addOverlay(marker);
                   that.addClickHandlerBull(content,marker);
                 }
-                
+
           }
           // var points= []
           // for(let i in this.bulletArr){
@@ -205,8 +205,8 @@ export default {
           //    points.push(temp)
           // }
           // var view = this.mainMap.getViewport(eval(points));
-          // var mapZoom = view.zoom; 
-          // var centerPoint = view.center; 
+          // var mapZoom = view.zoom;
+          // var centerPoint = view.center;
           // this.mainMap.centerAndZoom(centerPoint,mapZoom)
         }
         if(this.pointsArr&&this.pointsArr.length>0){
@@ -234,13 +234,13 @@ export default {
           });
           myIcon.setName("0");
           for(var i in points){
-            // 创建标注对象并添加到地图 
+            // 创建标注对象并添加到地图
             var content= "<p class='mymap-item'><span>姓名："+inHomeArr[i].name+"</span><input class='mymap-button' type='button' value='查看详情' id='btn_name'><p/><p>状态：<span style='color:#409EFF'>在家</span><p/><p>"+"联系电话："+inHomeArr[i].phone+"</p></input>";
             console.log(points[i])
             var marker = new BMap.Marker(points[i],{icon: myIcon});
             that.mainMap.addOverlay(marker);
             that.addClickHandler(content,marker,inHomeArr[i]);
-          
+
           }
           }
           if(outHomeArr.length>0){
@@ -257,7 +257,7 @@ export default {
             });
             myIcon.setName("1");
             for(var i in points){
-              // 创建标注对象并添加到地图 
+              // 创建标注对象并添加到地图
               var content= "<p class='mymap-item'><span>姓名："+outHomeArr[i].name+"</span><input class='mymap-button' type='button' value='查看详情' id='btn_name'><p/><p>状态：<span style='color:#909399'>离家</span><p/><p>"+"联系电话："+outHomeArr[i].phone+"</p></input>";
               console.log(points[i])
               var marker = new BMap.Marker(points[i],{icon: myIcon});
@@ -279,38 +279,38 @@ export default {
             });
             myIcon.setName("2");
             for(var i in points){
-              // 创建标注对象并添加到地图 
+              // 创建标注对象并添加到地图
               var content= "<p class='mymap-item'><span>姓名："+warningArr[i].name+"</span><input class='mymap-button' type='button' value='查看详情' id='btn_name'><p/><p>状态：<span style='color:#F56C6C'>预警</span><p/><p>"+"联系电话："+warningArr[i].phone+"</p></input>";
               console.log(points[i])
               var marker = new BMap.Marker(points[i],{icon: myIcon});
               that.mainMap.addOverlay(marker);
               that.addClickHandler(content,marker,warningArr[i]);
             }
-                
+
           }
-          // var points= []
-          // for(let i in this.pointsArr){
-          //    let temp = new BMap.Point(this.pointsArr[i].keyLongitude,this.pointsArr[i].keyLatitude)
-          //    points.push(temp)
-          // }
-          // var view = this.mainMap.getViewport(eval(points));
-          // var mapZoom = view.zoom; 
-          // var centerPoint = view.center; 
-          // this.mainMap.centerAndZoom(centerPoint,mapZoom)
+          var points= []
+          for(let i in this.pointsArr){
+             let temp = new BMap.Point(this.pointsArr[i].keyLongitude,this.pointsArr[i].keyLatitude)
+             points.push(temp)
+          }
+          console.log("#########################################")
+          console.log(points)
+          var view = this.mainMap.getViewport(eval(points));
+          var mapZoom = view.zoom;
+          var centerPoint = view.center;
+          this.mainMap.centerAndZoom(centerPoint,mapZoom)
           }
           console.log(this.enterElecArr)
           if(this.enterElecArr&&this.enterElecArr.length>0){
             for( var i = 0;i < this.enterElecArr.length; i++){
               var point = new BMap.Point(this.enterElecArr[i].longitude,this.enterElecArr[i].latitude);
               var circle = new BMap.Circle(point,this.enterElecArr[i].radius,{strokeColor:"#F56C6C", strokeWeight:6, strokeOpacity:0.8});
-              this.mainMap.addOverlay(circle); 
-              if(!this.circleShow)  
+              this.mainMap.addOverlay(circle);
+              if(!this.circleShow)
               circle.hide()
             }
           }
-        console.log(112)
         if(this.locusPorint&&this.locusPorint.length>0){
-          console.log(111)
           console.log(this.locusPorint)
           let that = this
           let point = []
@@ -330,13 +330,13 @@ export default {
              points.push(temp)
           }
           var view = this.mainMap.getViewport(eval(points));
-          var mapZoom = view.zoom; 
-          var centerPoint = view.center; 
-          this.mainMap.centerAndZoom(centerPoint,mapZoom)  
+          var mapZoom = view.zoom;
+          var centerPoint = view.center;
+          this.mainMap.centerAndZoom(centerPoint,mapZoom)
         }
-        
-        
-        
+
+
+
       },
       async selectPosition(){
         await selectPosition().then(res=>{
@@ -362,21 +362,21 @@ export default {
               var p = e.target;
               var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
               console.log(point)
-              var geoc = new BMap.Geocoder();  
-              
+              var geoc = new BMap.Geocoder();
+
               geoc.getLocation(point, (rs)=>{
                 var addComp = rs.addressComponents;
                 let address =  addComp.province + " " + addComp.city + " " + addComp.district + " " + addComp.street + " " + addComp.streetNumber;
                 var content= "<p class='mymap-item'><span>当前定位地址："+address+"</span><p/>";
-                var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象 
+                var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象
                 console.log(infoWindow)
                 this_.openInfoWindow(infoWindow,point); //开启信息窗口
                 that.movePosition(e)
-              }); 
-              
-              
-              
-              
+              });
+
+
+
+
           });
       },
       //绑定标注点击事件显示新窗口并平移
@@ -387,8 +387,8 @@ export default {
               enableMessage:true//设置允许信息窗发送短息
             };
             let that = this
-            var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象 
-            
+            var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象
+
             var params={}
             params.infoWindow=infoWindow;
             params.x=marker.getPosition().lng;
@@ -401,21 +401,21 @@ export default {
               console.log(point)
               this.openInfoWindow(infoWindow,point); //开启信息窗口
               that.movePosition(e)
-              
-              
+
+
           });
       },
       //绑定标注点击事件显示新窗口并平移
       addClickHandler(content,marker,obj){
-         
+
             let opts = {
               width : 250,     // 信息窗口宽度
               height: 160,     // 信息窗口高度
               enableMessage:true//设置允许信息窗发送短息
             };
             let that = this
-            var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象 
-            
+            var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象
+
             var params={}
             params.infoWindow=infoWindow;
             params.x=marker.getPosition().lng;
@@ -441,8 +441,8 @@ export default {
                     that.getPersonData(obj)
                   }
               },100)
-              
-              
+
+
           });
       },
       getPersonData(obj){
@@ -482,17 +482,17 @@ export default {
                     // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置
             });
             for( var i = 0;i < point.length; i++){
-               
+
                 // 创建标注对象并添加到地图
-                var marker; 
+                var marker;
                 if(i==0){
                   marker = new BMap.Marker(point[i],{icon: myIcon});
                 }else{
-                  marker = new BMap.Marker(point[i],{icon: myIcon2}); 
+                  marker = new BMap.Marker(point[i],{icon: myIcon2});
                 }
                 that.mainMap.addOverlay(marker);
             };
-        
+
       },
       markerChange(point){
         let that = this
@@ -507,20 +507,20 @@ export default {
                     // 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置
             });
             for( var i = 0;i < point.length; i++){
-               
+
                 // 创建标注对象并添加到地图
-                var marker; 
+                var marker;
                 if(i==0){
                   marker = new BMap.Marker(point[i],{icon: myIcon});
                 }else{
-                  marker = new BMap.Marker(point[i],{icon: myIcon2}); 
+                  marker = new BMap.Marker(point[i],{icon: myIcon2});
                 }
                 that.mainMap.addOverlay(marker);
             };
-        
+
       },
       markerPos(point){
-       
+
         this.reomveMaker('Marker')
             var myIcon = new BMap.Icon(person, new BMap.Size(48, 48), {
                     // 指定定位位置
@@ -530,8 +530,8 @@ export default {
             // 创建标注对象并添加到地图
             var marker = new BMap.Marker(point,{icon: myIcon});
             this.mainMap.addOverlay(marker);
-        
-          
+
+
       },
       polylinePos(point){
         this.reomveMaker('Polyline')
@@ -546,7 +546,7 @@ export default {
           strokeColor:"#18a45b" //折线颜色
         });   //创建折线
         that.mainMap.addOverlay(polyline);   //增加折线
-          
+
       },
       polylineChange(point){
         let that = this
@@ -566,7 +566,7 @@ export default {
           strokeColor:"#18a45b" //折线颜色
         });   //创建折线
         that.mainMap.addOverlay(polyline);   //增加折线
-          
+
       },
       reomveMaker(obj) {
         var allmap = this.mainMap.getOverlays();
@@ -579,24 +579,24 @@ export default {
             }else if(obj==='Polyline'){
               this.mainMap.removeOverlay(allmap[i]);
             }
-            
+
           }
         }
       },
       movePosition(e){
         let that = this
           var p = e.target;
-          var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat); 
+          var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
           that.mainMap.panTo(point);
-            
-          
+
+
       },
       movePosBypoint(x,y){
         let that = this
-        let point = new BMap.Point(x,y); 
+        let point = new BMap.Point(x,y);
         that.mainMap.panTo(point);
-           
-        
+
+
       },
       showMarkerOver(val,flag){
           var allOverlay = this.mainMap.getOverlays();
@@ -613,7 +613,7 @@ export default {
                 allOverlay[i].hide()
               }
             }
-          } 
+          }
         },
       showCircleOver(val){
          var allOverlay = this.mainMap.getOverlays();
@@ -629,7 +629,7 @@ export default {
       }
   },
   mounted(){
-    
+
   }
 }
 </script>

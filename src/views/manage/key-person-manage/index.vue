@@ -8,14 +8,14 @@
           <my-table :tableTitle="tableTitle" :tableData="tableData" ref="table" @changeData="changeData" @removeData="removeData"></my-table>
           <my-dialog :tableTitle="handleTitle" :formRule="formRule" ref="dialog" @insertData="insertData" @updateData="updateData"></my-dialog>
       </div>
-        
+
     </el-container>
 </template>
 
 <script>
 import  myTable from '@/components/table/table'
 import  myTree from '@/components/tree/tree'
-import  myDialog from '@/components/dialog/dialog' 
+import  myDialog from '@/components/dialog/dialog'
 import { getKeyPnlData,insertKeyPnlData,updateKeyPnlData,removeKeyPnlData } from '@/api/table'
 import { getRole,getUser } from '@/utils/auth'
 export default {
@@ -54,11 +54,13 @@ export default {
             // { title : "网格管理员", name : "networkAdministratorId", type : "personselect" },
             // { title : "责任医师", name : "responsiblePhysicianId", type : "personselect" }
         ],
-        tableData:[]
+        tableData:[],
+        currentPage:1,
+        pageSize:20,
     }
   },
     methods: {
-      getKeyPnlList(){
+      getKeyPnlList(currentPage){
         let role = JSON.parse(getRole())
         let user = JSON.parse(getUser());
         console.log(user)
@@ -66,16 +68,19 @@ export default {
         param.roleId=role
         param.userId=user.userId
         param.organizationId=user.organizationId||""
+        param.currentPage = currentPage||this.currentPage
+        param.pageSize = this.pageSize
           this.$refs.table.listLoading=true
           getKeyPnlData(param).then(res=>{
+            console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
             console.log(res)
             if(res.code==0){
               let personlist = res.data.data
               let equiplist = res.data.equipment
               let userList = res.data.userList
               personlist.forEach((i)=>{
-                console.log(i)
-                console.log(equiplist)
+                // console.log(i)
+                // console.log(equiplist)
                 let arr = equiplist.filter((item)=>{
                   return item.key_id==i.id
                 })
@@ -98,6 +103,7 @@ export default {
               console.log(personlist)
               this.tableData = personlist
               this.$refs.table.listLoading=false
+              this.$refs.table.tableLength = res.data.count
             }
 
         }).catch(error => {
@@ -204,7 +210,7 @@ export default {
     mounted(){
       this.getKeyPnlList()
     }
-    
+
 }
 </script>
 <style lang="scss" scoped>
@@ -225,7 +231,7 @@ export default {
         z-index: 1;
         font-size: 0.7vw;
     }
-    
+
   }
 }
 </style>
