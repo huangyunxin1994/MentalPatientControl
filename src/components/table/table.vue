@@ -106,7 +106,8 @@ import "@/assets/icon/iconfont.css"
             else if(name=='state')
              return value == 1 ? '<span style="color:#409EFF;font-weight:bold">启用</span>' : value == 0 ? '<span style="color:#E6A23C;font-weight:bold">停用</span>' : '';
             else if(name=='eqlist')
-             return value == 1 ? '<i class="iconyangan"></i>' : (value == 2 ? '<i class="iconchuang"></i>' : value == 3?'<i class="iconshoubiao" />':"");
+             return value == 1 ? '<i class="iconyangan"></i>' : (value == 2 ? '<i class="iconchuang"></i>' : (value == 3 ? '<i class="iconshoubiao" />':''));
+            //  return '<i class="iconyangan"></i>';
             else if(name == 'ifRelease')
              return value == 1 ? '已发布' : value == 0 ? '发布' : '';
             else if(name == 'type')
@@ -120,7 +121,7 @@ import "@/assets/icon/iconfont.css"
             else if(name == 'equipAlertType')
              return value == 2 ? '低电' : (value == 3? '脱落报警' :(value == 4 ? '佩戴提醒' :(value == 5 ? '剪断报警' :(value == 6 ? '跌倒报警' :(value == 7 ? '温度过高' :(value == 8 ? '烟雾浓度过高' :(value == 9 ? '离线' :"正常")))))))
             else if(name == 'alertType')
-             return value == 1 ? '活动频率异常' : (value == 2 ? '活动时间异常' : (value == 3? '心率异常' :(value == 4 ? '血压异常' :(value == 5 ? '睡眠质量异常' :(value == 6 ? '居家/离家异常' :(value == 7 ? '电子围栏触发' :(value == 8 ? '限制外出预警' :(value == 9 ? 'SOS' :' '))))))))
+             return value == 1 ? '活动频率异常' : (value == 2 ? '活动时间异常' : (value == 3? '心率异常' :(value == 4 ? '血压异常' :(value == 7 ? '电子围栏触发' :(value == 8 ? '限制外出预警' :(value == 9 ? 'SOS' :' '))))))
             else if(name == 'thisState')
              return value == 1 ? '<span style="color:#67C23A;font-weight:bold">在家</span>' : (value == 2 ? '<span style="color:#E6A23C;font-weight:bold">离家</span>' : value == 3? '<span style="color:#F56C6C;font-weight:bold">预警</span>' :"");
             else if(name == 'equipmentState'){

@@ -27,7 +27,7 @@
             <el-table-column
               label= '操作'
               width="100">
-              <template scope='scope'>
+              <template slot-scope='scope'>
                 <el-button type="danger" size="mini" @click="compile(scope.$index, scope.row)">{{isCompile}}</el-button>
               </template>
             </el-table-column>
@@ -105,11 +105,13 @@
           return '心率异常'
         }else if(num == '4'){
           return '血压异常'
-        }else if(num == '5'){
-          return '睡眠质量异常'
-        }else if(num == '6'){
-          return '居家/离家异常'
-        }else if(num == '7'){
+        }
+        // else if(num == '5'){
+        //   return '睡眠质量异常'
+        // }else if(num == '6'){
+        //   return '居家/离家异常'
+        // }
+        else if(num == '7'){
           return '电子围栏触发'
         }else if(num == '8'){
           return '限制外出预警'

@@ -1,14 +1,14 @@
-import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
-import store from '@/store'
-import { getToken } from '@/utils/auth'
-import Qs from 'qs'
+import axios from 'axios';
+import { MessageBox, Message } from 'element-ui';
+import store from '@/store';
+import { getToken } from '@/utils/auth';
+import Qs from 'qs';
 
 // create an axios instance
 const service = axios.create({
-  // baseURL: "https://www.hckj-cn.com/specialGroup", // url = base url + request url
+  baseURL: "https://www.hckj-cn.com/specialGroup", // url = base url + request url
  // baseURL: "http://192.168.1.111:8080", // url = base url + request url
- baseURL: "http://192.168.1.3:8080", // url = base url + request url
+//  baseURL: "http://192.168.1.8:8080", // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000 // request timeout
 })

@@ -39,15 +39,15 @@
                 <div id="heartrate" class="activestate-chart-item" :class="{'activestate-chart-item-alert':heartrate==1}"/>
                 <div id="bloodpress" class="activestate-chart-item" :class="{'activestate-chart-item-alert':bloodpress==1}"/>
             </div>
-            <div class="activestate-chart">
+            <!-- <div class="activestate-chart">
                 <div id="sleepquality" class="activestate-chart-item" :class="{'activestate-chart-item-alert':sleepquality==1}"/>
                 <div id="inouthome" class="activestate-chart-item" :class="{'activestate-chart-item-alert':inouthome==1}"/>
-            </div>
+            </div> -->
         </el-main>
          </el-scrollbar>
-      <el-row>
+      <!-- <el-row>
 
-      </el-row>
+      </el-row> -->
        <dialog-warn @dialog="getDialogData" ref="senda" :message="warnTableData" ></dialog-warn>
     </el-container>
 </template>
@@ -168,7 +168,6 @@ export default {
              this.time[i] = this.time[i] + ':00'
            }
          }
-         console.log(this.time)
        },
        getEchartData(){
           let time=this.dateTime;
@@ -194,7 +193,6 @@ export default {
                   //拿到警戒线信息
                   let aHome=[],aSleep=[],aFrequency=[],aActiveTime=[],aBlood=[],aHeartRate=[]
                   this.alertConditions = res.data.alertConditions
-                  console.log(this.alertConditions)
                   this.alertConditions.forEach((item,index)=>{
                     if(item.alertId == '1'){
                       //是否在家预警线
@@ -281,7 +279,6 @@ export default {
                     arr.push(para2)
                     bFrequency.push(arr)
                   }
-                  console.log(bFrequency)
                   let bActiveTime = []
                   for(let i in aActiveTime){
                     let arr =[]
@@ -367,7 +364,9 @@ export default {
                     }
                   }
                   this.activityFrequencyT = arr1
+                  console.log(this.activityFrequencyT)
                   this.activityTimeT = arr2
+                  console.log(this.activityTimeT)
                   this.activityFrequencyA = arr3
                   this.activityTimeA = arr4
                   this.heartRateT = arr5
@@ -425,13 +424,12 @@ export default {
       },
 
       drawChart() {
-        console.log(224)
         let activerate = echarts.init(document.getElementById('activerate'));
         let activetime = echarts.init(document.getElementById('activetime'));
         let heartrate = echarts.init(document.getElementById('heartrate'));
         let bloodpress = echarts.init(document.getElementById('bloodpress'));
-        let sleepquality = echarts.init(document.getElementById('sleepquality'));
-        let inouthome = echarts.init(document.getElementById('inouthome'));
+        // let sleepquality = echarts.init(document.getElementById('sleepquality'));
+        // let inouthome = echarts.init(document.getElementById('inouthome'));
         let option1={
             title: {text: '活动频率'},
             tooltip:{trigger: 'axis',},
@@ -645,152 +643,152 @@ export default {
             }
             ]
         }
-        let option5={
-            title: {text: '睡眠质量'},
-            tooltip:{trigger: 'axis',},
-            legend: {
-              orient: 'vertical',
-              left: 'center',
-              bottom:'bottom',
-              data:['今日','平均'],
-            },
-            xAxis: {
-                type: 'time',
-                boundaryGap: false,
-                name:"单位:小时",
-                interval:2*3600*1000,
-                // min:minData,
-                // max:maxData,
-                axisLabel : {
-                    formatter: this.formatterFun
-                }
-            },
-            yAxis: {
-                type: 'value',
-                name:"单位:次",
-                min:0,
-                max:10,
-                splitNumber: 10,
-                axisLabel: {
-                  formatter: function(value,index){
-              		var value;
-              		if (value == 1) {
-              			value = '睡觉';
-              		}else if(value != 1){
-              			value = value;
-              		}
-              		return value
-              	}
-              },
-            },
-            series: [{
-                name:"今日",
-                data: "",//this.getEchartData2(),
-                type: 'line',
-                itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
-                    color: '#E6A23C',
-                    borderColor: '#E6A23C',
-                },
-                markLine : {
-                  symbol:"none",               //去掉警戒线最后面的箭头
-                  label:{
-                      position:"end",         //将警示值放在哪个位置，三个值“start”,"middle","end"  开始  中点 结束
-                      formatter: "警戒线"
-                  },
-                  data : [{
-                      silent:false,             //鼠标悬停事件  true没有，false有
-                      lineStyle:{               //警戒线的样式  ，虚实  颜色
-                          type:"solid",
-                          color:"rgba(238, 99, 99)"
-                      },
-                      name: '警戒线',
-                      yAxis: 35
-                  }]
-                }
-            },
-            {
-                name:"平均",
-                data: "",//this.getEchartData2(),
-                type: 'line',
-                itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
-                    color: '#409EFF',
-                    borderColor: '#409EFF',
-                }
-            }
-            ]
-        }
-        let option6={
-            title: {text: '在家/离家情况'},
-            tooltip:{trigger: 'axis',},
-            legend: {
-              orient: 'vertical',
-              left: 'center',
-              bottom:'bottom',
-              data:['今日'],
-            },
-            xAxis: {
-              type: 'category',
-              boundaryGap: false,
-              name:"单位:小时",
-              interval:4,
-              data: this.zjTime
-            },
-            yAxis: {
-                type: 'value',
-                name:"单位: 在家/离家",
-                min:1,
-                max:2,
-                splitNumber: 5,
-                axisLabel:{
-                  formatter: function (value) {
-                    var texts = [];
-                    if(value==2){
-                      texts.push('离家');
-                    }
-                    else if (value <2 && value >1) {
-                      texts.push(' ');
-                    }
-                    else if(value== 1){
-                      texts.push('在家');
-                    }
-                      return texts;
-                    }
-                }
-            },
-            series: [{
-                name:"今日",
-                data: this.zjData,
-                step: 'start',
-                type: 'line',
-                itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
-                    color: '#E6A23C',
-                    borderColor: '#E6A23C',
-                }
-            }
-            ],
-            // visualMap: {
-            //     show: false,
-            //     dimension: 1,
-            //     pieces: [],  //pieces的值由动态数据决定
-            //     outOfRange: {
-            //         color: 'red'
-            //     }
-            // }
-        }
+      //   let option5={
+      //       title: {text: '睡眠质量'},
+      //       tooltip:{trigger: 'axis',},
+      //       legend: {
+      //         orient: 'vertical',
+      //         left: 'center',
+      //         bottom:'bottom',
+      //         data:['今日','平均'],
+      //       },
+      //       xAxis: {
+      //           type: 'time',
+      //           boundaryGap: false,
+      //           name:"单位:小时",
+      //           interval:2*3600*1000,
+      //           // min:minData,
+      //           // max:maxData,
+      //           axisLabel : {
+      //               formatter: this.formatterFun
+      //           }
+      //       },
+      //       yAxis: {
+      //           type: 'value',
+      //           name:"单位:次",
+      //           min:0,
+      //           max:10,
+      //           splitNumber: 10,
+      //           axisLabel: {
+      //             formatter: function(value,index){
+      //         		var value;
+      //         		if (value == 1) {
+      //         			value = '睡觉';
+      //         		}else if(value != 1){
+      //         			value = value;
+      //         		}
+      //         		return value
+      //         	}
+      //         },
+      //       },
+      //       series: [{
+      //           name:"今日",
+      //           data: "",//this.getEchartData2(),
+      //           type: 'line',
+      //           itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
+      //               color: '#E6A23C',
+      //               borderColor: '#E6A23C',
+      //           },
+      //           markLine : {
+      //             symbol:"none",               //去掉警戒线最后面的箭头
+      //             label:{
+      //                 position:"end",         //将警示值放在哪个位置，三个值“start”,"middle","end"  开始  中点 结束
+      //                 formatter: "警戒线"
+      //             },
+      //             data : [{
+      //                 silent:false,             //鼠标悬停事件  true没有，false有
+      //                 lineStyle:{               //警戒线的样式  ，虚实  颜色
+      //                     type:"solid",
+      //                     color:"rgba(238, 99, 99)"
+      //                 },
+      //                 name: '警戒线',
+      //                 yAxis: 35
+      //             }]
+      //           }
+      //       },
+      //       {
+      //           name:"平均",
+      //           data: "",//this.getEchartData2(),
+      //           type: 'line',
+      //           itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
+      //               color: '#409EFF',
+      //               borderColor: '#409EFF',
+      //           }
+      //       }
+      //       ]
+      //   }
+        // let option6={
+        //     title: {text: '在家/离家情况'},
+        //     tooltip:{trigger: 'axis',},
+        //     legend: {
+        //       orient: 'vertical',
+        //       left: 'center',
+        //       bottom:'bottom',
+        //       data:['今日'],
+        //     },
+        //     xAxis: {
+        //       type: 'category',
+        //       boundaryGap: false,
+        //       name:"单位:小时",
+        //       interval:4,
+        //       data: this.zjTime
+        //     },
+        //     yAxis: {
+        //         type: 'value',
+        //         name:"单位: 在家/离家",
+        //         min:1,
+        //         max:2,
+        //         splitNumber: 5,
+        //         axisLabel:{
+        //           formatter: function (value) {
+        //             var texts = [];
+        //             if(value==2){
+        //               texts.push('离家');
+        //             }
+        //             else if (value <2 && value >1) {
+        //               texts.push(' ');
+        //             }
+        //             else if(value== 1){
+        //               texts.push('在家');
+        //             }
+        //               return texts;
+        //             }
+        //         }
+        //     },
+        //     series: [{
+        //         name:"今日",
+        //         data: this.zjData,
+        //         step: 'start',
+        //         type: 'line',
+        //         itemStyle: {     //此属性的颜色和下面areaStyle属性的颜色都设置成相同色即可实现
+        //             color: '#E6A23C',
+        //             borderColor: '#E6A23C',
+        //         }
+        //     }
+        //     ],
+        //     // visualMap: {
+        //     //     show: false,
+        //     //     dimension: 1,
+        //     //     pieces: [],  //pieces的值由动态数据决定
+        //     //     outOfRange: {
+        //     //         color: 'red'
+        //     //     }
+        //     // }
+        // }
 
         activerate.setOption(option1);
         activetime.setOption(option2);
         heartrate.setOption(option3);
         bloodpress.setOption(option4);
-        sleepquality.setOption(option5);
-        inouthome.setOption(option6)
+        // sleepquality.setOption(option5);
+        // inouthome.setOption(option6)
         window.onresize =function(){
             activerate.resize()
             activetime.resize()
             heartrate.resize()
             bloodpress.resize()
-            sleepquality.resize()
-            inouthome.resize()
+            // sleepquality.resize()
+            // inouthome.resize()
         }
     },
 

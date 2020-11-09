@@ -476,7 +476,7 @@ export default {
                     },
                     yAxis: {
                         type: 'category',
-                        data: ['电子围栏触发','在家/离家异常','睡眠质量异常','血压异常','心率异常','活动时间异常','活动频率异常']
+                        data: ['电子围栏触发','血压异常','心率异常','活动时间异常','活动频率异常']
                     },
                     series: [
                       
@@ -484,12 +484,12 @@ export default {
                         {
                             name: '未处理',
                             type: 'bar',
-                            data: [this.alert7[1], this.alert6[1], this.alert5[1], this.alert4[1], this.alert3[1], this.alert2[1],this.alert1[1]]
+                            data: [this.alert7[1], this.alert4[1], this.alert3[1], this.alert2[1],this.alert1[1]]
                         },
                          {
                             name: '已处理',
                             type: 'bar',
-                            data: [this.alert7[0], this.alert6[0], this.alert5[0], this.alert4[0], this.alert3[0], this.alert2[0],this.alert1[0]]
+                            data: [this.alert7[0], this.alert4[0], this.alert3[0], this.alert2[0],this.alert1[0]]
                         },
                     ]
                 });

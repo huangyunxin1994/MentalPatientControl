@@ -2,7 +2,7 @@
       <div class="tree">
         <el-input  v-model="filterText" placeholder="请输入内容" suffix-icon="el-icon-search"></el-input>
         
-        <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree"></el-tree>
+        <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" :filter-node-method="filterNode" ref="tree" :expand-on-click-node="false"></el-tree>
       </div>
 </template>
 

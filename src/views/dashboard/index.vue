@@ -50,7 +50,7 @@ export default {
     filterData: (value)=> {
         if (!value) return ''
         value = value.toString()
-        return value == 1 ? '活动频率异常' : (value == 2 ? '活动时间异常' : (value == 3? '心率异常' :(value == 4 ? '血压异常' :(value == 5 ? '睡眠质量异常' :(value == 6 ? '居家/离家异常' :(value == 7 ? '电子围栏触发' :(value == 8 ? '限制外出预警' :' ')))))))
+        return value == 1 ? '活动频率异常' : (value == 2 ? '活动时间异常' : (value == 3? '心率异常' :(value == 4 ? '血压异常' :(value == 7 ? '电子围栏触发' :(value == 8 ? '限制外出预警' :' ')))))
     }
   },
   computed:{

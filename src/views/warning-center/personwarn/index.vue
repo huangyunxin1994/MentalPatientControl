@@ -84,13 +84,14 @@ export default {
           value: '4',
           label: '血压异常'
         },
+        // {
+        //   value: '5',
+        //   label: '睡眠质量异常'
+        // }, {
+        //   value: '6',
+        //   label: '居家/离家异常'
+        // }, 
         {
-          value: '5',
-          label: '睡眠质量异常'
-        }, {
-          value: '6',
-          label: '居家/离家异常'
-        }, {
           value: '7',
           label: '电子围栏触发'
         }, {
